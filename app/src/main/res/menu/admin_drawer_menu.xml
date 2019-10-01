@@ -3,11 +3,7 @@
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		xmlns:app="http://schemas.android.com/apk/res-auto"
 >
-	<item
-			android:id="@+id/action_stud"
-			android:title="Student"
-			android:icon="@drawable/ic_attendence_drawer"
-	/>
+
 	<item
 			android:id="@+id/action_inbox"
 			android:title="Inbox"
