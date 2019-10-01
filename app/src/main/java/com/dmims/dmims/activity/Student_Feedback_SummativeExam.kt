@@ -110,22 +110,6 @@ class Student_Feedback_SummativeExam : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.student__feedback__summative_exam)
 
-        var  str1:String?=""
-
-
-/*
-
-
-      */
-/*  a = arrayOf("a","b","c")*//*
-
-
-         c[0]="e"
-         c[1]="f"
-         c[2]="g"
-*/
-
-
         //  println("subSumm  "+" "+array.size+"  a "+a[1])
         et_Summative_PreexamQ1.visibility=View.GONE
         et_Summative_PreexamQ2.visibility=View.GONE
@@ -163,7 +147,7 @@ class Student_Feedback_SummativeExam : AppCompatActivity()
 
             str_SummAQ1=radio.text.toString()
 
-            str1=radio.text.toString()
+
 
             println("Text 1 "+str_SummAQ1)
             if (radio.text.equals("No"))

@@ -85,16 +85,7 @@ class AdminDashboard : AppCompatActivity() {
         // Set navigation view navigation item selected listener
         navigation_view.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.action_stud -> {
-                    println(" clicked >>> ")
-                    val intent = Intent(this@AdminDashboard, Attendance::class.java)
-                    val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
-                    var student_id_key = mypref.getString("Stud_id_key", null)
-                    intent.putExtra("stud_k", student_id_key.toString())
-                    intent.putExtra("date_of_admiss_k", dateOfAdmission.toString())
-                    intent.putExtra("info", "Attendance Activity")
-                    startActivity(intent)
-                }
+
                 R.id.action_calender -> {
                     val intent = Intent(this@AdminDashboard, AcademicCalender::class.java)
                     intent.putExtra("info", "Notice board")
