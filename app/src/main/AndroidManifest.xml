@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.dmims.dmims"
+    tools:ignore="GoogleAppIndexingWarning">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:hardwareAccelerated="false"
+        android:icon="@mipmap/ic_launcher_dmims"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:roundIcon="@mipmap/ic_launcher_dmims"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".activity.ScheduledFeedbackEI"></activity>
+        <activity android:name=".activity.Student_Feedback_SummativeExam" />
+        <activity android:name=".activity.FeedbackOptionActivity" />
+        <activity android:name=".activity.FormativeFeedbackActivity" />
+        <activity android:name=".activity.FeedbackOptionType" />
+        <activity android:name=".activity.NewRegistration" />
+        <activity android:name=".activity.RegistrarFeedbackSchdule" />
+        <activity android:name=".activity.StudentPdfViewr" />
+        <activity
+            android:name=".activity.Activity_time_table_institute"
+            android:label="@string/title_activity_time_table_institute"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.Notification_Admin"
+            android:label="@string/title_activity_notification__admin"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.CurrentAttendance" />
+        <activity android:name=".activity.ProgAttendance" />
+        <activity
+            android:name=".ImageUpload"
+            android:label="@string/title_activity_image_upload"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.AdminNoticeBoard" />
+        <activity
+            android:name=".activity.AcademicCalender"
+            android:label="@string/title_activity_academic__calender"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.EmergencyContact"
+            android:label="@string/title_activity_emergency_contact"
+            android:theme="@style/AppTheme2" />
+        <activity android:name=".activity.noticeboard" />
+        <activity android:name=".activity.Attendance" />
+        <activity android:name=".activity.GrievanceCellBoard" />
+        <activity android:name=".activity.SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".dashboard.StudentDashboard"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".dashboard.AdminDashboard"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".dashboard.InstituteDashboard"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Notification_Institute"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.InstituteNoticeBoard"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".dashboard.FacultyDashboard"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.FacultyNoticeBoard"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.FacultyAcademicCalender"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Activity_time_table_faculty"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Notification_Faculty"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Feedback_faculty"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Activity_Appraisal_faculty"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Exam_Student"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Activity_time_table_student"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Activity_Appraisal_student"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Activity_Notification_Student"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".dashboard.Exam_FeedBack_Admin_Dashboard"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Exam_FeedBack_Admin"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Notification_FeedBack_Admin"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.StudentAcademicCalender"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".dashboard.ExamCellDashboard"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.MCQ_ExamCell"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Notification_ExamCell"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.StudNoticeData"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Activity_student_notice"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.CurrentNotice"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Activity_GetGreivance"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".dashboard.GreivanceCellDashboard"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Activity_Greivance_Cell_notice"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Activity_Greivance_Notification"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Activity_Admin_Inbox_notice"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Activity_Institute_Admin_Inbox_notice"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Institute_Current_InboxNoticeAdmin"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.CurrentNoticeAdmin"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Activity_Notification_Admin"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Admin_CurrentNotification"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Student_CurrentNotification"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Activity_Notification_Institute_Admin"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Institute_Admin_CurrentNotification"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".dashboard.RegisterarCellDashboard"
+            android:theme="@style/AppTheme2" />
+
+        <activity
+            android:name=".activity.ExamMCQ"
+            android:theme="@style/AppTheme2" />
+        <activity android:name=".activity.NewUnaRegistration" />
+        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.RegActivity" />
+        <activity
+            android:name=".activity.Activity_Notification_SelfInstitute_Admin"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Institute_Admin_Self_CurrentNotification"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.ExamMcqUpload"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.ExamAdminNoticeBoard"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.EXAM_GET_UploadMCQ"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Common_PDF_Viewer"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Common_Image_Viewer"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Student_GET_UploadMCQ"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Exam_Admin_CurrentNotification"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Activity_Notification_SelfExam_Admin"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Exam_Admin_Self_CurrentNotification"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.EXAM_InBox_GET_UploadMCQ"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Activity_Exam_Admin_Inbox_notice"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".activity.Exam_Current_InboxNoticeAdmin"
+            android:theme="@style/AppTheme2" />
+    </application>
+
+</manifest>
