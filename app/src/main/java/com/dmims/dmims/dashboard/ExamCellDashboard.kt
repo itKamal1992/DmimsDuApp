@@ -35,6 +35,11 @@ class ExamCellDashboard : AppCompatActivity() {
     lateinit var drawerTitle: TextView
     lateinit var enrollNo: TextView
     lateinit var user_role: TextView
+    lateinit var txt_Mobile: TextView
+    lateinit var txt_Email: TextView
+    lateinit var txt_designation: TextView
+
+    
     lateinit var viewPager: ViewPager
     lateinit var sliderDotsPanel: LinearLayout
     private var dotscount: Int = 0
@@ -52,17 +57,35 @@ class ExamCellDashboard : AppCompatActivity() {
         Mcq_grid_Inbox = findViewById<View>(R.id.Mcq_grid_Inbox) as LinearLayout
         feddbackSchedule_Ei = findViewById<View>(R.id.ll_feedbackSchedular_Ei) as LinearLayout
         Mcq_grid = findViewById<View>(R.id.Mcq_grid) as LinearLayout
+
         drawerTitle = findViewById(R.id.drawer_title)
-        enrollNo = findViewById(R.id.enroll_no)
+
         user_role = findViewById(R.id.user_role)
+        txt_Mobile= findViewById(R.id.txt_Mobile)
+        txt_Email= findViewById(R.id.txt_Email)
+        txt_designation= findViewById(R.id.txt_designation)
+        enrollNo = findViewById(R.id.enroll_no)
+
+
+
+
         var mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
         var drawer_titler = mypref.getString("key_drawer_title", null)
         var enroll_nor = mypref.getString("key_enroll_no", null)
         id_admin = mypref.getString("Stud_id_key", null)
         roleadmin = mypref.getString("key_userrole", null)
+
         drawerTitle.text = drawer_titler
-        enrollNo.text = enroll_nor
-        user_role.text = roleadmin
+        user_role.text = "User: "+roleadmin
+        txt_designation.text="Designation: "+mypref.getString("key_designation", null)
+        txt_Email.text="E-mail: "+mypref.getString("key_email", null)
+        txt_Mobile.text="MB No: "+mypref.getString("key_editmob", null)
+        enrollNo.text = "ID: "+id_admin
+
+
+
+
+
         //Set Event
         setNoticeEvent(noticeboardgrid)
         setHealerEvent(helpdiloadboad)
