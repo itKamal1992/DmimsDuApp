@@ -1,17 +1,33 @@
 package com.dmims.dmims.activity
 
+import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.opengl.Visibility
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import com.dmims.dmims.Generic.GenericPublicVariable
+import com.dmims.dmims.Generic.GenericUserFunction
 import com.dmims.dmims.R
+import com.dmims.dmims.dataclass.FeedBackDataC
+import com.dmims.dmims.model.APIResponse
+import com.dmims.dmims.model.DeptListStudData
+import com.dmims.dmims.model.DeptListStudDataRef
 import com.dmims.dmims.model.FeedBackInsert
 import com.dmims.dmims.remote.ApiClientPhp
 import com.dmims.dmims.remote.PhpApiInterface
+import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.student__feedback__summative_exam.*
+import org.json.JSONObject
 import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.util.*
 
 class Student_Feedback_SummativeExam : AppCompatActivity()
 {
@@ -105,10 +121,29 @@ class Student_Feedback_SummativeExam : AppCompatActivity()
     lateinit var a:Array<String>
     lateinit var c:Array<String>
 
+
+    lateinit var Course_ID: String
+    lateinit var Stud_ID: String
+    lateinit var Stud_Name: String
+    lateinit var Stud_Roll_No: String
+    lateinit var Stud_Institute: String
+    lateinit var CurrentDate: String
+
+    lateinit var Course: String
+    lateinit var Institute: String
+
+    private var Deptlist: ArrayList<DeptListStudDataRef>? = null
+
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.student__feedback__summative_exam)
+
+
+        var cal = Calendar.getInstance()
+        val myFormat = "dd-MM-yyyy" // mention the format you need
+        val sdf = SimpleDateFormat(myFormat, Locale.US)
+        CurrentDate = sdf.format(cal.time).toString()
 
         //  println("subSumm  "+" "+array.size+"  a "+a[1])
         et_Summative_PreexamQ1.visibility=View.GONE
@@ -418,24 +453,66 @@ class Student_Feedback_SummativeExam : AppCompatActivity()
         spinner_SummaYear=findViewById(R.id.spinner_yearsummativeexam)
 
 
+        val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
+        Course_ID = mypref.getString("key_stud_course", null)
+        Stud_ID = mypref.getString("Stud_id_key", null)
+        Stud_Name = mypref.getString("key_drawer_title", null)
+        Stud_Roll_No = mypref.getString("key_enroll_no", null)
+        Stud_Institute = mypref.getString("key_institute_stud", null)
+
+        var phpApiInterface: PhpApiInterface = ApiClientPhp.getClient().create(
+            PhpApiInterface::class.java
+        )
+        var call3: Call<DeptListStudData> = phpApiInterface.InstDetailsStudYear(Course_ID)
+        call3.enqueue(object : Callback<DeptListStudData> {
+            override fun onFailure(call: Call<DeptListStudData>, t: Throwable) {
+                Toast.makeText(this@Student_Feedback_SummativeExam, t.message, Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onResponse(call: Call<DeptListStudData>, response: Response<DeptListStudData>) {
+                var users = ArrayList<FeedBackDataC>()
+
+                if (response.isSuccessful) {
+                    users.clear()
+                    Deptlist = response.body()!!.Data
+                    if (Deptlist!!.size > 0)
+                        Institute = Deptlist!![0].COURSE_INSTITUTE
+                    Course = Deptlist!![0].COURSE_NAME
+
+                }
+
+            }
+
+
+        })
+
+
         btnSubmit=findViewById(R.id.btn_summFeedSubmit)
         btnSubmit.setOnClickListener {
-
-            val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
-            COURSE_ID = mypref.getString("course_id", null)
-            stud_kstr = mypref.getString("Stud_id_key", null)
-            stud_namestr = mypref.getString("key_drawer_title", null)
-            stud_k = Integer.parseInt(stud_kstr)
-
             str_summNameFaculty=spinner_SummaNameFaculty.selectedItem.toString()
             str_summExamination=spinner_SummaExamination.selectedItem.toString()
             str_summYear=spinner_SummaYear.selectedItem.toString()
 
-            println("str_summNameFaculty "+str_summNameFaculty+" "+str_summExamination+" "+str_summYear)
+
+
+            println("str_summNameSAculty "+str_summNameFaculty+" "+str_summExamination+" "+str_summYear)
+
+
+
+
+
+            //    GenericPublicVariable.CustDialog.setCancelable(false)
+
+
+
+
+
+
+
 
             if (str_summNameFaculty.equals("Select Faculty"))
             {
-                Toast.makeText(applicationContext,"Select faculty",Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext,"Select Faculty",Toast.LENGTH_LONG).show()
             }else if(str_summExamination.equals("Select Examination"))
             {
                 Toast.makeText(applicationContext,"Select exam",Toast.LENGTH_LONG).show()
@@ -444,6 +521,25 @@ class Student_Feedback_SummativeExam : AppCompatActivity()
                 Toast.makeText(applicationContext,"Select year",Toast.LENGTH_LONG).show()
             }else
             {
+
+
+
+
+
+
+
+                COURSE_ID = mypref.getString("course_id", null)
+                stud_kstr = mypref.getString("Stud_id_key", null)
+                stud_namestr = mypref.getString("key_drawer_title", null)
+                stud_k = Integer.parseInt(stud_kstr)
+
+
+
+
+
+
+
+
                 str_summNameFaculty=spinner_SummaNameFaculty.selectedItem.toString()
                 str_summExamination=spinner_SummaExamination.selectedItem.toString()
                 str_summYear=spinner_SummaYear.selectedItem.toString()
@@ -587,42 +683,6 @@ class Student_Feedback_SummativeExam : AppCompatActivity()
                     str_etDQ6="-"
                 }
 
-                var phpApiInterface:PhpApiInterface=ApiClientPhp.getClient().create(PhpApiInterface::class.java)
-                var call:Call<FeedBackInsert> =phpApiInterface.feedbackTeacherInsrt(stud_kstr,stud_namestr,institute_name,"STUDENT SURVEY","SEC_SS","TEACHING LEARNING AND EVALUATION","--","--","--",
-                    "1","2","3","4","5","6","7","8","9",
-                    "10",
-                    "11",
-                    "12",
-                    "13",
-                    "14",
-                    "15",
-                    "16",
-                    "17",
-                    "18",
-                    "19",
-                    "20",
-                    "--",
-                    str_SummAQ1!!,
-                    str_SummAQ2!!,
-                    str_SummAQ3!!,
-                    str_SummAQ4!!,
-                    str_SummBQ1!!,
-                    str_SummBQ2!!,
-                    str_SummBQ3!!,
-                    str_SummBQ4!!,
-                    str_SummBQ5!!,
-                    str_SummCQ1!!,
-                    str_SummCQ2!!,
-                    str_SummCQ3!!,
-                    str_SummCQ4!!,
-                    str_SummDQ1!!,
-                    str_SummDQ2!!,
-                    str_SummDQ3!!,
-                    str_SummDQ4!!,
-                    str_SummDQ5!!,
-                    str_SummDQ6!!,
-                    "--",
-                    str_summNameFaculty,str_summYear,str_summYear)
 
 
 
@@ -634,14 +694,172 @@ class Student_Feedback_SummativeExam : AppCompatActivity()
                         +str_etCQ1+"/"+str_etCQ2+"/"+str_etCQ3+"/"+str_etCQ4+"/"+str_etDQ1+"/"+str_etDQ2+"/"+str_etDQ3+"/"+str_etDQ4+"/"+str_etDQ5+"/"+str_etDQ6)
                 println("here q1"+str_SummAQ1+"-"+str_SummAQ2+"-"+str_SummAQ3+"-"+str_SummAQ4+"-"+str_SummBQ1+"-"+str_SummBQ2+"-"+str_SummBQ3+"-"+str_SummBQ4+"-"+str_SummBQ5+"-"
                         +str_SummCQ1+"-"+str_SummCQ2+"-"+str_SummCQ3+"-"+str_SummCQ4+"-"+str_SummDQ1+"-"+str_SummDQ2+"-"+str_SummDQ3+"-"+str_SummDQ4+"-"+str_SummDQ5+"-"+str_SummDQ6+"-")
+
+
+                Update()
             }
 
 
+        }
 
 
 
+
+    }
+
+    fun Update() {
+
+        Toast.makeText(this, "Update called ", Toast.LENGTH_SHORT).show()
+
+
+
+        println(
+            "FeedbackType FormativeFeedback"+
+                    "\n SAculty "+str_summNameFaculty+
+                    "\n Course_ID " + Course_ID +
+                    "\n Stud_ID " + Stud_ID +
+                    "\n Stud_Name " + Stud_Name +
+                    "\n Stud_Stud_Roll_No " + Stud_Roll_No +
+                    "\n Course " + Course +
+                    "\n Institute " + Institute +
+                    "\n str_summExamination " + str_summExamination +
+                    "\n str_summYear " + str_summYear +
+                    "\n str_etAQ1 " + str_etAQ1 +
+                    "\n str_etAQ2 " + str_etAQ2 +
+                    "\n str_etAQ3 " + str_etAQ3 +
+                    "\n str_etAQ4 " + str_etAQ4 +
+
+                    "\n str_etBQ1 " + str_etBQ1 +
+                    "\n str_etBQ2 " + str_etBQ2 +
+                    "\n str_etBQ3 " + str_etBQ3 +
+                    "\n str_etBQ4 " + str_etBQ4 +
+                    "\n str_etBQ5 " + str_etBQ5 +
+
+                    "\n str_etCQ1 " + str_etCQ1 +
+                    "\n str_etCQ2 " + str_etCQ2 +
+                    "\n str_etCQ3 " + str_etCQ3 +
+                    "\n str_etCQ4 " + str_etCQ4 +
+
+                    "\n str_SummDQ1 " + str_SummDQ1 +
+                    "\n str_SummDQ2 " + str_SummDQ2 +
+                    "\n str_SummDQ2 " + str_SummDQ2 +
+                    "\n str_SummDQ2 " + str_SummDQ2 +
+                    "\n str_SummDQ2 " + str_SummDQ2+
+                    "\n str_SummDQ " + str_SummDQ2
+        )
+        //Layer 4
+        val obj_Feed_Form_SectB= JSONObject()
+        obj_Feed_Form_SectB!!.put("SB1", str_SummBQ1)
+        obj_Feed_Form_SectB!!.put("SB1_DES", str_etAQ1)
+        obj_Feed_Form_SectB!!.put("SB2", str_SummBQ2)
+        obj_Feed_Form_SectB!!.put("SB2_DES", str_etAQ2)
+        obj_Feed_Form_SectB!!.put("SB3", str_SummBQ3)
+        obj_Feed_Form_SectB!!.put("SB3_DES", str_etAQ3)
+        obj_Feed_Form_SectB!!.put("SB4", str_SummBQ4)
+        obj_Feed_Form_SectB!!.put("SB4_DES", str_etAQ4)
+        obj_Feed_Form_SectB!!.put("SB5", str_SummBQ5)
+        obj_Feed_Form_SectB!!.put("SB5_DES", str_etBQ5)
+
+        //Layer 3
+        val obj_Feed_Form_SectA= JSONObject()
+        obj_Feed_Form_SectA!!.put("SA1", str_SummAQ1)
+        obj_Feed_Form_SectA!!.put("SA1_DES", str_etAQ1)
+        obj_Feed_Form_SectA!!.put("SA2", str_SummAQ2)
+        obj_Feed_Form_SectA!!.put("SA2_DES", str_etAQ2)
+        obj_Feed_Form_SectA!!.put("SA3", str_SummAQ3)
+        obj_Feed_Form_SectA!!.put("SA3_DES", str_etAQ3)
+        obj_Feed_Form_SectA!!.put("SA4", str_SummAQ4)
+        obj_Feed_Form_SectA!!.put("SA4_DES", str_etAQ4)
+
+
+        val obj_Feed_Form_SectC= JSONObject()
+        obj_Feed_Form_SectC!!.put("SC1", str_SummCQ1)
+        obj_Feed_Form_SectC!!.put("SC1_DES", str_etCQ1)
+        obj_Feed_Form_SectC!!.put("SC2", str_SummCQ2)
+        obj_Feed_Form_SectC!!.put("SC2_DES", str_etCQ2)
+        obj_Feed_Form_SectC!!.put("SC3", str_SummCQ3)
+        obj_Feed_Form_SectC!!.put("SC3_DES", str_etCQ3)
+        obj_Feed_Form_SectC!!.put("SC4", str_SummCQ4)
+        obj_Feed_Form_SectC!!.put("SC4_DES", str_etCQ4)
+
+
+
+        val obj_Feed_Form_SectD= JSONObject()
+        obj_Feed_Form_SectD!!.put("SD1", str_SummDQ1)
+        obj_Feed_Form_SectD!!.put("SD1_DES", str_etDQ1)
+        obj_Feed_Form_SectD!!.put("SD2", str_SummDQ2)
+        obj_Feed_Form_SectD!!.put("SD2_DES", str_etDQ2)
+        obj_Feed_Form_SectD!!.put("SD3", str_SummDQ3)
+        obj_Feed_Form_SectD!!.put("SD3_DES", str_etDQ3)
+        obj_Feed_Form_SectD!!.put("SD4", str_SummDQ4)
+        obj_Feed_Form_SectD!!.put("SD4_DES", str_etDQ4)
+        obj_Feed_Form_SectD!!.put("SC5", str_SummDQ5)
+        obj_Feed_Form_SectD!!.put("SC5_DES", str_etDQ5)
+        obj_Feed_Form_SectD!!.put("SC6", str_SummDQ6)
+        obj_Feed_Form_SectD!!.put("SC6_DES", str_etDQ6)
+
+        //Layer 2
+        val obj_sumrmative= JSONObject()
+        obj_sumrmative!!.put("FACULTY_TYPE", str_summNameFaculty)
+        obj_sumrmative!!.put("EXAM_TYPE", str_summExamination)
+        obj_sumrmative!!.put("EXAM_YEAR", str_summYear)
+        obj_sumrmative!!.put("FEED_SUM_DATE", CurrentDate)
+        obj_sumrmative!!.put("SUM_DESC", str_SummBQ1)
+        obj_sumrmative!!.put("Feed_Form_SectA", obj_Feed_Form_SectA)
+        obj_sumrmative!!.put("Feed_Form_SectB", obj_Feed_Form_SectB)
+        obj_sumrmative!!.put("Feed_Form_SectC", obj_Feed_Form_SectC)
+        obj_sumrmative!!.put("Feed_Form_SectD", obj_Feed_Form_SectD)
+
+        //Layer 1
+        val rootObject= JSONObject()
+
+        rootObject!!.put("FEEDBACK_TYPE", "S")
+        rootObject!!.put("Course_ID", Course_ID)
+        rootObject!!.put("STUD_ID", Stud_ID)
+        rootObject!!.put("STUD_NAME", Stud_Name)
+        rootObject!!.put("Stud_Roll_No", Stud_Roll_No)
+        rootObject!!.put("COURSE", Course)
+        rootObject!!.put("INSTITUTE_NAME", Stud_Institute)
+        rootObject!!.put("Summative", obj_sumrmative)
+        rootObject!!.put("Formative", "")
+
+        val dialog: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
+        try {
+
+            dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
+            dialog.setCancelable(false)
+            dialog.show()
+            //Dialog End
+            GenericPublicVariable.mServices.SubmitExamFeedback(rootObject).enqueue(object : Callback<APIResponse> {
+                override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                    Toast.makeText(this@Student_Feedback_SummativeExam, t.message, Toast.LENGTH_SHORT).show()
+                }
+
+
+                override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                    dialog.dismiss()
+                    val result: APIResponse? = response.body()
+                   println("Result >>> "+result)
+
+//                                        Toast.makeText(this@InstituteNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
+//                                            .show()
+                    GenericUserFunction.showPositivePopUp(this@Student_Feedback_SummativeExam, "Summative Feedback Submited Successfully")
+                }
+            })
 
 
         }
+        catch (ex: Exception){
+            dialog.dismiss()
+
+            ex.printStackTrace()
+            GenericUserFunction.showApiError(
+                applicationContext,
+                "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
+            )
+
+        }
     }
+
+
 }
