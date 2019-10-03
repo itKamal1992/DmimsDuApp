@@ -80,46 +80,52 @@ class EXAM_InBox_GET_UploadMCQ : AppCompatActivity() {
                 override fun onFailure(call: Call<MCQListUpload>, t: Throwable) {
                     Toast.makeText(this@EXAM_InBox_GET_UploadMCQ, t.message, Toast.LENGTH_SHORT).show()
 //                        progressBar!!.visibility = View.INVISIBLE
-                        progressBar.visibility = View.GONE
+                    progressBar.visibility = View.GONE
                 }
 
                 override fun onResponse(call: Call<MCQListUpload>, response: Response<MCQListUpload>) {
                     val result: MCQListUpload? = response.body()
-                        println("result 1 >>> " + result!!.Data!![0])
+                    println("result 1 >>> " + result!!.Data!![0])
                     var listSize = result.Data!!.size
-                        if (result!!.Data!!.isEmpty())
-                        {
+                    if (result!!.Data!!.isEmpty())
+                    {
 
-                        }else
-                        {
-                            val users = ArrayList<McqFields>()
+                    }else
+                    {
+                        val users = ArrayList<McqFields>()
+                        if(listSize!=0) {
                             for (i in 0..listSize - 1) {
                                 k = R.drawable.ic_notice_yes
                                 users.add(
-                                                    McqFields(
-                                                        result.Data!![i].id,
-                                                        result.Data!![i].UserName,
-                                                        result.Data!![i].UserMobileNO,
-                                                        result.Data!![i].UserRole,
-                                                        result.Data!![i].UserEmail,
-                                                        result.Data!![i].UserDesig,
-                                                        result.Data!![i].Institute,
-                                                        result.Data!![i].Course,
-                                                        result.Data!![i].Department,
-                                                        result.Data!![i].Year,
-                                                        result.Data!![i].McqUploadDate,
-                                                        result.Data!![i].StartDate,
-                                                        result.Data!![i].EndDate,
-                                                        result.Data!![i].FileUrl,
-                                                        result.Data!![i].FileName,
-                                                        k
-                                                    )
+                                    McqFields(
+                                        result.Data!![i].id,
+                                        result.Data!![i].UserName,
+                                        result.Data!![i].UserMobileNO,
+                                        result.Data!![i].UserRole,
+                                        result.Data!![i].UserEmail,
+                                        result.Data!![i].UserDesig,
+                                        result.Data!![i].Institute,
+                                        result.Data!![i].Course,
+                                        result.Data!![i].Department,
+                                        result.Data!![i].Year,
+                                        result.Data!![i].McqUploadDate,
+                                        result.Data!![i].StartDate,
+                                        result.Data!![i].EndDate,
+                                        result.Data!![i].FileUrl,
+                                        result.Data!![i].FileName,
+                                        k
+                                    )
                                 )
                             }
 
 //                            progressBar!!.visibility = View.INVISIBLE
                             progressBar!!.visibility = View.GONE
-                            if(users.isEmpty()){
+                            val adapter = ExamInBoxGetMCQAdapter(users,this@EXAM_InBox_GET_UploadMCQ)
+                            recyclerView.adapter = adapter
+
+                        }else
+                            if(listSize==0){
+                                progressBar!!.visibility = View.GONE
                                 var msg="No Exam Key Uploaded\nPlease upload then check for MCQ Inbox"
                                 GenericPublicVariable.CustDialog = Dialog(this@EXAM_InBox_GET_UploadMCQ)
                                 GenericPublicVariable.CustDialog.setContentView(R.layout.api_oops_custom_popup)
@@ -140,13 +146,9 @@ class EXAM_InBox_GET_UploadMCQ : AppCompatActivity() {
                                 }
                                 GenericPublicVariable.CustDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                                 GenericPublicVariable.CustDialog.show()
-                            }else {
-
-                                val adapter = ExamInBoxGetMCQAdapter(users,this@EXAM_InBox_GET_UploadMCQ)
-                                recyclerView.adapter = adapter
                             }
 
-                        }
+                    }
 //                        {UserName
 //                            var listSize = result.Data14!!.size
 //                            val users = ArrayList<McqFields>()
@@ -253,7 +255,7 @@ class EXAM_InBox_GET_UploadMCQ : AppCompatActivity() {
 //                                    .show()
 //                            }
 //                        }
-                    }
+                }
 //
 //                }
             }

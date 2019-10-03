@@ -151,5 +151,9 @@ interface PhpApiInterface  {
     @POST("feedback_type/GetFeedbackDetails.php")
     fun CurrentDateSubmit(@Field("CURRENT_DATE") CurrentDate: String): Call<FeedBackSchedule>
 
+    @FormUrlEncoded
+    @POST("pdfupload/PostDeleteMCQ.php")
+    fun deleteMCQ(@Field("id") id: String): Call<APIResponse>
+
 }
 
