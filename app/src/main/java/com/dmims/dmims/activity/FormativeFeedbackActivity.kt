@@ -436,12 +436,7 @@ class FormativeFeedbackActivity : AppCompatActivity() {
     }
 
     fun Update() {
-
-
         Toast.makeText(this, "Update called ", Toast.LENGTH_SHORT).show()
-
-
-
         println(
             "FeedbackType FormativeFeedback"+
             "\n Faculty "+selected_spinner_FeedbackFaculty+
@@ -471,57 +466,51 @@ class FormativeFeedbackActivity : AppCompatActivity() {
                     "\n SecB_Q5_Q2_Suggest " + Af_Ex_S2_Q5_q2_Text +
                     "\n SecB_Q5_Q3_Suggest " + Af_Ex_S2_Q5_q3_Text +
                     "\n SecB_Q5_Q4_Suggest " + Af_Ex_S2_Q5_q4_Text +
-
                     "\n SecC_Suggest " + Af_Ex_S3_suggest_Text
-
-
-
-
-
         )
         //Layer 4
-        val obj_Feed_Form_SectB=JSONObject()
-        obj_Feed_Form_SectB!!.put("FB1", Ex_S2_Rdg1_radioButton_Text);
-        obj_Feed_Form_SectB!!.put("FB2", Ex_S2_Rdg2_radioButton_Text);
-        obj_Feed_Form_SectB!!.put("FB3", Ex_S2_Rdg3_radioButton_Text);
-        obj_Feed_Form_SectB!!.put("FB3_DES", Af_Ex_S2_Q3_Text);
-        obj_Feed_Form_SectB!!.put("FB4", Ex_S2_Rdg4_radioButton_Text);
-        obj_Feed_Form_SectB!!.put("FB5A", Ex_S2_Rdg5_Rdg5_q1_radioButton_Text);
-        obj_Feed_Form_SectB!!.put("FB5A_DES", Af_Ex_S2_Q5_q1_Text);
-        obj_Feed_Form_SectB!!.put("FB5B", Ex_S2_Rdg5_Rdg5_q2_radioButton_Text);
-        obj_Feed_Form_SectB!!.put("FB5B_DES", Af_Ex_S2_Q5_q2_Text);
-        obj_Feed_Form_SectB!!.put("FB5C", Ex_S2_Rdg5_Rdg5_q3_radioButton_Text);
-        obj_Feed_Form_SectB!!.put("FB5C_DES", Af_Ex_S2_Q5_q3_Text);
-        obj_Feed_Form_SectB!!.put("FB5D", Ex_S2_Rdg5_Rdg5_q4_radioButton_Text);
-        obj_Feed_Form_SectB!!.put("FB5D_DES", Af_Ex_S2_Q5_q4_Text);
+        val objFeedFormSectb=JSONObject()
+
+        objFeedFormSectb.put("FB1", Ex_S2_Rdg1_radioButton_Text)
+        objFeedFormSectb.put("FB2", Ex_S2_Rdg2_radioButton_Text)
+        objFeedFormSectb.put("FB3", Ex_S2_Rdg3_radioButton_Text)
+        objFeedFormSectb.put("FB3_DES", Af_Ex_S2_Q3_Text)
+        objFeedFormSectb.put("FB4", Ex_S2_Rdg4_radioButton_Text)
+        objFeedFormSectb.put("FB5A", Ex_S2_Rdg5_Rdg5_q1_radioButton_Text)
+        objFeedFormSectb.put("FB5A_DES", Af_Ex_S2_Q5_q1_Text)
+        objFeedFormSectb.put("FB5B", Ex_S2_Rdg5_Rdg5_q2_radioButton_Text)
+        objFeedFormSectb.put("FB5B_DES", Af_Ex_S2_Q5_q2_Text)
+        objFeedFormSectb.put("FB5C", Ex_S2_Rdg5_Rdg5_q3_radioButton_Text)
+        objFeedFormSectb.put("FB5C_DES", Af_Ex_S2_Q5_q3_Text)
+        objFeedFormSectb.put("FB5D", Ex_S2_Rdg5_Rdg5_q4_radioButton_Text)
+        objFeedFormSectb.put("FB5D_DES", Af_Ex_S2_Q5_q4_Text)
 
         //Layer 3
-        val obj_Feed_Form_SectA=JSONObject()
-        obj_Feed_Form_SectA!!.put("FA1", Ex_S1_Rdg1_radioButton_Text);
-        obj_Feed_Form_SectA!!.put("FA2", Ex_S1_Rdg2_radioButton_Text);
-        obj_Feed_Form_SectA!!.put("FA3", Ex_S1_Rdg3_radioButton_Text);
-        obj_Feed_Form_SectA!!.put("FA4", Ex_S1_Rdg4_radioButton_Text);
-        obj_Feed_Form_SectA!!.put("FA5", Ex_S1_Rdg5_radioButton_Text);
+        val objFeedFormSecta=JSONObject()
+        objFeedFormSecta.put("FA1", Ex_S1_Rdg1_radioButton_Text)
+        objFeedFormSecta.put("FA2", Ex_S1_Rdg2_radioButton_Text)
+        objFeedFormSecta.put("FA3", Ex_S1_Rdg3_radioButton_Text)
+        objFeedFormSecta.put("FA4", Ex_S1_Rdg4_radioButton_Text)
+        objFeedFormSecta.put("FA5", Ex_S1_Rdg5_radioButton_Text)
         //Layer 2
-        val obj_formative=JSONObject()
-        obj_formative!!.put("FACULTY_TYPE", selected_spinner_FeedbackFaculty);
-        obj_formative!!.put("FEED_SUM_DATE", CurrentDate);
-        obj_formative!!.put("FOR_DESC", Af_Ex_S3_suggest_Text);
-        obj_formative!!.put("Feed_Form_SectA", obj_Feed_Form_SectA);
-        obj_formative!!.put("Feed_Form_SectB", obj_Feed_Form_SectB);
+        val objFormative=JSONObject()
+        objFormative.put("FACULTY_TYPE", selected_spinner_FeedbackFaculty)
+        objFormative.put("FEED_SUM_DATE", CurrentDate)
+        objFormative.put("FOR_DESC", Af_Ex_S3_suggest_Text)
+        objFormative.put("Feed_Form_SectA", objFeedFormSecta)
+        objFormative.put("Feed_Form_SectB", objFeedFormSectb)
 
         //Layer 1
         val rootObject=JSONObject()
-
-        rootObject!!.put("FEEDBACK_TYPE", "F")
-        rootObject!!.put("Course_ID", Course_ID)
-        rootObject!!.put("STUD_ID", Stud_ID)
-        rootObject!!.put("STUD_NAME", Stud_Name)
-        rootObject!!.put("Stud_Roll_No", Stud_Roll_No)
-        rootObject!!.put("COURSE", Course)
-        rootObject!!.put("INSTITUTE_NAME", Stud_Institute)
-        rootObject!!.put("Summative", "")
-        rootObject!!.put("Formative", obj_formative)
+        rootObject.put("FEEDBACK_TYPE", "F")
+        rootObject.put("COURSE_ID", Course_ID)
+        rootObject.put("STUD_ID", Stud_ID)
+        rootObject.put("STUD_NAME", Stud_Name)
+        rootObject.put("ROLL_NO", Stud_Roll_No)
+        rootObject.put("COURSE", Course)
+        rootObject.put("INSTITUTE_NAME", Stud_Institute)
+       // rootObject.put("Summative", "")
+        rootObject.put("Formative", objFormative)
 
         val dialog: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
         try {
