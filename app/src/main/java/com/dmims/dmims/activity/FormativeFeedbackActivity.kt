@@ -474,10 +474,6 @@ class FormativeFeedbackActivity : AppCompatActivity() {
 
                     "\n SecC_Suggest " + Af_Ex_S3_suggest_Text
 
-
-
-
-
         )
         //Layer 4
         val obj_Feed_Form_SectB=JSONObject()
