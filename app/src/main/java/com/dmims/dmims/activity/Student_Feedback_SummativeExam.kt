@@ -830,7 +830,7 @@ class Student_Feedback_SummativeExam : AppCompatActivity()
             dialog.setCancelable(false)
             dialog.show()
             //Dialog End
-            GenericPublicVariable.mServices.SubmitExamFeedback(rootObject.toString()).enqueue(object : Callback<APIResponse> {
+            GenericPublicVariable.mServices.SubmitExamFeedback(rootObject).enqueue(object : Callback<APIResponse> {
                 override fun onFailure(call: Call<APIResponse>, t: Throwable) {
                     Toast.makeText(this@Student_Feedback_SummativeExam, t.message, Toast.LENGTH_SHORT).show()
                 }
