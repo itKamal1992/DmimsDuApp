@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.dmims.dmims.R
+import com.dmims.dmims.activity.Common_Image_Viewer
+import com.dmims.dmims.activity.Common_PDF_Viewer
 import com.dmims.dmims.activity.StudNoticeData
 import com.dmims.dmims.common.SaveImageHelper
 import com.dmims.dmims.common.SaveImageHelpers
@@ -56,12 +58,34 @@ class NoticeAdapterCurrent(userlist: ArrayList<NoticeStudCurrent>, context: Cont
             itemView.setOnClickListener {
                     if (currenNotice!!.FILENAME.toString() == "FILENAME: -" || currenNotice!!.RESOU_FLAG.toString() == "ATTACHMENT STATUS: F") {
                         Toast.makeText(itemView.context, "NO Attachment for this notice", Toast.LENGTH_SHORT).show()
-                    } else {
-                    var intent: Intent = Intent(ctx, StudNoticeData::class.java)
-                    intent.putExtra(
-                        "urlimg", currenNotice!!.FILENAME
-                    )
+                    } else
+               {
+                // Code for JGP, PNG
+                if ((currenNotice!!.FILENAME.contains(".jpg",ignoreCase = true))||(currenNotice!!.FILENAME.contains(".png",ignoreCase = true)))
+                {
+                    var intent: Intent = Intent(ctx, Common_Image_Viewer::class.java)
+                    intent.putExtra("url", currenNotice!!.FILENAME)
+                    intent.putExtra("actionTitle", "Image Viewer")
                     ctx.startActivity(intent)
+                }
+                else //Code for PDF
+                    if (currenNotice!!.FILENAME.contains(".pdf",ignoreCase = true))
+                    {
+                        var intent: Intent = Intent(ctx, Common_PDF_Viewer::class.java)
+                        intent.putExtra("url", currenNotice!!.FILENAME)
+                        intent.putExtra("actionTitle", "PDF Viewer")
+                        ctx.startActivity(intent)
+                    }
+
+
+
+            }
+//                  else  {
+//                    var intent: Intent = Intent(ctx, StudNoticeData::class.java)
+//                    intent.putExtra(
+//                        "urlimg", currenNotice!!.FILENAME
+//                    )
+//                    ctx.startActivity(intent)
 //                        val dialog: AlertDialog = SpotsDialog.Builder().setContext(ctx).build()
 //                        dialog.show()
 //                        dialog.setMessage("Downloading ...")
@@ -91,7 +115,7 @@ class NoticeAdapterCurrent(userlist: ArrayList<NoticeStudCurrent>, context: Cont
 //                            )
 
 
-                    }
+//                    }
                 }
                 //
         }

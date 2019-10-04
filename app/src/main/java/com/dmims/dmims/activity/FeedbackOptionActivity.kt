@@ -5,14 +5,17 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import com.dmims.dmims.Generic.GenericUserFunction
 import com.dmims.dmims.R
 import com.dmims.dmims.model.FeedBackSchedule
 import com.dmims.dmims.model.FeedBackScheduleField
 import com.dmims.dmims.remote.ApiClientPhp
 import com.dmims.dmims.remote.PhpApiInterface
+import dmax.dialog.SpotsDialog
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -94,20 +97,33 @@ class FeedbackOptionActivity : AppCompatActivity() {
         }
 
     }
-    fun GetCurrentDate(date:String)
-    {
-        println("c"+current_date)
+    fun GetCurrentDate(date:String) {
+        val dialog: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
+        try {
 
-        var phpApiInterface: PhpApiInterface = ApiClientPhp.getClient().create(PhpApiInterface::class.java)
+            dialog.setMessage("Please Wait!!! \nwhile we are getting available feedback")
+            dialog.setCancelable(false)
+            dialog.show()
+
+
+        println("c" + current_date)
+
+        var phpApiInterface: PhpApiInterface =
+            ApiClientPhp.getClient().create(PhpApiInterface::class.java)
         var calldate: Call<FeedBackSchedule> = phpApiInterface.CurrentDateSubmit(date)
-        calldate.enqueue(object :Callback<FeedBackSchedule>{
+        calldate.enqueue(object : Callback<FeedBackSchedule> {
             override fun onFailure(call: Call<FeedBackSchedule>, t: Throwable) {
+                dialog.dismiss()
 
             }
 
-            override fun onResponse(call: Call<FeedBackSchedule>, response: Response<FeedBackSchedule>) {
+            override fun onResponse(
+                call: Call<FeedBackSchedule>,
+                response: Response<FeedBackSchedule>
+            ) {
+                dialog.dismiss()
                 val result: List<FeedBackScheduleField>? = response.body()!!.Data
-                println("Response1 >> "+result!![0].id)
+                println("Response1 >> " + result!![0].id)
                 if (result!![0].id == "error") {
                     Toast.makeText(
                         this@FeedbackOptionActivity,
@@ -123,43 +139,17 @@ class FeedbackOptionActivity : AppCompatActivity() {
                         feedbacdsates.add(result!![i].START_DATE)
                         feedbacedates.add(result!![i].END_DATE)
                     }
-
-
-
-
                 }
-
-
-
-
-
-//              println("Response2 >> "+result!!.Data)
-
-//              var users = java.util.ArrayList<FeedBackDataC>()
-
-//              if (response.isSuccessful) {
-//
-//                  InstituteList =
-//                  if (InstituteList!![0].ID == "error") {
-//                      Toast.makeText(
-//                          this@NewUnaRegistration,
-//                          "No Data in Department Master.",
-//                          Toast.LENGTH_SHORT
-//                      ).show()
-//                  } else {
-//                      users.clear()
-//                      var listSize = InstituteList!!.size
-//                      for (i in 0..listSize - 1) {
-//                          CourseID = InstituteList!![i].COURSE_ID
-//
-//                      }
-//
-//
-//                  }
-//              }
-
-
             }
         })
+    }
+        catch (ex : Exception)
+        {
+            dialog.dismiss()
+            ex.printStackTrace()
+            GenericUserFunction.showApiError(
+                applicationContext,
+                "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time.")
+        }
     }
 }

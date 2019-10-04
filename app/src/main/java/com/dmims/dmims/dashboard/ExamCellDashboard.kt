@@ -82,10 +82,6 @@ class ExamCellDashboard : AppCompatActivity() {
         txt_Mobile.text="MB No: "+mypref.getString("key_editmob", null)
         enrollNo.text = "ID: "+id_admin
 
-
-
-
-
         //Set Event
         setNoticeEvent(noticeboardgrid)
         setHealerEvent(helpdiloadboad)

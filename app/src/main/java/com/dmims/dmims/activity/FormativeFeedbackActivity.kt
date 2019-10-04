@@ -250,7 +250,7 @@ class FormativeFeedbackActivity : AppCompatActivity() {
                 Course_ID = mypref.getString("course_id", null)
                 Stud_ID = mypref.getString("Stud_id_key", null)
                 Stud_Name = mypref.getString("key_drawer_title", null)
-                Stud_Roll_No = mypref.getString("key_enroll_no", null)
+                Stud_Roll_No = mypref.getString("roll_no", null)
                 Stud_Institute = mypref.getString("key_institute_stud", null)
 
                 var CustDialog = Dialog(this)
@@ -584,10 +584,10 @@ class FormativeFeedbackActivity : AppCompatActivity() {
         rootObject!!.put("COURSE_ID", Course_ID)
         rootObject!!.put("STUD_ID", Stud_ID)
         rootObject!!.put("STUD_NAME", Stud_Name)
-        rootObject!!.put("ROLL_NO", Stud_Roll_No)
+        rootObject!!.put("ROLL_NO", Stud_Roll_No)//.replace("-", " ")
         rootObject!!.put("COURSE", Course)
         rootObject!!.put("INSTITUTE_NAME", Stud_Institute)
-        rootObject!!.put("Summative", objSummative)
+      //  rootObject!!.put("Summative", objSummative)
         rootObject!!.put("Formative", obj_formative)
 
         val dialog: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
@@ -606,7 +606,7 @@ class FormativeFeedbackActivity : AppCompatActivity() {
                 override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
                     dialog.dismiss()
                     val result: APIResponse? = response.body()
-//                    println("Result >>> "+result!!.Responsecode)
+                    println("Result >>> "+result!!.Responsecode)
 
 //                                        Toast.makeText(this@InstituteNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
 //                                            .show()

@@ -1,5 +1,6 @@
 package com.dmims.dmims.activity
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -59,7 +60,7 @@ class EmergencyContact : AppCompatActivity() {
                                 )
                             }
                             progressBar.visibility = View.INVISIBLE
-                            val adapter = EmergencyContactAdapter(users1)
+                            val adapter = EmergencyContactAdapter(this@EmergencyContact,users1)
                             recyclerView.adapter = adapter
                         } else {
                             progressBar.visibility = View.INVISIBLE

@@ -1,20 +1,32 @@
 package com.dmims.dmims.adapter
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.dmims.dmims.Generic.GenericUserFunction
 import com.dmims.dmims.dataclass.EmUser
 import com.dmims.dmims.R
+import kotlinx.android.synthetic.main.list_layout.view.*
+import java.lang.Exception
 
-class EmergencyContactAdapter(val userlist: ArrayList<EmUser>) :
+class EmergencyContactAdapter(context: Context,val userlist: ArrayList<EmUser>) :
     RecyclerView.Adapter<EmergencyContactAdapter.ViewHolder>() {
+    private var ctx: Context? = null
+    private var emUser: List<EmUser> = userlist
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ViewHolder {
         val v = LayoutInflater.from(p0.context).inflate(R.layout.list_layout, p0, false)
-        return ViewHolder(v)
+        return ViewHolder(v, ctx!!, emUser)
+    }
+    init {
+        this.emUser = userlist
+        this.ctx = context
     }
 
     override fun getItemCount(): Int {
@@ -22,19 +34,47 @@ class EmergencyContactAdapter(val userlist: ArrayList<EmUser>) :
     }
 
     override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
-        val emUser: EmUser = userlist[p1]
-        p0.textPurpose?.text = emUser.purpose
-        p0.textName?.text = emUser.name
-        p0.textContact?.text = emUser.contact
-        p0.imageViews?.setImageResource(emUser.image)
+
+        val cc = userlist[p1]
+        p0.setData(cc, p1)
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View, ctx: Context, contacts: List<EmUser>) : RecyclerView.ViewHolder(itemView) {
 
-        val textContact = itemView.findViewById<TextView>(R.id.txtcontact)
-        val textName = itemView.findViewById<TextView>(R.id.txtname)
-        val textPurpose = itemView.findViewById<TextView>(R.id.txtpurpose)
-        val imageViews = itemView.findViewById<ImageView>(R.id.camera_image)
+
+        var emUser: EmUser? = null
+        var currentPosition: Int = 0
+
+init {
+    itemView.setOnClickListener {
+try
+        {
+            // Launch the Phone app's dialer with a phone
+            // number to dial a call.
+            // Launch the Phone app's dialer with a phone
+            // number to dial a call.
+            var u:Uri?=null
+            val intent = Intent(Intent.ACTION_DIAL)
+            intent.data = Uri.parse("tel:" + emUser!!.contact)
+            ctx!!.startActivity(intent)
+        }
+        catch (ex:Exception ) {
+            GenericUserFunction.DisplayToast(ctx,ex.localizedMessage)
+        }
+    }
+}
+
+
+        fun setData(cc: EmUser?, position: Int) {
+            itemView.txtpurpose?.text="Submited by : "+cc!!.purpose
+            itemView.txtname?.text="Submited by : "+cc!!.name
+            itemView.txtcontact?.text="Submited by : "+cc!!.contact
+            itemView.camera_image?.setImageResource(cc!!.image)
+            this.emUser = cc
+            this.currentPosition = position
+
+        }
+
     }
 
 }
