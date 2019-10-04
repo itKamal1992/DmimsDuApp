@@ -4,19 +4,16 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.*
 import com.dmims.dmims.Generic.GenericPublicVariable
 import com.dmims.dmims.Generic.GenericUserFunction
 import com.dmims.dmims.R
-import com.dmims.dmims.dataclass.FeedBackDataC
 import com.dmims.dmims.model.APIResponse
 import com.dmims.dmims.model.DeptListStudData
 import com.dmims.dmims.model.DeptListStudDataRef
-import com.dmims.dmims.model.feedback_Formative
-
 import com.dmims.dmims.remote.ApiClientPhp
 import com.dmims.dmims.remote.PhpApiInterface
 import dmax.dialog.SpotsDialog
@@ -24,7 +21,6 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -234,14 +230,15 @@ class FormativeFeedbackActivity : AppCompatActivity() {
             resources.getStringArray(R.array.FeedbackFaculty)
         )
         spinner_FeedbackFaculty.adapter = Ex_FacultyAdap
-        spinner_FeedbackFaculty.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                selected_spinner_FeedbackFaculty = p0!!.getItemAtPosition(p2) as String
-            }
+        spinner_FeedbackFaculty.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    selected_spinner_FeedbackFaculty = p0!!.getItemAtPosition(p2) as String
+                }
 
-            override fun onNothingSelected(p0: AdapterView<*>?) {
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                }
             }
-        }
 
 
         btn_Af_Ex_Submit.setOnClickListener {
@@ -256,9 +253,11 @@ class FormativeFeedbackActivity : AppCompatActivity() {
 
                 var CustDialog = Dialog(this)
                 CustDialog.setContentView(R.layout.dialog_question_yes_no_custom_popup)
-                var ivNegClose1: ImageView = CustDialog.findViewById(R.id.ivCustomDialogNegClose) as ImageView
+                var ivNegClose1: ImageView =
+                    CustDialog.findViewById(R.id.ivCustomDialogNegClose) as ImageView
                 var btnOk: Button = CustDialog.findViewById(R.id.btnCustomDialogAccept) as Button
-                var btnCustomDialogCancel: Button = CustDialog.findViewById(R.id.btnCustomDialogCancel) as Button
+                var btnCustomDialogCancel: Button =
+                    CustDialog.findViewById(R.id.btnCustomDialogCancel) as Button
                 var tvMsg: TextView = CustDialog.findViewById(R.id.tvMsgCustomDialog) as TextView
                 tvMsg.text = "Do you want to Submit your Feedback"
 //    GenericPublicVariable.CustDialog.setCancelable(false)
@@ -266,19 +265,27 @@ class FormativeFeedbackActivity : AppCompatActivity() {
                     var phpApiInterface: PhpApiInterface = ApiClientPhp.getClient().create(
                         PhpApiInterface::class.java
                     )
-                    var call3: Call<DeptListStudData> = phpApiInterface.InstDetailsStudYear(Course_ID)
+                    var call3: Call<DeptListStudData> =
+                        phpApiInterface.InstDetailsStudYear(Course_ID)
                     call3.enqueue(object : Callback<DeptListStudData> {
                         override fun onFailure(call: Call<DeptListStudData>, t: Throwable) {
-                            Toast.makeText(this@FormativeFeedbackActivity, t.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@FormativeFeedbackActivity,
+                                t.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
 
-                        override fun onResponse(call: Call<DeptListStudData>, response: Response<DeptListStudData>) {
+                        override fun onResponse(
+                            call: Call<DeptListStudData>,
+                            response: Response<DeptListStudData>
+                        ) {
 
-                            var users =ArrayList<DeptListStudDataRef>()
+                            var users = ArrayList<DeptListStudDataRef>()
                             if (response.isSuccessful) {
                                 users.clear()
                                 users = response.body()!!.Data!!
-                                if (users!!.size > 0){
+                                if (users!!.size > 0) {
                                     Institute = users!![0].COURSE_INSTITUTE
                                     Course = users!![0].COURSE_NAME
                                     Update()
@@ -368,7 +375,10 @@ class FormativeFeedbackActivity : AppCompatActivity() {
             Ex_S2_Rdg5_Rdg5_q1_radioButton_Text = Ex_S2_Rdg5_q1_radioButton.text.toString()
 
             if (Ex_S2_Rdg5_q1_radioButton.text.equals("Yes")) {
-                if ((Af_Ex_S2_Q5_q1_answer.text.length > 0) || (!Af_Ex_S2_Q5_q1_answer.text.equals(null))) {
+                if ((Af_Ex_S2_Q5_q1_answer.text.length > 0) || (!Af_Ex_S2_Q5_q1_answer.text.equals(
+                        null
+                    ))
+                ) {
                     Af_Ex_S2_Q5_q1_Text = Af_Ex_S2_Q5_q1_answer.text.toString()
 
                 } else {
@@ -383,7 +393,10 @@ class FormativeFeedbackActivity : AppCompatActivity() {
             Ex_S2_Rdg5_Rdg5_q2_radioButton_Text = Ex_S2_Rdg5_q2_radioButton.text.toString()
             if (Ex_S2_Rdg5_q2_radioButton.text.equals("Yes")) {
 
-                if ((Af_Ex_S2_Q5_q2_answer.text.length > 0) || (!Af_Ex_S2_Q5_q2_answer.text.equals(null))) {
+                if ((Af_Ex_S2_Q5_q2_answer.text.length > 0) || (!Af_Ex_S2_Q5_q2_answer.text.equals(
+                        null
+                    ))
+                ) {
                     Af_Ex_S2_Q5_q2_Text = Af_Ex_S2_Q5_q2_answer.text.toString()
 
                 } else {
@@ -398,7 +411,10 @@ class FormativeFeedbackActivity : AppCompatActivity() {
             Ex_S2_Rdg5_Rdg5_q3_radioButton_Text = Ex_S2_Rdg5_q3_radioButton.text.toString()
             if (Ex_S2_Rdg5_q3_radioButton.text.equals("Yes")) {
 
-                if ((Af_Ex_S2_Q5_q3_answer.text.length > 0) || (!Af_Ex_S2_Q5_q3_answer.text.equals(null))) {
+                if ((Af_Ex_S2_Q5_q3_answer.text.length > 0) || (!Af_Ex_S2_Q5_q3_answer.text.equals(
+                        null
+                    ))
+                ) {
                     Af_Ex_S2_Q5_q3_Text = Af_Ex_S2_Q5_q3_answer.text.toString()
 
                 } else {
@@ -414,7 +430,10 @@ class FormativeFeedbackActivity : AppCompatActivity() {
             Ex_S2_Rdg5_Rdg5_q4_radioButton_Text = Ex_S2_Rdg5_q4_radioButton.text.toString()
             if (Ex_S2_Rdg5_q4_radioButton.text.equals("Yes")) {
 
-                if ((Af_Ex_S2_Q5_q4_answer.text.length > 0) || (!Af_Ex_S2_Q5_q4_answer.text.equals(null))) {
+                if ((Af_Ex_S2_Q5_q4_answer.text.length > 0) || (!Af_Ex_S2_Q5_q4_answer.text.equals(
+                        null
+                    ))
+                ) {
                     Af_Ex_S2_Q5_q4_Text = Af_Ex_S2_Q5_q4_answer.text.toString()
 
                 } else {
@@ -448,8 +467,8 @@ class FormativeFeedbackActivity : AppCompatActivity() {
 
 
         println(
-            "FeedbackType FormativeFeedback"+
-                    "\n Faculty "+selected_spinner_FeedbackFaculty+
+            "FeedbackType FormativeFeedback" +
+                    "\n Faculty " + selected_spinner_FeedbackFaculty +
                     "\n Course_ID " + Course_ID +
                     "\n Stud_ID " + Stud_ID +
                     "\n Stud_Name " + Stud_Name +
@@ -481,7 +500,7 @@ class FormativeFeedbackActivity : AppCompatActivity() {
         )
 
         //Layer 9
-        val objFeed_Sum_SectD=JSONObject()
+        val objFeed_Sum_SectD = JSONObject()
         objFeed_Sum_SectD.put("SD1", "")
         objFeed_Sum_SectD.put("SD1_DES", "")
         objFeed_Sum_SectD.put("SD2", "")
@@ -497,7 +516,7 @@ class FormativeFeedbackActivity : AppCompatActivity() {
 
 
         //Layer 8
-        val objFeed_Sum_SectC=JSONObject()
+        val objFeed_Sum_SectC = JSONObject()
         objFeed_Sum_SectC.put("SC1", "")
         objFeed_Sum_SectC.put("SC1_DES", "")
         objFeed_Sum_SectC.put("SC2", "")
@@ -509,7 +528,7 @@ class FormativeFeedbackActivity : AppCompatActivity() {
 
 
         //Layer 7
-        val objFeed_Sum_SectB=JSONObject()
+        val objFeed_Sum_SectB = JSONObject()
         objFeed_Sum_SectB.put("SB1", "")
         objFeed_Sum_SectB.put("SB1_DES", "")
         objFeed_Sum_SectB.put("SB2", "")
@@ -523,7 +542,7 @@ class FormativeFeedbackActivity : AppCompatActivity() {
 
 
         //Layer 6 for Summative Json Objects
-        val objFeed_Sum_SectA=JSONObject()
+        val objFeed_Sum_SectA = JSONObject()
         objFeed_Sum_SectA.put("SA1", "")
         objFeed_Sum_SectA.put("SA1_DES", "")
         objFeed_Sum_SectA.put("SA2", "")
@@ -534,7 +553,7 @@ class FormativeFeedbackActivity : AppCompatActivity() {
         objFeed_Sum_SectA.put("SA4_DES", "")
 
         //Layer 5 for Summative Json Objects
-        val objSummative=JSONObject()
+        val objSummative = JSONObject()
         objSummative.put("FACULTY_TYPE", "")
         objSummative.put("EXAM_TYPE", "")
         objSummative.put("EXAM_YEAR", "")
@@ -548,38 +567,38 @@ class FormativeFeedbackActivity : AppCompatActivity() {
 
 
         //Layer 4
-        val obj_Feed_Form_SectB=JSONObject()
-        obj_Feed_Form_SectB.put("FB1", Ex_S2_Rdg1_radioButton_Text) 
-        obj_Feed_Form_SectB.put("FB2", Ex_S2_Rdg2_radioButton_Text) 
-        obj_Feed_Form_SectB.put("FB3", Ex_S2_Rdg3_radioButton_Text) 
-        obj_Feed_Form_SectB.put("FB3_DES", Af_Ex_S2_Q3_Text) 
-        obj_Feed_Form_SectB.put("FB4", Ex_S2_Rdg4_radioButton_Text) 
-        obj_Feed_Form_SectB.put("FB5A", Ex_S2_Rdg5_Rdg5_q1_radioButton_Text) 
-        obj_Feed_Form_SectB.put("FB5A_DES", Af_Ex_S2_Q5_q1_Text) 
-        obj_Feed_Form_SectB.put("FB5B", Ex_S2_Rdg5_Rdg5_q2_radioButton_Text) 
-        obj_Feed_Form_SectB.put("FB5B_DES", Af_Ex_S2_Q5_q2_Text) 
-        obj_Feed_Form_SectB.put("FB5C", Ex_S2_Rdg5_Rdg5_q3_radioButton_Text) 
-        obj_Feed_Form_SectB.put("FB5C_DES", Af_Ex_S2_Q5_q3_Text) 
-        obj_Feed_Form_SectB.put("FB5D", Ex_S2_Rdg5_Rdg5_q4_radioButton_Text) 
-        obj_Feed_Form_SectB.put("FB5D_DES", Af_Ex_S2_Q5_q4_Text) 
+        val obj_Feed_Form_SectB = JSONObject()
+        obj_Feed_Form_SectB.put("FB1", Ex_S2_Rdg1_radioButton_Text)
+        obj_Feed_Form_SectB.put("FB2", Ex_S2_Rdg2_radioButton_Text)
+        obj_Feed_Form_SectB.put("FB3", Ex_S2_Rdg3_radioButton_Text)
+        obj_Feed_Form_SectB.put("FB3_DES", Af_Ex_S2_Q3_Text)
+        obj_Feed_Form_SectB.put("FB4", Ex_S2_Rdg4_radioButton_Text)
+        obj_Feed_Form_SectB.put("FB5A", Ex_S2_Rdg5_Rdg5_q1_radioButton_Text)
+        obj_Feed_Form_SectB.put("FB5A_DES", Af_Ex_S2_Q5_q1_Text)
+        obj_Feed_Form_SectB.put("FB5B", Ex_S2_Rdg5_Rdg5_q2_radioButton_Text)
+        obj_Feed_Form_SectB.put("FB5B_DES", Af_Ex_S2_Q5_q2_Text)
+        obj_Feed_Form_SectB.put("FB5C", Ex_S2_Rdg5_Rdg5_q3_radioButton_Text)
+        obj_Feed_Form_SectB.put("FB5C_DES", Af_Ex_S2_Q5_q3_Text)
+        obj_Feed_Form_SectB.put("FB5D", Ex_S2_Rdg5_Rdg5_q4_radioButton_Text)
+        obj_Feed_Form_SectB.put("FB5D_DES", Af_Ex_S2_Q5_q4_Text)
 
         //Layer 3
-        val obj_Feed_Form_SectA=JSONObject()
-        obj_Feed_Form_SectA.put("FA1", Ex_S1_Rdg1_radioButton_Text) 
-        obj_Feed_Form_SectA.put("FA2", Ex_S1_Rdg2_radioButton_Text) 
-        obj_Feed_Form_SectA.put("FA3", Ex_S1_Rdg3_radioButton_Text) 
-        obj_Feed_Form_SectA.put("FA4", Ex_S1_Rdg4_radioButton_Text) 
-        obj_Feed_Form_SectA.put("FA5", Ex_S1_Rdg5_radioButton_Text) 
+        val obj_Feed_Form_SectA = JSONObject()
+        obj_Feed_Form_SectA.put("FA1", Ex_S1_Rdg1_radioButton_Text)
+        obj_Feed_Form_SectA.put("FA2", Ex_S1_Rdg2_radioButton_Text)
+        obj_Feed_Form_SectA.put("FA3", Ex_S1_Rdg3_radioButton_Text)
+        obj_Feed_Form_SectA.put("FA4", Ex_S1_Rdg4_radioButton_Text)
+        obj_Feed_Form_SectA.put("FA5", Ex_S1_Rdg5_radioButton_Text)
         //Layer 2
-        val obj_formative=JSONObject()
-        obj_formative.put("FACULTY_TYPE", selected_spinner_FeedbackFaculty) 
-        obj_formative.put("FEED_SUM_DATE", CurrentDate) 
-        obj_formative.put("FOR_DESC", Af_Ex_S3_suggest_Text) 
-        obj_formative.put("Feed_Form_SectA", obj_Feed_Form_SectA) 
-        obj_formative.put("Feed_Form_SectB", obj_Feed_Form_SectB) 
+        val obj_formative = JSONObject()
+        obj_formative.put("FACULTY_TYPE", selected_spinner_FeedbackFaculty)
+        obj_formative.put("FEED_SUM_DATE", CurrentDate)
+        obj_formative.put("FOR_DESC", Af_Ex_S3_suggest_Text)
+        obj_formative.put("Feed_Form_SectA", obj_Feed_Form_SectA)
+        obj_formative.put("Feed_Form_SectB", obj_Feed_Form_SectB)
 
         //Layer 1
-        val rootObject=JSONObject()
+        val rootObject = JSONObject()
 
         rootObject.put("FEEDBACK_TYPE", "Formative")
         rootObject.put("COURSE_ID", Course_ID)
@@ -588,38 +607,47 @@ class FormativeFeedbackActivity : AppCompatActivity() {
         rootObject.put("ROLL_NO", Stud_Roll_No)//.replace("-", " ")
         rootObject.put("COURSE", Course)
         rootObject.put("INSTITUTE_NAME", Stud_Institute)
-      //  rootObject.put("Summative", objSummative)
+        //  rootObject.put("Summative", objSummative)
         rootObject.put("Formative", obj_formative)
-
 
 
         val dialog: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
         try {
-            println("rootObject >>> "+ rootObject)
+            println("rootObject >>> " + rootObject)
 
             dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
             dialog.setCancelable(false)
             dialog.show()
             //Dialog End
-            GenericPublicVariable.mServices.SubmitExamFeedback(rootObject).enqueue(object : Callback<APIResponse> {
-                override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                    Toast.makeText(this@FormativeFeedbackActivity, t.message, Toast.LENGTH_SHORT).show()
-                }
+            GenericPublicVariable.mServices.SubmitExamFeedback(rootObject)
+                .enqueue(object : Callback<APIResponse> {
+                    override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                        Toast.makeText(
+                            this@FormativeFeedbackActivity,
+                            t.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
-                override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
-                    dialog.dismiss()
-                    val result: APIResponse? = response.body()
-                    println("Result >>> "+result!!.Responsecode)
+                    override fun onResponse(
+                        call: Call<APIResponse>,
+                        response: Response<APIResponse>
+                    ) {
+                        dialog.dismiss()
+                        val result: APIResponse? = response.body()
+                        println("Result >>> " + result!!.Responsecode)
 
 //                                        Toast.makeText(this@InstituteNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
 //                                            .show()
-                    GenericUserFunction.showPositivePopUp(this@FormativeFeedbackActivity, "Formative Feedback Submited Successfully")
-                }
-            })
+                        GenericUserFunction.showPositivePopUp(
+                            this@FormativeFeedbackActivity,
+                            "Formative Feedback Submited Successfully"
+                        )
+                    }
+                })
 
 
-        }
-        catch (ex:Exception){
+        } catch (ex: Exception) {
             dialog.dismiss()
 
             ex.printStackTrace()

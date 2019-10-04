@@ -386,7 +386,8 @@ try{
                 override fun onResponse(call: Call<ImageClass>, response: Response<ImageClass>) {
                     var imageClass: ImageClass? = response.body()
                     Toast.makeText(this@FacultyNoticeBoard, imageClass!!.getResponse(), Toast.LENGTH_SHORT)
-                    filename = "http://avbrh.gearhostpreview.com/imageupload/" + imageClass.getuploadPath()
+                    //filename = "http://avbrh.gearhostpreview.com/imageupload/" + imageClass.getuploadPath()
+                    filename = "http://dmimsdu.in/web/imageupload/" + imageClass.getuploadPath()
                 }
 
             })

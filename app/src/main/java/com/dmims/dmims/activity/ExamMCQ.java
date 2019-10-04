@@ -28,7 +28,8 @@ public class ExamMCQ extends AppCompatActivity{
 
     Uri uri;
 
-    public static final String PDF_UPLOAD_HTTP_URL = "http://avbrh.gearhostpreview.com//pdfupload/upload.php";
+    public static final String PDF_UPLOAD_HTTP_URL = "http://dmimsdu.in/web/pdfupload/upload.php";
+    //public static final String PDF_UPLOAD_HTTP_URL = "http://avbrh.gearhostpreview.com//pdfupload/upload.php";
 
     public int PDF_REQ_CODE = 1;
 

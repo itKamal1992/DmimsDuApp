@@ -16,7 +16,8 @@ public interface Api {
     //the base URL for our API
     //make sure you are not using localhost
     //find the ip usinc ipconfig command
-    String BASE_URL = "http://avbrh.gearhostpreview.com/imageupload/";
+    //String BASE_URL = "http://avbrh.gearhostpreview.com/imageupload/";
+    String BASE_URL = "http://dmimsdu.in/web/imageupload/";
 
     //this is our multipart request
     //we have two parameters on is name and other one is description

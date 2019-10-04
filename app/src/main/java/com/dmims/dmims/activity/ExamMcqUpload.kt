@@ -608,7 +608,8 @@ class ExamMcqUpload : AppCompatActivity() {
 
     companion object {
 
-        val PDF_UPLOAD_HTTP_URL = "http://avbrh.gearhostpreview.com/pdfupload/upload.php"
+        //val PDF_UPLOAD_HTTP_URL = "http://avbrh.gearhostpreview.com/pdfupload/upload.php"
+        val PDF_UPLOAD_HTTP_URL = "http://dmimsdu.in/web/pdfupload/upload.php"
     }
 
     fun clickFromDataPicker(view: View) {

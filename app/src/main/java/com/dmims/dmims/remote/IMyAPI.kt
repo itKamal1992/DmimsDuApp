@@ -3,10 +3,7 @@ package com.dmims.dmims.remote
 import com.dmims.dmims.model.APIResponse
 import org.json.JSONObject
 import retrofit2.Call
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.*
 
 
 interface IMyAPI {
@@ -106,7 +103,7 @@ interface IMyAPI {
 
     @FormUrlEncoded
     @POST("Feedback/Feedback_Form_Summ")
-    fun SubmitExamFeedback(@Field("JsonRequest") JsonRequest: JSONObject): Call<APIResponse>
+    fun SubmitExamFeedback(@Body JsonRequest: JSONObject): Call<APIResponse>
 //    fun SubmitExamFeedback(@Field("ID") ID: String,
 //                           @Field("FEEDBACK_TYPE")FEEDBACK_TYPE:String
 //                           , @Field("COURSE_ID")COURSE_ID :String
