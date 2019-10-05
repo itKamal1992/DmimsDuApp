@@ -9,6 +9,7 @@
     android:layout_marginRight="@dimen/layout_marginRight_5dp">
 
         <android.support.v7.widget.CardView
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#eb3434"
@@ -16,7 +17,6 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <android.support.constraint.ConstraintLayout
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"

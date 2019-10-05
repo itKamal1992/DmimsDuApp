@@ -30,6 +30,8 @@ import com.dmims.dmims.remote.IMyAPI
 import com.dmims.dmims.remote.PhpApiInterface
 import com.google.gson.GsonBuilder
 import dmax.dialog.SpotsDialog
+import kotlinx.android.synthetic.main.content_uploadnoticetest.*
+import kotlinx.android.synthetic.main.dialog_image_yes_no_custom_popup.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -95,6 +97,11 @@ class InstituteNoticeBoard : AppCompatActivity() {
     private lateinit var roleadmin: String
 
     private val REQUEST_GALLERY_CODE = 111
+
+    var extras: Bundle? = null
+     var REQUEST_CODE :Int = 0
+      lateinit var fileUri:Uri
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_institute_notice_board)
@@ -372,12 +379,44 @@ class InstituteNoticeBoard : AppCompatActivity() {
         }
 
         btnPickImage.setOnClickListener {
-            //            val intent = Intent(applicationContext, ImageUpload::class.java)
-//            startActivityForResult(intent, 1)
 
-            val i = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            println("path >> " + i.data)
-            startActivityForResult(i, 100)
+             var CustDialog = Dialog(this)
+            CustDialog.setContentView(R.layout.dialog_select_uploadtype_custom_popup)
+            var ivNegClose1: ImageView = CustDialog.findViewById(R.id.cross_image) as ImageView
+            var btnCamera: ImageButton = CustDialog.findViewById(R.id.btnCamera) as ImageButton
+            var btnGallary: ImageButton = CustDialog.findViewById(R.id.btnGalary) as ImageButton
+            var btnpdf: ImageButton = CustDialog.findViewById(R.id.btnPdf) as ImageButton
+
+//    GenericPublicVariable.CustDialog.setCancelable(false)
+            ivNegClose1.setOnClickListener {
+                CustDialog.dismiss()
+
+            }
+            btnCamera.setOnClickListener {
+
+
+                val intent=Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (intent.resolveActivity(packageManager)!=null)
+                {
+                    startActivityForResult(intent,100)
+                }
+
+
+            }
+            btnGallary.setOnClickListener {
+
+                pickImage()
+
+            }
+            btnpdf.setOnClickListener {
+                REQUEST_CODE=200
+                val intent=Intent(Intent.ACTION_GET_CONTENT)
+                intent.setType("*/*");
+                startActivityForResult(intent, 200);
+
+            }
+//            CustDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            CustDialog.show()
         }
 
         btnPubNotice.setOnClickListener {
@@ -386,6 +425,12 @@ class InstituteNoticeBoard : AppCompatActivity() {
 
     }
 
+    fun pickImage(){
+        REQUEST_CODE=100
+        val i = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        println("path >> " + i.data)
+        startActivityForResult(i, 101)
+    }
     fun noticedateclick(view: View) {
         println(view)
         val c = Calendar.getInstance()
@@ -703,7 +748,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
     //new one
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
+        if (requestCode == 101 && resultCode == RESULT_OK && data != null) {
             //the image URI
             selectedImage = data.getData()
             var bitmap: Bitmap? = getThumbnail(selectedImage!!)
@@ -720,10 +765,11 @@ class InstituteNoticeBoard : AppCompatActivity() {
                 image.setImageBitmap(bitmap)
 
                 tvMsg.text = "Do you want to Submit Selected Image?"
-//    GenericPublicVariable.CustDialog.setCancelable(false)
+                    //    GenericPublicVariable.CustDialog.setCancelable(false)
                 btnOk.setOnClickListener {
                     CustDialog.dismiss()
                     confirmStatus = "T"
+                    finish()
                 }
                 btnCustomDialogCancel.setOnClickListener {
                     CustDialog.dismiss()
@@ -738,6 +784,58 @@ class InstituteNoticeBoard : AppCompatActivity() {
 
 //                uploadFile(selectedImage, "My Image")
             }
+        }
+        else if (requestCode==100 && resultCode== Activity.RESULT_OK && data != null)
+        {
+            extras= data?.extras!!
+//            if (extras.toString().equals("null"))
+//            {
+//            }
+//            else{
+            selectedImage = extras!!.get("data") as Uri?
+               //val bitmap= extras!!.get("data") as Bitmap
+                var bitmap: Bitmap? = getThumbnail(selectedImage!!)
+                println("bitmap here "+bitmap)
+                if (selectedImage != null) {
+                    println("Selected Image >>> " + selectedImage)
+                    var CustDialog = Dialog(this)
+                    CustDialog.setContentView(R.layout.dialog_image_yes_no_custom_popup)
+                    var ivNegClose1: ImageView =
+                        CustDialog.findViewById(R.id.ivCustomDialogNegClose) as ImageView
+                    var btnOk: Button =
+                        CustDialog.findViewById(R.id.btnCustomDialogAccept) as Button
+                    var btnCustomDialogCancel: Button =
+                        CustDialog.findViewById(R.id.btnCustomDialogCancel) as Button
+                    var tvMsg: TextView =
+                        CustDialog.findViewById(R.id.tvMsgCustomDialog) as TextView
+                    var image: ImageView = CustDialog.findViewById(R.id.dialog_image) as ImageView
+                    image.setImageBitmap(bitmap)
+
+                    tvMsg.text = "Do you want to Submit Selected Image?"
+                    //    GenericPublicVariable.CustDialog.setCancelable(false)
+                    btnOk.setOnClickListener {
+                        CustDialog.dismiss()
+                        confirmStatus = "T"
+                        finish()
+                    }
+                    btnCustomDialogCancel.setOnClickListener {
+                        CustDialog.dismiss()
+                        confirmStatus = "F"
+                    }
+                    ivNegClose1.setOnClickListener {
+                        CustDialog.dismiss()
+                        confirmStatus = "F"
+                    }
+                    CustDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    CustDialog.show()
+
+                }
+        }else if (requestCode==200 && resultCode== Activity.RESULT_OK)
+        {
+            fileUri= data!!.data
+            println("file uri here "+fileUri)
+            extras= data?.extras!!
+
         }
 
     }
