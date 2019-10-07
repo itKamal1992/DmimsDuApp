@@ -1,3 +1,4 @@
+/*@Created By Umesh*/
 package com.dmims.dmims.activity
 
 import android.app.Dialog
@@ -615,11 +616,12 @@ class FormativeFeedbackActivity : AppCompatActivity() {
         try {
             println("rootObject >>> " + rootObject)
 
+
             dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
             dialog.setCancelable(false)
             dialog.show()
             //Dialog End
-            GenericPublicVariable.mServices.SubmitExamFeedback(rootObject)
+            GenericPublicVariable.mServices.SubmitExamFeedback(rootObject.toString())
                 .enqueue(object : Callback<APIResponse> {
                     override fun onFailure(call: Call<APIResponse>, t: Throwable) {
                         Toast.makeText(

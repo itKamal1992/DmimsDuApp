@@ -15,6 +15,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.content.CursorLoader
 import android.support.v7.app.AppCompatActivity
+import android.util.DisplayMetrics
 import android.view.View
 import android.widget.*
 import com.dmims.dmims.Generic.GenericUserFunction
@@ -39,6 +40,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -89,7 +91,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
     private lateinit var edit_notice_desc: TextView
 
     var RESOU_FLAG: String = "F"
-    var Institute_Name: String?=null
+    var Institute_Name: String? = null
 
     var cal = Calendar.getInstance()
     var listsinstz: Int = 0
@@ -99,8 +101,8 @@ class InstituteNoticeBoard : AppCompatActivity() {
     private val REQUEST_GALLERY_CODE = 111
 
     var extras: Bundle? = null
-     var REQUEST_CODE :Int = 0
-      lateinit var fileUri:Uri
+    var REQUEST_CODE: Int = 0
+    lateinit var fileUri: Uri
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,6 +130,14 @@ class InstituteNoticeBoard : AppCompatActivity() {
         val myFormat = "dd-MM-yyyy" // mention the format you need
         val sdf = SimpleDateFormat(myFormat, Locale.US)
         editNoticeDate.text = sdf.format(cal.time).toString()
+
+
+//        val displayMetrics = DisplayMetrics()
+//        windowManager.defaultDisplay.getMetrics(displayMetrics)
+//
+//        var width = displayMetrics.widthPixels
+//        var height = displayMetrics.heightPixels
+//        GenericUserFunction.showOopsError(this,"Width ="+width+"\nHeight ="+height)
 
         //Spinner_1
         var noticetypeAdap: ArrayAdapter<String> =
@@ -177,13 +187,21 @@ class InstituteNoticeBoard : AppCompatActivity() {
             mServices.GetInstituteData()
                 .enqueue(object : Callback<APIResponse> {
                     override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                        Toast.makeText(this@InstituteNoticeBoard, t.message, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@InstituteNoticeBoard, t.message, Toast.LENGTH_SHORT)
+                            .show()
                     }
 
-                    override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                    override fun onResponse(
+                        call: Call<APIResponse>,
+                        response: Response<APIResponse>
+                    ) {
                         val result: APIResponse? = response.body()
                         if (result!!.Responsecode == 204) {
-                            Toast.makeText(this@InstituteNoticeBoard, result.Status, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@InstituteNoticeBoard,
+                                result.Status,
+                                Toast.LENGTH_SHORT
+                            ).show()
                         } else {
                             listsinstz = result.Data6!!.size
 //                        instituteName1.remove("All")
@@ -226,13 +244,24 @@ class InstituteNoticeBoard : AppCompatActivity() {
                     mServices.GetInstituteData()
                         .enqueue(object : Callback<APIResponse> {
                             override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                                Toast.makeText(this@InstituteNoticeBoard, t.message, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this@InstituteNoticeBoard,
+                                    t.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
 
-                            override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                            override fun onResponse(
+                                call: Call<APIResponse>,
+                                response: Response<APIResponse>
+                            ) {
                                 val result: APIResponse? = response.body()
                                 if (result!!.Responsecode == 204) {
-                                    Toast.makeText(this@InstituteNoticeBoard, result.Status, Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        this@InstituteNoticeBoard,
+                                        result.Status,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 } else {
                                     val listsinstz: Int = result.Data6!!.size
                                     for (i in 0..listsinstz - 1) {
@@ -275,13 +304,24 @@ class InstituteNoticeBoard : AppCompatActivity() {
                     mServices.GetInstituteData()
                         .enqueue(object : Callback<APIResponse> {
                             override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                                Toast.makeText(this@InstituteNoticeBoard, t.message, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this@InstituteNoticeBoard,
+                                    t.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
 
-                            override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                            override fun onResponse(
+                                call: Call<APIResponse>,
+                                response: Response<APIResponse>
+                            ) {
                                 val result: APIResponse? = response.body()
                                 if (result!!.Responsecode == 204) {
-                                    Toast.makeText(this@InstituteNoticeBoard, result.Status, Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        this@InstituteNoticeBoard,
+                                        result.Status,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 } else {
                                     val listsinstz: Int = result.Data6!!.size
                                     for (i in 0..listsinstz - 1) {
@@ -333,13 +373,24 @@ class InstituteNoticeBoard : AppCompatActivity() {
                     mServices.GetInstituteData()
                         .enqueue(object : Callback<APIResponse> {
                             override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                                Toast.makeText(this@InstituteNoticeBoard, t.message, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this@InstituteNoticeBoard,
+                                    t.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
 
-                            override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                            override fun onResponse(
+                                call: Call<APIResponse>,
+                                response: Response<APIResponse>
+                            ) {
                                 val result: APIResponse? = response.body()
                                 if (result!!.Responsecode == 204) {
-                                    Toast.makeText(this@InstituteNoticeBoard, result.Status, Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        this@InstituteNoticeBoard,
+                                        result.Status,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 } else {
                                     val listsinstz: Int = result.Data6!!.size
                                     for (i in 0..listsinstz - 1) {
@@ -380,11 +431,11 @@ class InstituteNoticeBoard : AppCompatActivity() {
 
         btnPickImage.setOnClickListener {
 
-             var CustDialog = Dialog(this)
+            var CustDialog = Dialog(this)
             CustDialog.setContentView(R.layout.dialog_select_uploadtype_custom_popup)
             var ivNegClose1: ImageView = CustDialog.findViewById(R.id.cross_image) as ImageView
             var btnCamera: ImageButton = CustDialog.findViewById(R.id.btnCamera) as ImageButton
-            var btnGallary: ImageButton = CustDialog.findViewById(R.id.btnGalary) as ImageButton
+            var btnGallary: ImageButton = CustDialog.findViewById(R.id.btnGallary) as ImageButton
             var btnpdf: ImageButton = CustDialog.findViewById(R.id.btnPdf) as ImageButton
 
 //    GenericPublicVariable.CustDialog.setCancelable(false)
@@ -394,14 +445,11 @@ class InstituteNoticeBoard : AppCompatActivity() {
             }
             btnCamera.setOnClickListener {
 
-
-                val intent=Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                if (intent.resolveActivity(packageManager)!=null)
-                {
-                    startActivityForResult(intent,100)
+                CustDialog.dismiss()
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (intent.resolveActivity(packageManager) != null) {
+                    startActivityForResult(intent, 100)
                 }
-
-
             }
             btnGallary.setOnClickListener {
 
@@ -409,8 +457,8 @@ class InstituteNoticeBoard : AppCompatActivity() {
 
             }
             btnpdf.setOnClickListener {
-                REQUEST_CODE=200
-                val intent=Intent(Intent.ACTION_GET_CONTENT)
+                REQUEST_CODE = 200
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
                 intent.setType("*/*");
                 startActivityForResult(intent, 200);
 
@@ -425,12 +473,13 @@ class InstituteNoticeBoard : AppCompatActivity() {
 
     }
 
-    fun pickImage(){
-        REQUEST_CODE=100
+    fun pickImage() {
+        REQUEST_CODE = 100
         val i = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         println("path >> " + i.data)
         startActivityForResult(i, 101)
     }
+
     fun noticedateclick(view: View) {
         println(view)
         val c = Calendar.getInstance()
@@ -440,11 +489,15 @@ class InstituteNoticeBoard : AppCompatActivity() {
 
         val dpd = DatePickerDialog(
             this,
-            R.style.AppTheme4, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            R.style.AppTheme4,
+            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 println(view)
                 println(year)
                 editNoticeDate.text = """$dayOfMonth-${monthOfYear + 1}-$year"""
-            }, year, month, day
+            },
+            year,
+            month,
+            day
         )
         dpd.show()
     }
@@ -493,7 +546,10 @@ class InstituteNoticeBoard : AppCompatActivity() {
                 var fileUri = selectedImage!!
                 val file = File(getRealPathFromURI(fileUri))
                 //creating request body for file
-                val requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file);
+                val requestFile = RequestBody.create(
+                    MediaType.parse(getContentResolver().getType(fileUri)),
+                    file
+                );
                 val descBody = RequestBody.create(MediaType.parse("text/plain"), "Notice")
                 //The gson builder
                 val gson = GsonBuilder()
@@ -514,7 +570,10 @@ class InstituteNoticeBoard : AppCompatActivity() {
                         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                     }
 
-                    override fun onResponse(call: Call<MyResponse>, response: Response<MyResponse>) {
+                    override fun onResponse(
+                        call: Call<MyResponse>,
+                        response: Response<MyResponse>
+                    ) {
                         if (!response.body()!!.error) {
                             filename = response.body()!!.message.toString()
 
@@ -539,15 +598,25 @@ class InstituteNoticeBoard : AppCompatActivity() {
                                     admin_flag
                                 ).enqueue(object : Callback<APIResponse> {
                                     override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                                        Toast.makeText(this@InstituteNoticeBoard, t.message, Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            this@InstituteNoticeBoard,
+                                            t.message,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
 
-                                    override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                                    override fun onResponse(
+                                        call: Call<APIResponse>,
+                                        response: Response<APIResponse>
+                                    ) {
                                         dialog.dismiss()
-                                      //  val result: APIResponse? = response.body()
+                                        //  val result: APIResponse? = response.body()
 //                                        Toast.makeText(this@InstituteNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
 //                                            .show()
-                                        GenericUserFunction.showPositivePopUp(this@InstituteNoticeBoard,"Notice Send Successfully")
+                                        GenericUserFunction.showPositivePopUp(
+                                            this@InstituteNoticeBoard,
+                                            "Notice Send Successfully"
+                                        )
                                     }
                                 })
                             } catch (ex: Exception) {
@@ -610,7 +679,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
                 dialog.setCancelable(false)
                 dialog.show()
                 //Dialog End
-                filename="-"
+                filename = "-"
                 try {
                     mServices.UploadNotice(
                         notice_date,
@@ -632,19 +701,25 @@ class InstituteNoticeBoard : AppCompatActivity() {
                         admin_flag
                     ).enqueue(object : Callback<APIResponse> {
                         override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                            Toast.makeText(this@InstituteNoticeBoard, t.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@InstituteNoticeBoard, t.message, Toast.LENGTH_SHORT)
+                                .show()
                         }
 
-                        override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                        override fun onResponse(
+                            call: Call<APIResponse>,
+                            response: Response<APIResponse>
+                        ) {
                             dialog.dismiss()
-                           // val result: APIResponse? = response.body()
-                            GenericUserFunction.showPositivePopUp(this@InstituteNoticeBoard,"Notice Send Successfully")
+                            // val result: APIResponse? = response.body()
+                            GenericUserFunction.showPositivePopUp(
+                                this@InstituteNoticeBoard,
+                                "Notice Send Successfully"
+                            )
 //                            Toast.makeText(this@InstituteNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
 //                                .show()
                         }
                     })
-                } catch (ex: Exception)
-                {
+                } catch (ex: Exception) {
                     dialog.dismiss()
 
                     ex.printStackTrace()
@@ -757,15 +832,17 @@ class InstituteNoticeBoard : AppCompatActivity() {
                 println("Selected Image >>> " + selectedImage)
                 var CustDialog = Dialog(this)
                 CustDialog.setContentView(R.layout.dialog_image_yes_no_custom_popup)
-                var ivNegClose1: ImageView = CustDialog.findViewById(R.id.ivCustomDialogNegClose) as ImageView
+                var ivNegClose1: ImageView =
+                    CustDialog.findViewById(R.id.ivCustomDialogNegClose) as ImageView
                 var btnOk: Button = CustDialog.findViewById(R.id.btnCustomDialogAccept) as Button
-                var btnCustomDialogCancel: Button = CustDialog.findViewById(R.id.btnCustomDialogCancel) as Button
+                var btnCustomDialogCancel: Button =
+                    CustDialog.findViewById(R.id.btnCustomDialogCancel) as Button
                 var tvMsg: TextView = CustDialog.findViewById(R.id.tvMsgCustomDialog) as TextView
                 var image: ImageView = CustDialog.findViewById(R.id.dialog_image) as ImageView
                 image.setImageBitmap(bitmap)
 
                 tvMsg.text = "Do you want to Submit Selected Image?"
-                    //    GenericPublicVariable.CustDialog.setCancelable(false)
+                //    GenericPublicVariable.CustDialog.setCancelable(false)
                 btnOk.setOnClickListener {
                     CustDialog.dismiss()
                     confirmStatus = "T"
@@ -784,57 +861,56 @@ class InstituteNoticeBoard : AppCompatActivity() {
 
 //                uploadFile(selectedImage, "My Image")
             }
-        }
-        else if (requestCode==100 && resultCode== Activity.RESULT_OK && data != null)
-        {
-            extras= data?.extras!!
-//            if (extras.toString().equals("null"))
-//            {
-//            }
-//            else{
-            selectedImage = extras!!.get("data") as Uri?
-               //val bitmap= extras!!.get("data") as Bitmap
-                var bitmap: Bitmap? = getThumbnail(selectedImage!!)
-                println("bitmap here "+bitmap)
-                if (selectedImage != null) {
-                    println("Selected Image >>> " + selectedImage)
-                    var CustDialog = Dialog(this)
-                    CustDialog.setContentView(R.layout.dialog_image_yes_no_custom_popup)
-                    var ivNegClose1: ImageView =
-                        CustDialog.findViewById(R.id.ivCustomDialogNegClose) as ImageView
-                    var btnOk: Button =
-                        CustDialog.findViewById(R.id.btnCustomDialogAccept) as Button
-                    var btnCustomDialogCancel: Button =
-                        CustDialog.findViewById(R.id.btnCustomDialogCancel) as Button
-                    var tvMsg: TextView =
-                        CustDialog.findViewById(R.id.tvMsgCustomDialog) as TextView
-                    var image: ImageView = CustDialog.findViewById(R.id.dialog_image) as ImageView
-                    image.setImageBitmap(bitmap)
+        } else if (requestCode == 100 && resultCode == Activity.RESULT_OK && data != null) {
+            var bitmap: Bitmap = data.getExtras().get("data") as Bitmap
 
-                    tvMsg.text = "Do you want to Submit Selected Image?"
-                    //    GenericPublicVariable.CustDialog.setCancelable(false)
-                    btnOk.setOnClickListener {
-                        CustDialog.dismiss()
-                        confirmStatus = "T"
-                        finish()
-                    }
-                    btnCustomDialogCancel.setOnClickListener {
-                        CustDialog.dismiss()
-                        confirmStatus = "F"
-                    }
-                    ivNegClose1.setOnClickListener {
-                        CustDialog.dismiss()
-                        confirmStatus = "F"
-                    }
-                    CustDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                    CustDialog.show()
+//        // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
+            var tempUri: Uri? = getImageUri(getApplicationContext(), bitmap)
+            selectedImage = tempUri
+            var bitmaps: Bitmap? = getThumbnail(tempUri!!)
+//        // CALL THIS METHOD TO GET THE ACTUAL PATH
+//            var finalFile: File = File(getRealPathFromURI(tempUri!!))
+//            println("finalFile >>>> " + finalFile.toURI())
 
+
+            if (selectedImage != null) {
+                println("Selected Image >>> " + selectedImage)
+                var CustDialog = Dialog(this)
+                CustDialog.setContentView(R.layout.dialog_image_yes_no_custom_popup)
+                var ivNegClose1: ImageView =
+                    CustDialog.findViewById(R.id.ivCustomDialogNegClose) as ImageView
+                var btnOk: Button =
+                    CustDialog.findViewById(R.id.btnCustomDialogAccept) as Button
+                var btnCustomDialogCancel: Button =
+                    CustDialog.findViewById(R.id.btnCustomDialogCancel) as Button
+                var tvMsg: TextView =
+                    CustDialog.findViewById(R.id.tvMsgCustomDialog) as TextView
+                var image: ImageView = CustDialog.findViewById(R.id.dialog_image) as ImageView
+                image.setImageBitmap(bitmaps)
+
+                tvMsg.text = "Do you want to Submit Selected Image?"
+                //    GenericPublicVariable.CustDialog.setCancelable(false)
+                btnOk.setOnClickListener {
+                    CustDialog.dismiss()
+                    confirmStatus = "T"
+//                    finish()
                 }
-        }else if (requestCode==200 && resultCode== Activity.RESULT_OK)
-        {
-            fileUri= data!!.data
-            println("file uri here "+fileUri)
-            extras= data?.extras!!
+                btnCustomDialogCancel.setOnClickListener {
+                    CustDialog.dismiss()
+                    confirmStatus = "F"
+                }
+                ivNegClose1.setOnClickListener {
+                    CustDialog.dismiss()
+                    confirmStatus = "F"
+                }
+                CustDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                CustDialog.show()
+//
+            }
+        } else if (requestCode == 200 && resultCode == Activity.RESULT_OK) {
+            fileUri = data!!.data
+            println("file uri here " + fileUri)
+            extras = data?.extras!!
 
         }
 
@@ -880,7 +956,8 @@ class InstituteNoticeBoard : AppCompatActivity() {
         //creating a file
         val file = File(getRealPathFromURI(fileUri))
         //creating request body for file
-        val requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file);
+        val requestFile =
+            RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file);
         val descBody = RequestBody.create(MediaType.parse("text/plain"), desc)
         //The gson builder
         val gson = GsonBuilder()
@@ -901,13 +978,21 @@ class InstituteNoticeBoard : AppCompatActivity() {
                 Toast.makeText(applicationContext, t.message.toString(), Toast.LENGTH_LONG).show()
             }
 
-            override fun onResponse(call: retrofit2.Call<MyResponse>, response: Response<MyResponse>) {
+            override fun onResponse(
+                call: retrofit2.Call<MyResponse>,
+                response: Response<MyResponse>
+            ) {
                 if (!response.body()!!.error) {
 
-                    Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_LONG).show()
+                    Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_LONG)
+                        .show()
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Some error occurred...", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        getApplicationContext(),
+                        "Some error occurred...",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         })
@@ -922,6 +1007,18 @@ class InstituteNoticeBoard : AppCompatActivity() {
         val result = cursor.getString(column_index)
         cursor.close()
         return result
+    }
+
+    fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
+        var byte: ByteArrayOutputStream = ByteArrayOutputStream(100000)
+//    ByteArrayOutputStream bytes = new ByteArrayOutputStream()
+//    inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+//    String path = Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+//    return uri.parse(path);
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, byte)
+        var path: String =
+            MediaStore.Images.Media.insertImage(inContext!!.contentResolver, inImage, "Title", null)
+        return Uri.parse(path)
     }
 }
 

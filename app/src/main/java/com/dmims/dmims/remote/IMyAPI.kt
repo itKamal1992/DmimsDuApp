@@ -103,17 +103,8 @@ interface IMyAPI {
 
     @FormUrlEncoded
     @POST("Feedback/Feedback_Form_Summ")
-    fun SubmitExamFeedback(@Body JsonRequest: JSONObject): Call<APIResponse>
-//    fun SubmitExamFeedback(@Field("ID") ID: String,
-//                           @Field("FEEDBACK_TYPE")FEEDBACK_TYPE:String
-//                           , @Field("COURSE_ID")COURSE_ID :String
-//                           , @Field("STUD_ID")STUD_ID :String
-//                           , @Field("STUD_NAME")STUD_NAME :String
-//                           , @Field("ROLL_NO")ROLL_NO :String
-//                           , @Field("COURSE")COURSE :String
-//                           , @Field("INSTITUTE_NAME")INSTITUTE_NAME :String
-//                           , @Field("feedback_Formative")feedback_Formative : feedback_Formative
-//    ): Call<APIResponse>
+    fun SubmitExamFeedback(@Field ("jsonstring")jsonstring: String): Call<APIResponse>
+
 
 
 
