@@ -26,10 +26,6 @@ interface PhpApiInterface  {
     @POST("feedback_type/feedback_master.php")
     fun feedback_master(): Call<FeedBackMaster>
 
-    @POST("dmims/api/apiversion/read.php")
-    fun api_version(): Call<ApiVersion>
-
-
     @FormUrlEncoded
     @POST("feedback_type/feedbackScheInsrt.php")
     fun InsertFeedBackScheduler(@Field("INSTITUTE_NAME") INSTITUTE_NAME: String,@Field("COURSE_NAME") COURSE_NAME: String, @Field("DEPT_NAME") DEPT_NAME: String, @Field("FEEDBACK_NAME") FEEDBACK_NAME: String, @Field("SCHEDULE_DATE") SCHEDULE_DATE: String, @Field("START_DATE") START_DATE: String, @Field("END_DATE") END_DATE: String,@Field("YEAR")Year:String): Call<FeedBackInsert>
@@ -42,6 +38,14 @@ interface PhpApiInterface  {
     @POST("feedback_type/feedbackiInstList.php")
     fun InstDetailsStudYear(@Field("COURSE_ID") COURSE_ID: String): Call<DeptListStudData>
 
+    //REST API CALL
+    @POST("dmims/api/apiversion/read.php")
+    fun api_version(): Call<ApiVersion>
+
+    @FormUrlEncoded
+    @POST("dmims/api/course_master_test/read_single.php")
+    fun InstDetails(@Field("COURSE_ID") COURSE_ID: String): Call<DeptListStudDataRef>
+    //END REST API
     @FormUrlEncoded
     @POST("feedback_type/GetOriginalDept.php")
     fun GetOriginalDept(@Field("INSTITUTE_NAME") INSTITUTE_NAME: String): Call<DeptListStudData>
