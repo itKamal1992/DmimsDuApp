@@ -78,6 +78,7 @@
 								android:layout_weight="1"
 								android:layout_margin="2dp"
 								android:orientation="vertical"
+
 								android:background="@color/colorWhite"
 						>
 							<ImageView
@@ -99,7 +100,7 @@
 									android:textAlignment="center"
 									android:textColor="#000"
 							/>
-						
+
 						</LinearLayout>
 						
 						<LinearLayout
