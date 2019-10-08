@@ -4,25 +4,25 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:orientation="vertical"
+        android:background="@drawable/background"
         android:layout_height="match_parent"
         tools:context=".activity.SplashScreen">
 
-    <ScrollView android:id="@+id/svSplashScreen"
-                android:background="@drawable/background"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+
         <LinearLayout android:id="@+id/llSplashScreen"
                       android:orientation="vertical"
                       android:layout_width="match_parent"
-                      android:layout_height="wrap_content">
+                      android:layout_height="match_parent"
+            tools:ignore="UselessParent">
             <ImageView
                     android:id="@+id/ivSplashScreen"
-                    android:layout_width="@dimen/layout_width_250dp"
-                    android:layout_height="@dimen/layout_height_250dp"
+                    android:layout_width="@dimen/layout_width_200dp"
+                    android:layout_height="@dimen/layout_width_200dp"
                     android:layout_marginTop="@dimen/layout_marginTop_125dp"
                     android:gravity="center_vertical"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/logo"/>
+                    android:src="@drawable/logo"
+                tools:ignore="ContentDescription" />
             <TextView
                     android:id="@+id/tvMainHeading"
                     android:layout_width="wrap_content"
@@ -32,7 +32,7 @@
                     android:fontFamily="@string/ffSansSerifMedium"
                     android:text="@string/splashScreenMainTitle"
                     android:textColor="@color/colorYellowDark"
-                    android:textSize="@dimen/txt_size_25sp"
+                    android:textSize="@dimen/txt_size_20sp"
             />
             <TextView
                     android:id="@+id/tvMainHeading2"
@@ -45,14 +45,10 @@
                     android:text="@string/splashScreenMainTitle2"
                     android:layout_marginBottom="@dimen/layout_marginBottom_2dp"
                     android:textColor="@color/colorYellowDark"
-                    android:textSize="@dimen/txt_size_25sp"
-            />
-            <View
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/layout_height_2dp"
-                    android:layout_marginRight="@dimen/layout_marginRight_40dp"
-                    android:layout_marginLeft="@dimen/layout_marginLeft_40dp"
-                    android:background="@color/colorWhite"/>
+                    android:textSize="@dimen/txt_size_20sp"
+                tools:ignore="ObsoleteLayoutParam" />
+
+
 
             <TextView
                     android:id="@+id/tvSubHeading1"
@@ -66,7 +62,7 @@
                     android:layout_marginBottom="@dimen/layout_marginBottom_2dp"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/txt_size_19sp"
-            />
+                tools:ignore="ObsoleteLayoutParam" />
             <TextView
                     android:id="@+id/tvSubHeading2"
                     android:layout_width="wrap_content"
@@ -79,7 +75,7 @@
                     android:layout_marginBottom="@dimen/layout_marginBottom_2dp"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/txt_size_23sp"
-            />
+                tools:ignore="ObsoleteLayoutParam" />
             <TextView
                     android:id="@+id/tvSubHeading3"
                     android:layout_width="wrap_content"
@@ -92,7 +88,6 @@
                     android:layout_marginBottom="@dimen/layout_marginBottom_6dp"
                     android:textColor="@color/colorYellowDark"
                     android:textSize="@dimen/txt_size_17sp"
-            />
+                tools:ignore="ObsoleteLayoutParam" />
         </LinearLayout>
-    </ScrollView>
 </LinearLayout>

@@ -26,7 +26,7 @@ interface PhpApiInterface  {
     @POST("feedback_type/feedback_master.php")
     fun feedback_master(): Call<FeedBackMaster>
 
-    @POST("api_version/api_version.php")
+    @POST("dmims/api/apiversion/read.php")
     fun api_version(): Call<ApiVersion>
 
 

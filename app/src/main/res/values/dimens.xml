@@ -21,6 +21,7 @@
 	<dimen name="layout_marginTop_s5dp">-5dp</dimen>
 	<dimen name="layout_marginRight_40dp">40dp</dimen>
 	<dimen name="layout_marginLeft_40dp">40dp</dimen>
+	<dimen name="layout_marginLeft_30dp">30dp</dimen>
 	<dimen name="layout_marginLeft_20dp">20dp</dimen>
 	<dimen name="layout_marginRight_5dp">5dp</dimen>
 	<dimen name="layout_marginRight_7dp">7dp</dimen>

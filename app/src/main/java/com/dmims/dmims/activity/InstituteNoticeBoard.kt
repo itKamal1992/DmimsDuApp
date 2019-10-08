@@ -11,16 +11,15 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.annotation.RequiresApi
 import android.support.v4.content.CursorLoader
 import android.support.v7.app.AppCompatActivity
-import android.util.DisplayMetrics
 import android.view.View
 import android.widget.*
 import com.dmims.dmims.Generic.GenericUserFunction
-import com.dmims.dmims.ImageClass
-import com.dmims.dmims.ImageUpload
 import com.dmims.dmims.R
 import com.dmims.dmims.common.Common
 import com.dmims.dmims.model.APIResponse
@@ -31,8 +30,8 @@ import com.dmims.dmims.remote.IMyAPI
 import com.dmims.dmims.remote.PhpApiInterface
 import com.google.gson.GsonBuilder
 import dmax.dialog.SpotsDialog
-import kotlinx.android.synthetic.main.content_uploadnoticetest.*
-import kotlinx.android.synthetic.main.dialog_image_yes_no_custom_popup.*
+import net.gotev.uploadservice.MultipartUploadRequest
+import net.gotev.uploadservice.UploadNotificationConfig
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -52,6 +51,8 @@ import kotlin.collections.ArrayList
 class InstituteNoticeBoard : AppCompatActivity() {
     private var selectedImage: Uri? = null
     private var READ_REQUEST_CODE = 300
+    var PdfPathHolder: String? = null
+    private var PdfID: String? = null
     private var confirmStatus = "F"
     private var SERVER_PATH = "http://103.68.25.26/dmims/UploadImage/"
     private var uri: Uri? = null
@@ -459,8 +460,8 @@ class InstituteNoticeBoard : AppCompatActivity() {
             btnpdf.setOnClickListener {
                 REQUEST_CODE = 200
                 val intent = Intent(Intent.ACTION_GET_CONTENT)
-                intent.setType("*/*");
-                startActivityForResult(intent, 200);
+                intent.setType("*/*")
+                startActivityForResult(intent, 200)
 
             }
 //            CustDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -503,6 +504,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun sendNotice() {
         if (editNoticeDate.text.toString().isEmpty()) {
             editNoticeDate.error = "Please select notice date"
@@ -532,9 +534,11 @@ class InstituteNoticeBoard : AppCompatActivity() {
             Toast.makeText(this, "Please select valid institute name", Toast.LENGTH_SHORT).show()
             return
         }
+
         // if (RESOU_FLAG == "T") {
         if (confirmStatus == "T") {
             try {
+                PdfUploadFunction()
                 //Dialog Start
                 val dialog: AlertDialog = SpotsDialog.Builder().setContext(this).build()
                 dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
@@ -908,9 +912,16 @@ class InstituteNoticeBoard : AppCompatActivity() {
 //
             }
         } else if (requestCode == 200 && resultCode == Activity.RESULT_OK) {
-            fileUri = data!!.data
-            println("file uri here " + fileUri)
-            extras = data?.extras!!
+            uri = data!!.data
+            if(uri.toString().isNotEmpty()) {
+                confirmStatus = "T"
+            }
+             else
+            {
+                confirmStatus = "F"
+            }
+//            println("file uri here " + fileUri)
+//            extras = data?.extras!!
 
         }
 
@@ -1019,6 +1030,55 @@ class InstituteNoticeBoard : AppCompatActivity() {
         var path: String =
             MediaStore.Images.Media.insertImage(inContext!!.contentResolver, inImage, "Title", null)
         return Uri.parse(path)
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    fun PdfUploadFunction() {
+
+        // PdfNameHolder = txt_fileStart.text.toString() + "_" + edit_upload_fname!!.text.toString().trim()
+
+        PdfPathHolder = FilePath.getPath(this, uri)
+
+        if (PdfPathHolder == null) {
+
+            Toast.makeText(
+                this,
+                "Please move your PDF file to internal storage & try again.",
+                Toast.LENGTH_LONG
+            ).show()
+
+        } else {
+            //Dialog Start
+            val dialog: AlertDialog = SpotsDialog.Builder().setContext(this).build()
+            try {
+                dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
+                dialog.setCancelable(false)
+                dialog.show()
+                //Dialog End
+
+
+                PdfID = UUID.randomUUID().toString()
+
+                MultipartUploadRequest(this, PdfID, PDF_UPLOAD_HTTP_URL)
+                    .addFileToUpload(PdfPathHolder, "pdf")
+                    .setNotificationConfig(UploadNotificationConfig())
+                    .setMaxRetries(5)
+                    .startUpload()
+
+                dialog.dismiss()
+                //UpdateNotice()
+            } catch (exception: Exception) {
+                dialog.dismiss()
+
+                Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
+            }
+
+        }
+    }
+
+    companion object {
+        //val PDF_UPLOAD_HTTP_URL = "http://avbrh.gearhostpreview.com/pdfupload/upload.php"
+        val PDF_UPLOAD_HTTP_URL = "http://dmimsdu.in/web/pdfupload/pdfnoticeupload.php"
     }
 }
 

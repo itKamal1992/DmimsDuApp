@@ -31,6 +31,7 @@ class GenericPublicVariable {
 
         //font
         lateinit var myCustomFont: Typeface
+        lateinit var myCustomFont2: Typeface
 
         //AlertDialog
         lateinit var CustDialog:Dialog

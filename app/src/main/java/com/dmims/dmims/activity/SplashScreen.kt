@@ -14,9 +14,9 @@ import com.dmims.dmims.Generic.GenericPublicVariable.Companion.DOA
 import com.dmims.dmims.Generic.GenericPublicVariable.Companion.keyAdminInfo
 import com.dmims.dmims.Generic.GenericPublicVariable.Companion.keyDrawerTitle
 import com.dmims.dmims.Generic.GenericPublicVariable.Companion.keyEnrollNo
-import com.dmims.dmims.Generic.GenericPublicVariable.Companion.mServices
 import com.dmims.dmims.Generic.GenericPublicVariable.Companion.mobileNo
 import com.dmims.dmims.Generic.GenericPublicVariable.Companion.myCustomFont
+import com.dmims.dmims.Generic.GenericPublicVariable.Companion.myCustomFont2
 import com.dmims.dmims.Generic.GenericPublicVariable.Companion.mypref
 import com.dmims.dmims.Generic.GenericPublicVariable.Companion.password
 import com.dmims.dmims.Generic.GenericPublicVariable.Companion.permission
@@ -29,7 +29,9 @@ import com.dmims.dmims.Generic.GenericUserFunction.Companion.showSplashNegativeP
 import com.dmims.dmims.Generic.InternetConnection
 import com.dmims.dmims.R
 import com.dmims.dmims.dashboard.*
-import com.dmims.dmims.model.APIResponse
+import com.dmims.dmims.model.ApiVersion
+import com.dmims.dmims.remote.ApiClientPhp
+import com.dmims.dmims.remote.PhpApiInterface
 import kotlinx.android.synthetic.main.activity_splash_screen.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -47,64 +49,120 @@ class SplashScreen : AppCompatActivity() {
         setContentView(R.layout.activity_splash_screen)
         myCustomFont =
             Typeface.createFromAsset(assets, "candyroundbtnbold.ttf")
+
+        myCustomFont2 =
+            Typeface.createFromAsset(assets, "robotoBold.ttf")
+
         tvSubHeading2.typeface = myCustomFont
-
-
+        tvMainHeading.typeface = myCustomFont2
+        tvMainHeading2.typeface = myCustomFont2
         if (InternetConnection.checkConnection(this@SplashScreen)) {
             try {
-                mServices.AppVersion()
-                    .enqueue(object : Callback<APIResponse> {
-                        override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                            showInternetNegativePopUp(
-                                this@SplashScreen,
-                                getString(R.string.failureSSApiVerErr)
-                            )
-                        }
 
-                        override fun onResponse(
-                            call: Call<APIResponse>,
-                            response: Response<APIResponse>
-                        ) {
-                            try {
-                                val result: APIResponse? = response.body()
-                                if (result!!.Responsecode == 200 && result.Status == "ok") {
-                                    var pinfo = packageManager.getPackageInfo(packageName, 0)
-                                    var versionNumber = pinfo.versionCode
-                                    if (versionNumber.toString() == result.Data15!!.NEW_VERSION) {
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                            if (arePermissionsEnabled()) {
-                                                var handler = Handler()
-                                                handler.postDelayed(runnable, 1300)
-                                            } else {
-                                                requestMultiplePermissions()
-                                            }
-                                        } else {
+                var phpApiInterface: PhpApiInterface = ApiClientPhp.getClient().create(
+                    PhpApiInterface::class.java
+                )
+                var call3: Call<ApiVersion> = phpApiInterface.api_version()
+                call3.enqueue(object : Callback<ApiVersion> {
+                    override fun onFailure(call: Call<ApiVersion>, t: Throwable) {
+                        showInternetNegativePopUp(
+                            this@SplashScreen,
+                            getString(R.string.failureSSApiVerErr)
+                        )
+                    }
+
+                    override fun onResponse(
+                        call: Call<ApiVersion>,
+                        response: Response<ApiVersion>
+                    ) {
+                        try {
+                            val result: ApiVersion? = response.body()
+                            if (result!!.response.isNotEmpty()) {
+                                var pinfo = packageManager.getPackageInfo(packageName, 0)
+                                var versionNumber = pinfo.versionCode
+                                if (versionNumber.toString() == result.response) {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        if (arePermissionsEnabled()) {
                                             var handler = Handler()
                                             handler.postDelayed(runnable, 1300)
+                                        } else {
+                                            requestMultiplePermissions()
                                         }
                                     } else {
-                                        showSplashNegativePopUp(
-                                            this@SplashScreen,
-                                            getString(R.string.failureUpdateApiVerErr)
-                                        )
+                                        var handler = Handler()
+                                        handler.postDelayed(runnable, 1300)
                                     }
                                 } else {
-                                    showInternetNegativePopUp(
+                                    showSplashNegativePopUp(
                                         this@SplashScreen,
-                                        getString(R.string.failureServerApiVerErr)
+                                        getString(R.string.failureUpdateApiVerErr)
                                     )
                                 }
-                            } catch (ex: Exception) {
-                                ex.printStackTrace()
-                                showApiError(
-                                    this@SplashScreen,
-                                    "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
-                                )
+
                             }
+                        } catch (ex: Exception) {
+                            ex.printStackTrace()
+                            showApiError(
+                                this@SplashScreen,
+                                "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
+                            )
                         }
+                    }
+                })
 
-
-                    })
+//                mServices.AppVersion()
+//                    .enqueue(object : Callback<APIResponse> {
+//                        override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+//                            showInternetNegativePopUp(
+//                                this@SplashScreen,
+//                                getString(R.string.failureSSApiVerErr)
+//                            )
+//                        }
+//
+//                        override fun onResponse(
+//                            call: Call<APIResponse>,
+//                            response: Response<APIResponse>
+//                        ) {
+//                            try {
+//                                val result: APIResponse? = response.body()
+//                                if (result!!.Responsecode == 200 && result.Status == "ok") {
+//                                    var pinfo = packageManager.getPackageInfo(packageName, 0)
+//                                    var versionNumber = pinfo.versionCode
+//                                    if (versionNumber.toString() == result.Data15!!.NEW_VERSION) {
+//                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                                            if (arePermissionsEnabled()) {
+//                                                var handler = Handler()
+//                                                handler.postDelayed(runnable, 1300)
+//                                            } else {
+//                                                requestMultiplePermissions()
+//                                            }
+//                                        } else {
+//                                            var handler = Handler()
+//                                            handler.postDelayed(runnable, 1300)
+//                                        }
+//                                    } else {
+//                                        showSplashNegativePopUp(
+//                                            this@SplashScreen,
+//                                            getString(R.string.failureUpdateApiVerErr)
+//                                        )
+//                                    }
+//                                } else {
+//                                    showInternetNegativePopUp(
+//                                        this@SplashScreen,
+//                                        getString(R.string.failureServerApiVerErr)
+//                                    )
+//                                }
+//                            } catch (ex: Exception) {
+//                                ex.printStackTrace()
+//                                showApiError(
+//                                    this@SplashScreen,
+//                                    "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
+//                                )
+//                            }
+//                        }
+//
+//
+//                    })
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 showApiError(
