@@ -360,7 +360,6 @@ class StudentDashboard : AppCompatActivity(), View.OnClickListener {
         builder.show()
     }
 
-
     override fun onClick(v: View) {
         when (v.id) {
             R.id.attendanceGrid -> {
