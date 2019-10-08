@@ -16,6 +16,7 @@ import com.dmims.dmims.model.APIResponse
 import com.dmims.dmims.model.NewUserInsert
 import com.dmims.dmims.remote.ApiClientPhp
 import com.dmims.dmims.remote.PhpApiInterface
+import dmax.dialog.SpotsDialog
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,17 +33,13 @@ class RegActivity : AppCompatActivity() {
         btn_NewReg = findViewById<Button>(R.id.btn_NewReg)
         btn_Unable = findViewById<Button>(R.id.btn_Unable)
         GenericPublicVariable.editMobOtp = findViewById<EditText>(R.id.edit_mob_otp)
-        GenericPublicVariable.progressbarlogin = findViewById<ProgressBar>(R.id.progressbarlogin)
         GenericPublicVariable.btnGenOtp!!.setOnClickListener {
-            GenericPublicVariable.progressbarlogin!!.visibility = View.VISIBLE
             if (GenericPublicVariable.editMobOtp!!.text.toString().isEmpty()) {
                 Toast.makeText(this@RegActivity, "Please input mobile no.", Toast.LENGTH_SHORT).show()
-                GenericPublicVariable.progressbarlogin!!.visibility = View.INVISIBLE
+
             } else {
 
-
                 verifyUserGenOtp(GenericPublicVariable.editMobOtp!!.text.toString())
-
             }
         }
 
@@ -59,7 +56,11 @@ class RegActivity : AppCompatActivity() {
     }
 
     private fun verifyUserGenOtp(mobile: String) {
-        GenericPublicVariable.progressbarlogin!!.visibility = View.VISIBLE
+        val dialog2: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
+
+        dialog2.setMessage("Please Wait!!! \nwhile we are verifying OTP")
+        dialog2.setCancelable(false)
+        dialog2.show()
         if (InternetConnection.checkConnection(this@RegActivity)) {
             try{
             GenericPublicVariable.mServices.GetOtp(mobile)
@@ -67,7 +68,7 @@ class RegActivity : AppCompatActivity() {
 
                     override fun onFailure(call: Call<APIResponse>, t: Throwable) {
                         GenericUserFunction.showNegativePopUp(this@RegActivity, getString(R.string.failureSSApiVerErr))
-                        GenericPublicVariable.progressbarlogin!!.visibility = View.INVISIBLE
+                        dialog2.dismiss()
                     }
 
                     override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
@@ -104,7 +105,7 @@ class RegActivity : AppCompatActivity() {
                                         response.body()
                                     result3!!.response
                                     if (result3!!.response.equals("1")) {
-                                        GenericPublicVariable.progressbarlogin!!.visibility = View.INVISIBLE
+                                        dialog2.dismiss()
                                         // GenericUserFunction.DisplayToast(this@RegActivity, result.Status)
                                         val intent = Intent(applicationContext, MainActivity::class.java)
                                         intent.putExtra(
@@ -124,7 +125,7 @@ class RegActivity : AppCompatActivity() {
                                     if (result3!!.response.equals("2")) {
                                         //Toast.makeText(this@RegActivity, result.Status, Toast.LENGTH_SHORT).show()
                                         GenericUserFunction.showNegativePopUp(this@RegActivity, result.Status)
-                                        GenericPublicVariable.progressbarlogin!!.visibility = View.INVISIBLE
+                                        dialog2.dismiss()
                                     }
 
                                 }
@@ -133,7 +134,7 @@ class RegActivity : AppCompatActivity() {
 
 
                         } else {
-                            GenericPublicVariable.progressbarlogin!!.visibility = View.INVISIBLE
+                            dialog2.dismiss()
                            // GenericUserFunction.DisplayToast(this@RegActivity, result.Status)
                             val intent = Intent(applicationContext, MainActivity::class.java)
                             intent.putExtra("edit_mobotp", GenericPublicVariable.editMobOtp!!.text.toString())
@@ -153,6 +154,7 @@ class RegActivity : AppCompatActivity() {
 
                 })
         } catch (ex: Exception) {
+                dialog2.dismiss()
             ex.printStackTrace()
             GenericUserFunction.showApiError(
                 this,

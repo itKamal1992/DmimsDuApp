@@ -35,6 +35,7 @@ class Attendance : AppCompatActivity() {
     var COURSE_ID: String? = "-"
     private lateinit var mServices: IMyAPI
     var cal = Calendar.getInstance()
+    var calsdb = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +53,8 @@ class Attendance : AppCompatActivity() {
         mServices = Common.getAPI()
         val myFormat = "dd-MM-yyyy" // mention the format you need
         val sdf = SimpleDateFormat(myFormat, Locale.US)
-        to_date!!.text = sdf.format(cal.time).toString()
+        calsdb.add(Calendar.DAY_OF_YEAR, -14) //Week 2 before attendance
+        to_date!!.text = sdf.format(calsdb.time).toString()
         from_date!!.text = sdf.format(cal.time).toString()
         to_date_sel = sdf.format(cal.time)
         current_date = sdf.format(cal.time)

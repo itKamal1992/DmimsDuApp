@@ -15,6 +15,7 @@ import com.github.barteksc.pdfviewer.PDFView
 import com.krishna.fileloader.FileLoader
 import com.krishna.fileloader.pojo.FileResponse
 import com.krishna.fileloader.request.FileLoadRequest
+import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.activity_academic__calender.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -32,7 +33,11 @@ class AcademicCalender : AppCompatActivity() {
         setContentView(R.layout.content_academic__calender)
         setSupportActionBar(toolbar)
         pdf = findViewById<PDFView>(R.id.pdfid)
+        val dialog: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
 try{
+    dialog.setMessage("Please Wait!!! \nwhile we are fetching Academic Calender")
+    dialog.setCancelable(false)
+    dialog.show()
         var phpApiInterface: PhpApiInterface = ApiClientPhp.getClient().create(PhpApiInterface::class.java)
         var call1: Call<TimeTableData> =
             phpApiInterface.timetable_details_url(
@@ -43,10 +48,12 @@ try{
             )
         call1.enqueue(object : Callback<TimeTableData> {
             override fun onFailure(call1: Call<TimeTableData>, t: Throwable) {
+                dialog.dismiss()
                 Toast.makeText(this@AcademicCalender, t.message, Toast.LENGTH_SHORT).show()
             }
 
             override fun onResponse(call1: Call<TimeTableData>, response: Response<TimeTableData>) {
+                dialog.dismiss()
                 var users = ArrayList<TimeTableDataC>()
                 if (response.isSuccessful) {
                     users.clear()
@@ -136,6 +143,7 @@ try{
                 }
 
                 override fun onError(request: FileLoadRequest?, t: Throwable?) {
+
                     Toast.makeText(this@AcademicCalender, t!!.message.toString(), Toast.LENGTH_SHORT).show()
                 }
 
