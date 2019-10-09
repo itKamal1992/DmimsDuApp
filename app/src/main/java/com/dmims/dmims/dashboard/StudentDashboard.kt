@@ -207,7 +207,7 @@ class StudentDashboard : AppCompatActivity() {
                 }
 
                 R.id.action_greviance -> {
-                    val intent = Intent(this@StudentDashboard, GrievanceCellBoard::class.java)
+                    val intent = Intent(this@StudentDashboard, GreivanceStudFile::class.java)
                     val mypref15 = getSharedPreferences("mypref", Context.MODE_PRIVATE)
                     var student_id_key15 = mypref15.getString("Stud_id_key", null)
                     intent.putExtra("stud_k", student_id_key15?.toString())
@@ -463,7 +463,7 @@ class StudentDashboard : AppCompatActivity() {
 
     private fun setGrievanceGridEvent(greviancegrid: LinearLayout) {
         greviancegrid.setOnClickListener {
-            val intent = Intent(this@StudentDashboard, GrievanceCellBoard::class.java)
+            val intent = Intent(this@StudentDashboard, GreivanceStudFile::class.java)
             val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
             var student_id_key = mypref.getString("Stud_id_key", null)
             intent.putExtra("stud_k", student_id_key?.toString())

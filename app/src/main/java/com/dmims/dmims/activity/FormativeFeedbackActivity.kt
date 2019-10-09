@@ -619,7 +619,7 @@ class FormativeFeedbackActivity : AppCompatActivity() {
             dialog.setCancelable(false)
             dialog.show()
             //Dialog End
-            GenericPublicVariable.mServices.SubmitExamFeedback(rootObject)
+            GenericPublicVariable.mServices.SubmitExamFeedback(rootObject.toString())
                 .enqueue(object : Callback<APIResponse> {
                     override fun onFailure(call: Call<APIResponse>, t: Throwable) {
                         Toast.makeText(
