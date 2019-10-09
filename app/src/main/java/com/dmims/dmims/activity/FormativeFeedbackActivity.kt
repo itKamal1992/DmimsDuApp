@@ -1,4 +1,3 @@
-/*@Created By Umesh*/
 package com.dmims.dmims.activity
 
 import android.app.Dialog
@@ -615,7 +614,6 @@ class FormativeFeedbackActivity : AppCompatActivity() {
         val dialog: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
         try {
             println("rootObject >>> " + rootObject)
-
 
             dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
             dialog.setCancelable(false)

@@ -779,6 +779,7 @@ try {
         val bitmapOptions = BitmapFactory.Options()
         bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio)
         bitmapOptions.inDither = true//optional
+
         bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888//optional
         input = this.contentResolver.openInputStream(uri)
         val bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions)
@@ -786,7 +787,8 @@ try {
         return bitmap
     }
 
-    private fun getPowerOfTwoForSampleRatio(ratio: Double): Int {
+    private fun getPowerOfTwoForSampleRatio(ratio: Double): Int
+    {
         val k = Integer.highestOneBit(Math.floor(ratio).toInt())
         return if (k == 0)
             1

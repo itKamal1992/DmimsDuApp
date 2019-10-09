@@ -107,6 +107,15 @@ interface IMyAPI {
 
 
 
+    @FormUrlEncoded
+    @POST("feedback/OnlineGrievanceReport")
+    fun InsertStudentGrievance(@Field("STUD_ID")STUDENTID: String,@Field("course_id")course_id: String,@Field("roll_no")roll_no: String,
+                               @Field("Grev_name")str_NameGriev:String,@Field("Sub_Grev")str_SubOfComplaintGriev:String,
+                               @Field("Grev_Cat")str_CategoryGriev:String,@Field("Comp_agst")str_ComplaintAgainstDetailGriev:String,
+                               @Field("Grev_Desc")str_DetailDescriGriev:String,@Field("Inst_Name")str_CollegeNameGrievGriev:String,
+                               @Field("Comp_To")str_ComplaintToGriev:String,@Field("Grev_Date")curren_date:String
+                               ,@Field("Grev_Filename")filename: String):Call<APIResponse>
+
 
 }
 

@@ -519,27 +519,15 @@ class Student_Feedback_SummativeExam : AppCompatActivity()
             }else if(str_summYear.equals("Select Year"))
             {
                 Toast.makeText(applicationContext,"Select year",Toast.LENGTH_LONG).show()
-            }else
+            }
+
+
+            else
             {
-
-
-
-
-
-
-
                 COURSE_ID = mypref.getString("course_id", null)
                 stud_kstr = mypref.getString("Stud_id_key", null)
                 stud_namestr = mypref.getString("key_drawer_title", null)
                 stud_k = Integer.parseInt(stud_kstr)
-
-
-
-
-
-
-
-
                 str_summNameFaculty=spinner_SummaNameFaculty.selectedItem.toString()
                 str_summExamination=spinner_SummaExamination.selectedItem.toString()
                 str_summYear=spinner_SummaYear.selectedItem.toString()
