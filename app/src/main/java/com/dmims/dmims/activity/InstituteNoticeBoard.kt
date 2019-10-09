@@ -55,6 +55,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
     private var READ_REQUEST_CODE = 300
     var PdfPathHolder: String? = null
     private var PdfID: String? = null
+    private var random: Int? = null
     var type : String? = null
     private var confirmStatus = "F"
     private var SERVER_PATH = "http://103.68.25.26/dmims/UploadImage/"
@@ -547,18 +548,16 @@ class InstituteNoticeBoard : AppCompatActivity() {
             try {
                 // PdfUploadFunction()
                 //Dialog Start
-                PdfUploadFunction()
+
                 val dialog: AlertDialog = SpotsDialog.Builder().setContext(this).build()
                 dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
                 dialog.setCancelable(false)
                 dialog.show()
-                //Dialog End
-
-                //get path using id
-
             var phpApiInterface: PhpApiInterface = ApiClientPhp.getClient().create(PhpApiInterface::class.java)
-            var call: Call<ApiVersion> = phpApiInterface.readpdfpath(PdfID!!)
+            var call: Call<ApiVersion> = phpApiInterface.readpdfpath(PdfID+random.toString())
             call.enqueue(object : Callback<ApiVersion> {
+
+
                 override fun onFailure(call: Call<ApiVersion>, t: Throwable) {
                     dialog.dismiss()
                     Toast.makeText(this@InstituteNoticeBoard, "Server Response" + t.message, Toast.LENGTH_SHORT)
@@ -953,6 +952,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
 //    }
 
     //new one
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 101 && resultCode == RESULT_OK && data != null) {
@@ -1045,6 +1045,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
             uri = data!!.data
             if(uri.toString().isNotEmpty()) {
                 confirmStatus = "T"
+                PdfUploadFunction()
             }
              else
             {
@@ -1188,16 +1189,15 @@ class InstituteNoticeBoard : AppCompatActivity() {
 
 
                 PdfID = UUID.randomUUID().toString()
-
+               random = Random().nextInt(61) + 20
                 MultipartUploadRequest(this, PdfID, PDF_UPLOAD_HTTP_URL)
                     .addFileToUpload(PdfPathHolder, "pdf")
-                    .addParameter("name", PdfID)
+                    .addParameter("name", PdfID+random.toString())
                     .setNotificationConfig(UploadNotificationConfig())
                     .setMaxRetries(5)
                     .startUpload()
-
                 dialog.dismiss()
-                //UpdateNotice()
+
             } catch (exception: Exception) {
                 dialog.dismiss()
 
