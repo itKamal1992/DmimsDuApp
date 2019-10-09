@@ -566,7 +566,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
                 override fun onResponse(call: Call<ApiVersion>, response: Response<ApiVersion>) {
                     var imageClass: ApiVersion? = response.body()
                     filename = imageClass!!.response
-
+//
                             try {
                                 mServices.UploadNotice(
                                     notice_date,
