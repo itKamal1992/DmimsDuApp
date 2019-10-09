@@ -107,12 +107,12 @@ class Activity_Notification_Student : AppCompatActivity() {
                                             }
                                             users.add(
                                                 NoticeStudCurrent(
-                                                    "NOTICE TITLE: " + result.Data14!![i].NOTICE_TITLE,
-                                                    "SENDER: " + result.Data14!![i].USER_ROLE,
+                                                     result.Data14!![i].NOTICE_TITLE,
+                                                     result.Data14!![i].USER_ROLE,
                                                     "NOTICE FOR: " + result.Data14!![i].USER_TYPE,
                                                     "NOTICE TYPE: " + result.Data14!![i].NOTICE_TYPE,
                                                     "NOTICE DESC: " + result.Data14!![i].NOTICE_DESC,
-                                                    "NOTICE DATE: " + result.Data14!![i].NOTICE_DATE,
+                                                     result.Data14!![i].NOTICE_DATE,
                                                     "INSTITUTE: " + result.Data14!![i].INSTITUTE_NAME,
                                                     "COURSE NAME: " + result.Data14!![i].COURSE_NAME,
                                                     "COURSE ID: " + result.Data14!![i].COURSE_ID,

@@ -23,6 +23,7 @@ import com.dmims.dmims.Generic.GenericUserFunction
 import com.dmims.dmims.R
 import com.dmims.dmims.common.Common
 import com.dmims.dmims.model.APIResponse
+import com.dmims.dmims.model.ApiVersion
 import com.dmims.dmims.model.MyResponse
 import com.dmims.dmims.remote.Api
 import com.dmims.dmims.remote.ApiClientPhp
@@ -30,6 +31,7 @@ import com.dmims.dmims.remote.IMyAPI
 import com.dmims.dmims.remote.PhpApiInterface
 import com.google.gson.GsonBuilder
 import dmax.dialog.SpotsDialog
+import kotlinx.android.synthetic.main.pdfviewerviewlayout.*
 import net.gotev.uploadservice.MultipartUploadRequest
 import net.gotev.uploadservice.UploadNotificationConfig
 import okhttp3.MediaType
@@ -53,9 +55,11 @@ class InstituteNoticeBoard : AppCompatActivity() {
     private var READ_REQUEST_CODE = 300
     var PdfPathHolder: String? = null
     private var PdfID: String? = null
+    var type : String? = null
     private var confirmStatus = "F"
     private var SERVER_PATH = "http://103.68.25.26/dmims/UploadImage/"
     private var uri: Uri? = null
+
     private lateinit var mServices: IMyAPI
     private var TAG = InstituteNoticeBoard::class.java.simpleName
     var noticetype = arrayOf("Administrative", "General")
@@ -74,6 +78,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
     var deptlist = ArrayList<String>()
     private lateinit var sel_notice_type: String
     var filename: String = "-"
+
     var course_id: String = "All"
     var dept_id: String = "All"
     private lateinit var student_flag: String
@@ -105,6 +110,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
     var REQUEST_CODE: Int = 0
     lateinit var fileUri: Uri
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_institute_notice_board)
@@ -453,12 +459,13 @@ class InstituteNoticeBoard : AppCompatActivity() {
                 }
             }
             btnGallary.setOnClickListener {
-
+                CustDialog.dismiss()
                 pickImage()
 
             }
             btnpdf.setOnClickListener {
                 REQUEST_CODE = 200
+                CustDialog.dismiss()
                 val intent = Intent(Intent.ACTION_GET_CONTENT)
                 intent.setType("*/*")
                 startActivityForResult(intent, 200)
@@ -478,6 +485,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
         REQUEST_CODE = 100
         val i = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         println("path >> " + i.data)
+
         startActivityForResult(i, 101)
     }
 
@@ -535,10 +543,129 @@ class InstituteNoticeBoard : AppCompatActivity() {
             return
         }
 
-        // if (RESOU_FLAG == "T") {
-        if (confirmStatus == "T") {
+        if (confirmStatus == "T" && type == "pdf") {
             try {
+                // PdfUploadFunction()
+                //Dialog Start
                 PdfUploadFunction()
+                val dialog: AlertDialog = SpotsDialog.Builder().setContext(this).build()
+                dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
+                dialog.setCancelable(false)
+                dialog.show()
+                //Dialog End
+
+                //get path using id
+
+            var phpApiInterface: PhpApiInterface = ApiClientPhp.getClient().create(PhpApiInterface::class.java)
+            var call: Call<ApiVersion> = phpApiInterface.readpdfpath(PdfID!!)
+            call.enqueue(object : Callback<ApiVersion> {
+                override fun onFailure(call: Call<ApiVersion>, t: Throwable) {
+                    dialog.dismiss()
+                    Toast.makeText(this@InstituteNoticeBoard, "Server Response" + t.message, Toast.LENGTH_SHORT)
+                }
+
+                override fun onResponse(call: Call<ApiVersion>, response: Response<ApiVersion>) {
+                    var imageClass: ApiVersion? = response.body()
+                    filename = imageClass!!.response
+
+                            try {
+                                mServices.UploadNotice(
+                                    notice_date,
+                                    notice_title,
+                                    notice_desc,
+                                    selectedInstituteName,
+                                    selectedcourselist,
+                                    selecteddeptlist,
+                                    selectedNoticeType,
+                                    selectedFacultyStud,
+                                    confirmStatus,
+                                    roleadmin,
+                                    id_admin,
+                                    filename,
+                                    course_id,
+                                    dept_id,
+                                    student_flag,
+                                    faculty_flag,
+                                    admin_flag
+                                ).enqueue(object : Callback<APIResponse> {
+                                    override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                                        dialog.dismiss()
+                                        Toast.makeText(
+                                            this@InstituteNoticeBoard,
+                                            t.message,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+
+                                    override fun onResponse(
+                                        call: Call<APIResponse>,
+                                        response: Response<APIResponse>
+                                    ) {
+                                        dialog.dismiss()
+                                        //  val result: APIResponse? = response.body()
+//                                        Toast.makeText(this@InstituteNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
+//                                            .show()
+                                        GenericUserFunction.showPositivePopUp(
+                                            this@InstituteNoticeBoard,
+                                            "Notice Send Successfully"
+                                        )
+                                    }
+                                })
+                            } catch (ex: Exception) {
+                                dialog.dismiss()
+
+                                ex.printStackTrace()
+                                GenericUserFunction.showApiError(
+                                    applicationContext,
+                                    "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
+                                )
+                            }
+
+
+
+
+                    }
+
+
+//                    override fun onFailure(call: retrofit2.Call<MyResponse>, t: Throwable) {
+//                        Toast.makeText(applicationContext, t.message.toString(), Toast.LENGTH_LONG).show()
+//                    }
+//
+//                    override fun onResponse(call: retrofit2.Call<MyResponse>, response: Response<MyResponse>) {
+//                        if (!response.body()!!.error) {
+//                            filename = response.message()
+//                                Toast.makeText(getApplicationContext(),  response.message(), Toast.LENGTH_LONG).show()
+//
+//                        } else {
+//                            Toast.makeText(getApplicationContext(), "Some error occurred...", Toast.LENGTH_LONG).show()
+//                        }
+//                    }
+                })
+//            var phpApiInterface: PhpApiInterface = ApiClientPhp.getClient().create(PhpApiInterface::class.java)
+//            var call: Call<ImageClass> = phpApiInterface.uploadImage(rTitle, rImage)
+//            call.enqueue(object : Callback<ImageClass> {
+//                override fun onFailure(call: Call<ImageClass>, t: Throwable) {
+//                    Toast.makeText(this@InstituteNoticeBoard, "Server Response" + t.message, Toast.LENGTH_SHORT)
+//                }
+//
+//                override fun onResponse(call: Call<ImageClass>, response: Response<ImageClass>) {
+//                    var imageClass: ImageClass? = response.body()
+//                    Toast.makeText(this@InstituteNoticeBoard, imageClass!!.getResponse(), Toast.LENGTH_SHORT)
+//                    filename = "http://avbrh.gearhostpreview.com/imageupload/" + imageClass.getuploadPath()
+//                }
+//            })
+            } catch (ex: Exception) {
+
+                ex.printStackTrace()
+                GenericUserFunction.showApiError(
+                    this,
+                    "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
+                )
+            }
+        }
+        if (confirmStatus == "T" && type == "image") {
+            try {
+               // PdfUploadFunction()
                 //Dialog Start
                 val dialog: AlertDialog = SpotsDialog.Builder().setContext(this).build()
                 dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
@@ -602,6 +729,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
                                     admin_flag
                                 ).enqueue(object : Callback<APIResponse> {
                                     override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                                        dialog.dismiss()
                                         Toast.makeText(
                                             this@InstituteNoticeBoard,
                                             t.message,
@@ -828,46 +956,47 @@ class InstituteNoticeBoard : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 101 && resultCode == RESULT_OK && data != null) {
+            type = "image"
             //the image URI
             selectedImage = data.getData()
             var bitmap: Bitmap? = getThumbnail(selectedImage!!)
             //calling the upload file method after choosing the file
             if (selectedImage != null) {
                 println("Selected Image >>> " + selectedImage)
-                var CustDialog = Dialog(this)
-                CustDialog.setContentView(R.layout.dialog_image_yes_no_custom_popup)
+                var CustDialog2 = Dialog(this)
+                CustDialog2.setContentView(R.layout.dialog_image_yes_no_custom_popup)
                 var ivNegClose1: ImageView =
-                    CustDialog.findViewById(R.id.ivCustomDialogNegClose) as ImageView
-                var btnOk: Button = CustDialog.findViewById(R.id.btnCustomDialogAccept) as Button
+                    CustDialog2.findViewById(R.id.ivCustomDialogNegClose) as ImageView
+                var btnOk: Button = CustDialog2.findViewById(R.id.btnCustomDialogAccept) as Button
                 var btnCustomDialogCancel: Button =
-                    CustDialog.findViewById(R.id.btnCustomDialogCancel) as Button
-                var tvMsg: TextView = CustDialog.findViewById(R.id.tvMsgCustomDialog) as TextView
-                var image: ImageView = CustDialog.findViewById(R.id.dialog_image) as ImageView
+                    CustDialog2.findViewById(R.id.btnCustomDialogCancel) as Button
+                var tvMsg: TextView = CustDialog2.findViewById(R.id.tvMsgCustomDialog) as TextView
+                var image: ImageView = CustDialog2.findViewById(R.id.dialog_image) as ImageView
                 image.setImageBitmap(bitmap)
 
                 tvMsg.text = "Do you want to Submit Selected Image?"
                 //    GenericPublicVariable.CustDialog.setCancelable(false)
                 btnOk.setOnClickListener {
-                    CustDialog.dismiss()
+                    CustDialog2.dismiss()
                     confirmStatus = "T"
-                    finish()
+
                 }
                 btnCustomDialogCancel.setOnClickListener {
-                    CustDialog.dismiss()
+                    CustDialog2.dismiss()
                     confirmStatus = "F"
                 }
                 ivNegClose1.setOnClickListener {
-                    CustDialog.dismiss()
+                    CustDialog2.dismiss()
                     confirmStatus = "F"
                 }
-                CustDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                CustDialog.show()
+                CustDialog2.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                CustDialog2.show()
 
-//                uploadFile(selectedImage, "My Image")
+//               uploadFile(selectedImage, "My Image")
             }
         } else if (requestCode == 100 && resultCode == Activity.RESULT_OK && data != null) {
             var bitmap: Bitmap = data.getExtras().get("data") as Bitmap
-
+            type = "image"
 //        // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
             var tempUri: Uri? = getImageUri(getApplicationContext(), bitmap)
             selectedImage = tempUri
@@ -912,6 +1041,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
 //
             }
         } else if (requestCode == 200 && resultCode == Activity.RESULT_OK) {
+            type = "pdf"
             uri = data!!.data
             if(uri.toString().isNotEmpty()) {
                 confirmStatus = "T"
@@ -1061,6 +1191,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
 
                 MultipartUploadRequest(this, PdfID, PDF_UPLOAD_HTTP_URL)
                     .addFileToUpload(PdfPathHolder, "pdf")
+                    .addParameter("name", PdfID)
                     .setNotificationConfig(UploadNotificationConfig())
                     .setMaxRetries(5)
                     .startUpload()
