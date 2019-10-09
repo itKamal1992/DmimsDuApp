@@ -158,7 +158,7 @@ interface PhpApiInterface  {
     @FormUrlEncoded
     @POST("pdfupload/PostDeleteMCQ.php")
     fun deleteMCQ(@Field("id") id: String): Call<APIResponse>
-
+    @FormUrlEncoded
     @POST("pdfupload/read.php")
     fun readpdfpath(@Field("id") id: String): Call<ApiVersion>
 }

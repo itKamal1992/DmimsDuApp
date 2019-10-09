@@ -560,6 +560,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
             var call: Call<ApiVersion> = phpApiInterface.readpdfpath(PdfID!!)
             call.enqueue(object : Callback<ApiVersion> {
                 override fun onFailure(call: Call<ApiVersion>, t: Throwable) {
+                    dialog.dismiss()
                     Toast.makeText(this@InstituteNoticeBoard, "Server Response" + t.message, Toast.LENGTH_SHORT)
                 }
 
@@ -588,6 +589,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
                                     admin_flag
                                 ).enqueue(object : Callback<APIResponse> {
                                     override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                                        dialog.dismiss()
                                         Toast.makeText(
                                             this@InstituteNoticeBoard,
                                             t.message,
@@ -727,6 +729,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
                                     admin_flag
                                 ).enqueue(object : Callback<APIResponse> {
                                     override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                                        dialog.dismiss()
                                         Toast.makeText(
                                             this@InstituteNoticeBoard,
                                             t.message,
