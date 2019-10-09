@@ -159,5 +159,7 @@ interface PhpApiInterface  {
     @POST("pdfupload/PostDeleteMCQ.php")
     fun deleteMCQ(@Field("id") id: String): Call<APIResponse>
 
+    @POST("pdfupload/read.php")
+    fun readpdfpath(@Field("id") id: String): Call<ApiVersion>
 }
 

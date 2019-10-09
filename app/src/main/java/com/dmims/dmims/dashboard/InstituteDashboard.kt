@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.faculty_dashboard.*
 import java.util.*
 
 class InstituteDashboard : AppCompatActivity() {
-    lateinit var time_table: LinearLayout
+
     lateinit var noticeboardgrid: LinearLayout
     lateinit var notification: LinearLayout
     lateinit var emergencygrid: LinearLayout
@@ -51,7 +51,7 @@ class InstituteDashboard : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.institute_dashboard)
-        time_table = findViewById<View>(R.id.time_table) as LinearLayout
+
         noticeboardgrid = findViewById<View>(R.id.noticeboardgrid) as LinearLayout
         notification = findViewById<View>(R.id.notification) as LinearLayout
         helpdiloadboad = findViewById<View>(R.id.helpdiloadboad) as LinearLayout
@@ -81,7 +81,7 @@ class InstituteDashboard : AppCompatActivity() {
         txt_designation.text= "Designation: "+key_designation!!
 
         //Set Event
-        setSingleEvent(time_table)
+
         setNoticeEvent(noticeboardgrid)
         getNotice(notification)
         setHelpalertEvent(helpdiloadboad)
@@ -125,16 +125,7 @@ class InstituteDashboard : AppCompatActivity() {
                     intent.putExtra("id_admin", id_admin)
                     startActivity(intent)
                 }
-                R.id.action_time_table -> {
-                    val intent = Intent(this@InstituteDashboard, Activity_time_table_institute::class.java)
-//                    intent.putExtra("info", "Attendance Activity")
-                    val mypref8 = getSharedPreferences("mypref", Context.MODE_PRIVATE)
-                    var student_id_key8 = mypref8.getString("Stud_id_key", null)
-                    intent.putExtra("stud_k", student_id_key8!!.toString())
-                    intent.putExtra("date_of_admiss_k", dateOfAdmission.toString())
-                    intent.putExtra("info", "Attendance Activity")
-                    startActivity(intent)
-                }
+
                 R.id.action_help -> {
                     displayhelpalert()
                 }
@@ -240,17 +231,7 @@ class InstituteDashboard : AppCompatActivity() {
     }
 
     //ViewPager end
-    private fun setSingleEvent(time_table: LinearLayout) {
-        time_table.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this@InstituteDashboard, Activity_time_table_institute::class.java)
-            val mypref9 = getSharedPreferences("mypref", Context.MODE_PRIVATE)
-            var student_id_key10 = mypref9.getString("Stud_id_key", null)
-            intent.putExtra("stud_k", student_id_key10!!.toString())
-            intent.putExtra("date_of_admiss_k", dateOfAdmission.toString())
-            intent.putExtra("info", "Attendance Activity")
-            startActivity(intent)
-        })
-    }
+
 
     private fun setNoticeEvent(noticeboardgrid: LinearLayout) {
         noticeboardgrid.setOnClickListener(View.OnClickListener {
