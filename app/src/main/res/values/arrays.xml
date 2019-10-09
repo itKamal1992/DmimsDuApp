@@ -183,4 +183,33 @@
 
     </string-array>
 
+
+    <string-array name="arr_griev_category">
+        <item>--Select Grievance Category--</item>
+        <item>Attendance</item>
+        <item>Exam</item>
+        <item>Salary Isssue of staff</item>
+        <item>Working culture</item>
+        <item>Welfare Measure</item>
+        <item>Feedback in both academic and non academic</item>
+        <item>Safety Measure</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="arr_collegeName">
+        <item>--Select College--</item>s
+        <item>JNMC</item>
+        <item>MGAC</item>
+        <item>RNPC</item>
+        <item>SPDC</item>
+        <item>SRMMCON</item>
+    </string-array>
+
+    <string-array name="arr_complaintTo">
+        <item>--Select Complaint To--</item>
+        <item>Principal</item>
+        <item>HOD</item>
+        <item>Conveor</item>
+    </string-array>
+
 </resources>

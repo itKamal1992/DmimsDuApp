@@ -22,7 +22,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.ScheduledFeedbackEI"></activity>
+        <activity android:name=".activity.GreivanceStudFile"></activity>
+        <activity android:name=".activity.ScheduledFeedbackEI" />
         <activity android:name=".activity.Student_Feedback_SummativeExam" />
         <activity android:name=".activity.FeedbackOptionActivity" />
         <activity android:name=".activity.FormativeFeedbackActivity" />
@@ -183,7 +184,6 @@
         <activity
             android:name=".dashboard.RegisterarCellDashboard"
             android:theme="@style/AppTheme2" />
-
         <activity
             android:name=".activity.ExamMCQ"
             android:theme="@style/AppTheme2" />
