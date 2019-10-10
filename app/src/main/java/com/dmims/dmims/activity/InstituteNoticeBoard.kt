@@ -1,9 +1,6 @@
 package com.dmims.dmims.activity
 
-import android.app.Activity
-import android.app.AlertDialog
-import android.app.DatePickerDialog
-import android.app.Dialog
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -13,6 +10,7 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcel
 import android.provider.MediaStore
 import android.support.annotation.RequiresApi
 import android.support.v4.content.CursorLoader
@@ -31,7 +29,6 @@ import com.dmims.dmims.remote.IMyAPI
 import com.dmims.dmims.remote.PhpApiInterface
 import com.google.gson.GsonBuilder
 import dmax.dialog.SpotsDialog
-import kotlinx.android.synthetic.main.pdfviewerviewlayout.*
 import net.gotev.uploadservice.MultipartUploadRequest
 import net.gotev.uploadservice.UploadNotificationConfig
 import okhttp3.MediaType
@@ -48,15 +45,134 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import com.dmims.dmims.broadCasts.SingleUploadBroadcastReceiver
 
-@Suppress("DEPRECATION")
-class InstituteNoticeBoard : AppCompatActivity() {
+
+class InstituteNoticeBoard() : AppCompatActivity(), SingleUploadBroadcastReceiver.Delegate{
+    private val TAG1: String = "AndroidUploadService"
+//    val dialog: AlertDialog = SpotsDialog.Builder().setContext(this).build()
+    val uploadReceiver:SingleUploadBroadcastReceiver = SingleUploadBroadcastReceiver()
+
+    override fun onResume() {
+        super.onResume()
+        uploadReceiver.register(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        uploadReceiver.unregister(this)
+    }
+
+
+
+    override fun onError(exception: Exception) {
+        println("onError >>> "+exception!!.stackTrace)
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+
+    override fun onCompleted(serverResponseCode: Int, serverResponseBody: ByteArray) {
+        println("onCompleted >>> serverResponseCode >>> "+serverResponseCode +" serverResponseBody >>> "+serverResponseBody)
+
+        val charset = Charsets.UTF_8
+        println("onCompleted 1 >>> "+serverResponseBody.contentToString()) // [72, 101, 108, 108, 111]
+        println("onCompleted 2 >>> "+serverResponseBody.toString(charset))
+
+//        dialog.setMessage("Please Wait!!! \nwhile we are sending your notice")
+//        dialog.setCancelable(false)
+//        dialog.show()
+                filename = serverResponseBody.toString(charset)
+//
+                try {
+                    mServices.UploadNotice(
+                        notice_date,
+                        notice_title,
+                        notice_desc,
+                        selectedInstituteName,
+                        selectedcourselist,
+                        selecteddeptlist,
+                        selectedNoticeType,
+                        selectedFacultyStud,
+                        confirmStatus,
+                        roleadmin,
+                        id_admin,
+                        filename,
+                        course_id,
+                        dept_id,
+                        student_flag,
+                        faculty_flag,
+                        admin_flag
+                    ).enqueue(object : Callback<APIResponse> {
+                        override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+//                            dialog.dismiss()
+                            btnPubNotice.isClickable=true
+                            btnPubNotice.setBackgroundResource(R.drawable.blue_button_bg)
+                            pb_notice_institute.visibility=View.INVISIBLE
+                            Toast.makeText(
+                                this@InstituteNoticeBoard,
+                                t.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        override fun onResponse(
+                            call: Call<APIResponse>,
+                            response: Response<APIResponse>
+                        ) {
+                            btnPubNotice.isClickable=true
+                            btnPubNotice.setBackgroundResource(R.drawable.blue_button_bg)
+                            pb_notice_institute.visibility=View.INVISIBLE
+//                            dialog.dismiss()
+                            //  val result: APIResponse? = response.body()
+//                                        Toast.makeText(this@InstituteNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
+//                                            .show()
+                            GenericUserFunction.showPositivePopUp(
+                                this@InstituteNoticeBoard,
+                                "Notice Send Successfully"
+                            )
+                        }
+                    })
+                } catch (ex: Exception) {
+//                    dialog.dismiss()
+
+                    ex.printStackTrace()
+                    GenericUserFunction.showApiError(
+                        applicationContext,
+                        "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
+                    )
+                }
+
+
+
+
+
+//        println("onCompleted >>> "+response)
+
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onProgress(progress: Int) {
+        println("onProgress 1 >>> uploadedBytes "+progress)
+    }
+
+
+
+    override fun onProgress(uploadedBytes: Long, totalBytes: Long) {
+        println("onProgress 2 >>> uploadedBytes "+uploadedBytes+" totalBytes >>> "+totalBytes)
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onCancelled() {
+        println("onCancelled >>> ")
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     private var selectedImage: Uri? = null
     private var READ_REQUEST_CODE = 300
     var PdfPathHolder: String? = null
     private var PdfID: String? = null
     private var random: Int? = null
-    var type : String? = null
+    var type: String? = null
     private var confirmStatus = "F"
     private var SERVER_PATH = "http://103.68.25.26/dmims/UploadImage/"
     private var uri: Uri? = null
@@ -69,6 +185,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
     private lateinit var btnPubNotice: Button
     private lateinit var spinner_noticetype: Spinner
     private lateinit var spinner_facultystud: Spinner
+    private lateinit var pb_notice_institute: ProgressBar
     private lateinit var spinner_institue: Spinner
     private lateinit var spinner_courselist: Spinner
     private lateinit var spinner_deptlist: Spinner
@@ -110,16 +227,12 @@ class InstituteNoticeBoard : AppCompatActivity() {
     var extras: Bundle? = null
     var REQUEST_CODE: Int = 0
     lateinit var fileUri: Uri
-    lateinit var progressBar:ProgressBar
-
-
 
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_institute_notice_board)
-
 
 
 
@@ -133,13 +246,15 @@ class InstituteNoticeBoard : AppCompatActivity() {
         spinner_courselist = findViewById(R.id.spinner_courselist)
         spinner_deptlist = findViewById(R.id.spinner_deptlist)
         spinner_facultystud = findViewById(R.id.spinner_facultystud)
-        //val progressBar = findViewById<ProgressBar>(R.id.progressBar2)
+
         roleadmin = intent.getStringExtra("roleadmin")
         id_admin = intent.getStringExtra("id_admin")
         instituteName1.add("Select institute")
         var mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
         Institute_Name = mypref.getString("key_institute", null)
 
+        pb_notice_institute = findViewById<ProgressBar>(R.id.pb_notice_institute)
+        pb_notice_institute.visibility=View.INVISIBLE
         mServices = Common.getAPI()
 
         val myFormat = "dd-MM-yyyy" // mention the format you need
@@ -522,6 +637,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun sendNotice() {
+
         if (editNoticeDate.text.toString().isEmpty()) {
             editNoticeDate.error = "Please select notice date"
             return
@@ -553,100 +669,12 @@ class InstituteNoticeBoard : AppCompatActivity() {
 
         if (confirmStatus == "T" && type == "pdf") {
             try {
-                // PdfUploadFunction()
-                //Dialog Start
-
-                val dialog: AlertDialog = SpotsDialog.Builder().setContext(this).build()
-                dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
-                dialog.setCancelable(false)
-                dialog.show()
-            var phpApiInterface: PhpApiInterface = ApiClientPhp.getClient().create(PhpApiInterface::class.java)
-            var call: Call<ApiVersion> = phpApiInterface.readpdfpath(PdfID+random.toString())
-            call.enqueue(object : Callback<ApiVersion> {
+                btnPubNotice.isClickable=false
+                btnPubNotice.setBackgroundResource(R.drawable.btn_round_inactive)
+                pb_notice_institute.visibility=View.VISIBLE
 
 
-                override fun onFailure(call: Call<ApiVersion>, t: Throwable) {
-                    dialog.dismiss()
-                    Toast.makeText(this@InstituteNoticeBoard, "Server Response" + t.message, Toast.LENGTH_SHORT)
-                }
-
-                override fun onResponse(call: Call<ApiVersion>, response: Response<ApiVersion>) {
-                    var imageClass: ApiVersion? = response.body()
-                    filename = imageClass!!.response
-//
-                            try {
-                                mServices.UploadNotice(
-                                    notice_date,
-                                    notice_title,
-                                    notice_desc,
-                                    selectedInstituteName,
-                                    selectedcourselist,
-                                    selecteddeptlist,
-                                    selectedNoticeType,
-                                    selectedFacultyStud,
-                                    confirmStatus,
-                                    roleadmin,
-                                    id_admin,
-                                    filename,
-                                    course_id,
-                                    dept_id,
-                                    student_flag,
-                                    faculty_flag,
-                                    admin_flag
-                                ).enqueue(object : Callback<APIResponse> {
-                                    override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                                        dialog.dismiss()
-                                        Toast.makeText(
-                                            this@InstituteNoticeBoard,
-                                            t.message,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-
-                                    override fun onResponse(
-                                        call: Call<APIResponse>,
-                                        response: Response<APIResponse>
-                                    ) {
-                                        dialog.dismiss()
-                                        //  val result: APIResponse? = response.body()
-//                                        Toast.makeText(this@InstituteNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
-//                                            .show()
-                                        GenericUserFunction.showPositivePopUp(
-                                            this@InstituteNoticeBoard,
-                                            "Notice Send Successfully"
-                                        )
-                                    }
-                                })
-                            } catch (ex: Exception) {
-                                dialog.dismiss()
-
-                                ex.printStackTrace()
-                                GenericUserFunction.showApiError(
-                                    applicationContext,
-                                    "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
-                                )
-                            }
-
-
-
-
-                    }
-
-
-//                    override fun onFailure(call: retrofit2.Call<MyResponse>, t: Throwable) {
-//                        Toast.makeText(applicationContext, t.message.toString(), Toast.LENGTH_LONG).show()
-//                    }
-//
-//                    override fun onResponse(call: retrofit2.Call<MyResponse>, response: Response<MyResponse>) {
-//                        if (!response.body()!!.error) {
-//                            filename = response.message()
-//                                Toast.makeText(getApplicationContext(),  response.message(), Toast.LENGTH_LONG).show()
-//
-//                        } else {
-//                            Toast.makeText(getApplicationContext(), "Some error occurred...", Toast.LENGTH_LONG).show()
-//                        }
-//                    }
-                })
+                PdfUploadFunction()
 //            var phpApiInterface: PhpApiInterface = ApiClientPhp.getClient().create(PhpApiInterface::class.java)
 //            var call: Call<ImageClass> = phpApiInterface.uploadImage(rTitle, rImage)
 //            call.enqueue(object : Callback<ImageClass> {
@@ -671,12 +699,14 @@ class InstituteNoticeBoard : AppCompatActivity() {
         }
         if (confirmStatus == "T" && type == "image") {
             try {
-               // PdfUploadFunction()
+                // PdfUploadFunction()
                 //Dialog Start
                 val dialog: AlertDialog = SpotsDialog.Builder().setContext(this).build()
                 dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
                 dialog.setCancelable(false)
                 dialog.show()
+
+
                 //Dialog End
 
                 //   uploadFile(selectedImage!!,"Notice")
@@ -686,7 +716,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
                 val requestFile = RequestBody.create(
                     MediaType.parse(getContentResolver().getType(fileUri)),
                     file
-                );
+                )
                 val descBody = RequestBody.create(MediaType.parse("text/plain"), "Notice")
                 //The gson builder
                 val gson = GsonBuilder()
@@ -871,7 +901,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
 //                var fileUri = selectedImage!!
 //                val file = File(getRealPathFromURI(fileUri))
 //                //creating request body for file
-//                val requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file);
+//                val requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file)
 //                val descBody = RequestBody.create(MediaType.parse("text/plain"), "Notice")
 //                //The gson builder
 //                val gson = GsonBuilder()
@@ -1050,13 +1080,10 @@ class InstituteNoticeBoard : AppCompatActivity() {
         } else if (requestCode == 200 && resultCode == Activity.RESULT_OK) {
             type = "pdf"
             uri = data!!.data
-            if(uri.toString().isNotEmpty()) {
+            if (uri.toString().isNotEmpty()) {
                 confirmStatus = "T"
 
-                PdfUploadFunction()
-            }
-             else
-            {
+            } else {
                 confirmStatus = "F"
             }
 //            println("file uri here " + fileUri)
@@ -1107,7 +1134,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
         val file = File(getRealPathFromURI(fileUri))
         //creating request body for file
         val requestFile =
-            RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file);
+            RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file)
         val descBody = RequestBody.create(MediaType.parse("text/plain"), desc)
         //The gson builder
         val gson = GsonBuilder()
@@ -1162,9 +1189,9 @@ class InstituteNoticeBoard : AppCompatActivity() {
     fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
         var byte: ByteArrayOutputStream = ByteArrayOutputStream(100000)
 //    ByteArrayOutputStream bytes = new ByteArrayOutputStream()
-//    inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-//    String path = Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-//    return uri.parse(path);
+//    inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+//    String path = Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null)
+//    return uri.parse(path)
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, byte)
         var path: String =
             MediaStore.Images.Media.insertImage(inContext!!.contentResolver, inImage, "Title", null)
@@ -1173,47 +1200,52 @@ class InstituteNoticeBoard : AppCompatActivity() {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     fun PdfUploadFunction() {
+//        dialog.setMessage("Please Wait!!! \nwhile we are sending your notice")
+//        dialog.setCancelable(false)
+//        dialog.show()
 
+//        Toast.makeText(this,"hello",Toast.LENGTH_LONG).show()
         // PdfNameHolder = txt_fileStart.text.toString() + "_" + edit_upload_fname!!.text.toString().trim()
 
         PdfPathHolder = FilePath.getPath(this, uri)
 
         if (PdfPathHolder == null) {
 
+            btnPubNotice.isClickable=true
+            btnPubNotice.setBackgroundResource(R.drawable.blue_button_bg)
+            pb_notice_institute.visibility=View.INVISIBLE
             Toast.makeText(
                 this,
                 "Please move your PDF file to internal storage & try again.",
                 Toast.LENGTH_LONG
             ).show()
 
+
+
         } else {
-            //Dialog Start
-            val dialog: AlertDialog = SpotsDialog.Builder().setContext(this).build()
+
             try {
-                dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
-                dialog.setCancelable(false)
-                dialog.show()
+
                 //Dialog End
 
-
                 PdfID = UUID.randomUUID().toString()
-               random = Random().nextInt(61) + 20
+                random = Random().nextInt(61) + 20
+                uploadReceiver.setDelegate(this);
+                uploadReceiver.setUploadID(PdfID!!);
+
                 MultipartUploadRequest(this, PdfID, PDF_UPLOAD_HTTP_URL)
                     .addFileToUpload(PdfPathHolder, "pdf")
-                    .addParameter("name", PdfID+random.toString())
+                    .addParameter("name", PdfID + random.toString())
                     .setNotificationConfig(UploadNotificationConfig())
                     .setMaxRetries(5)
                     .startUpload()
-                dialog.dismiss()
 
-
+//                dialog.dismiss()
 
 
 
             } catch (exception: Exception) {
-                dialog.dismiss()
-
-
+//                dialog.dismiss()
                 Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
             }
 
@@ -1221,8 +1253,13 @@ class InstituteNoticeBoard : AppCompatActivity() {
     }
 
     companion object {
+
         //val PDF_UPLOAD_HTTP_URL = "http://avbrh.gearhostpreview.com/pdfupload/upload.php"
         val PDF_UPLOAD_HTTP_URL = "http://dmimsdu.in/web/pdfupload/pdfnoticeupload.php"
     }
+
+
 }
+
+
 
