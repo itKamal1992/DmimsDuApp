@@ -82,6 +82,22 @@ class GreivanceStudFile : AppCompatActivity()
     lateinit var roll_no:String
    // lateinit var course_id:String
 
+     var  Grev_Filename:String=""
+     var  G_TICKETNO:String=""
+     var  G_ATTACHMENT:String=""
+     var  G_STATUS:String=""
+     var  U_ID:String=""
+     var  ASSING_TO_ID:String=""
+     var  REMINDER:String=""
+     var  Principal_Status:String=""
+     var  Dean_Status:String=""
+     var  Conveyour_Status:String=""
+     var  G_SUBJECT:String=""
+     var  G_CATEGORY:String=""
+     var  G_AGAINST:String=""
+     var  G_DISCRIPTION:String=""
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -233,7 +249,21 @@ class GreivanceStudFile : AppCompatActivity()
                                                 str_CollegeNameGrievGriev,
                                                 str_ComplaintToGriev,
                                                 current_date,
-                                                filename).enqueue(object : Callback<APIResponse> {
+                                                filename,
+                                                G_TICKETNO,
+                                                G_ATTACHMENT,
+                                                G_STATUS,
+                                                U_ID,
+                                                ASSING_TO_ID,
+                                                REMINDER,
+                                                Principal_Status,
+                                                Dean_Status,
+                                                Conveyour_Status,
+                                                G_SUBJECT,
+                                                G_CATEGORY,
+                                                G_AGAINST,
+                                                G_DISCRIPTION
+                                            ).enqueue(object : Callback<APIResponse> {
                                                 override fun onFailure(call: Call<APIResponse>, t: Throwable) {
                                                     Toast.makeText(this@GreivanceStudFile, t.message, Toast.LENGTH_SHORT).show()
                                                 }
@@ -290,8 +320,25 @@ class GreivanceStudFile : AppCompatActivity()
                                     str_CollegeNameGrievGriev,
                                     str_ComplaintToGriev,
                                     current_date,
-                                    filename).enqueue(object : Callback<APIResponse> {
-                                    override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                                    filename,
+                                    G_TICKETNO,
+                                    G_ATTACHMENT,
+                                    G_STATUS,
+                                    U_ID,
+                                    ASSING_TO_ID,
+                                    REMINDER,
+                                    Principal_Status,
+                                    Dean_Status,
+                                    Conveyour_Status,
+                                    G_SUBJECT,
+                                    G_CATEGORY,
+                                    G_AGAINST,
+                                    G_DISCRIPTION
+
+                                ).enqueue(object : Callback<APIResponse>
+                                {
+                                    override fun onFailure(call: Call<APIResponse>, t: Throwable)
+                                    {
                                         Toast.makeText(this@GreivanceStudFile, t.message, Toast.LENGTH_SHORT).show()
                                     }
 
@@ -488,7 +535,22 @@ class GreivanceStudFile : AppCompatActivity()
                                     str_CollegeNameGrievGriev,
                                     str_ComplaintToGriev,
                                     current_date,
-                                    filename).enqueue(object : Callback<APIResponse> {
+                                    filename,
+                                    G_TICKETNO,
+                                    G_ATTACHMENT,
+                                    G_STATUS,
+                                    U_ID,
+                                    ASSING_TO_ID,
+                                    REMINDER,
+                                    Principal_Status,
+                                    Dean_Status,
+                                    Conveyour_Status,
+                                    G_SUBJECT,
+                                    G_CATEGORY,
+                                    G_AGAINST,
+                                    G_DISCRIPTION
+
+                                ).enqueue(object : Callback<APIResponse> {
                                     override fun onFailure(call: Call<APIResponse>, t: Throwable) {
                                         Toast.makeText(this@GreivanceStudFile, t.message, Toast.LENGTH_SHORT).show()
                                     }
@@ -545,7 +607,21 @@ class GreivanceStudFile : AppCompatActivity()
                         str_CollegeNameGrievGriev,
                         str_ComplaintToGriev,
                         current_date,
-                        filename).enqueue(object : Callback<APIResponse> {
+                        filename,
+                        G_TICKETNO,
+                        G_ATTACHMENT,
+                        G_STATUS,
+                        U_ID,
+                        ASSING_TO_ID,
+                        REMINDER,
+                        Principal_Status,
+                        Dean_Status,
+                        Conveyour_Status,
+                        G_SUBJECT,
+                        G_CATEGORY,
+                        G_AGAINST,
+                        G_DISCRIPTION
+                    ).enqueue(object : Callback<APIResponse> {
                         override fun onFailure(call: Call<APIResponse>, t: Throwable) {
                             Toast.makeText(this@GreivanceStudFile, t.message, Toast.LENGTH_SHORT).show()
                         }

@@ -41,7 +41,8 @@ import kotlinx.android.synthetic.main.activity_student_dashboard.*
 import java.util.*
 import kotlin.system.exitProcess
 
-class StudentDashboard : AppCompatActivity() {
+class StudentDashboard : AppCompatActivity()
+{
     lateinit var time_table_grid: LinearLayout
     lateinit var greviancegrid: LinearLayout
     lateinit var attendanceGrid: LinearLayout
@@ -94,12 +95,11 @@ class StudentDashboard : AppCompatActivity() {
 
         var drawerTitler = intent.getStringExtra("NAME")
         var enrollNor = intent.getStringExtra("STUD_INFO")
-        if (drawerTitler == null || enrollNor == null) {
+        if (drawerTitler == null || enrollNor == null)
+        {
             drawerTitler = mypref.getString("key_drawer_title", null)
             enrollNor = mypref.getString("key_enroll_no", null)
             dateOfAdmission = mypref.getString("key_doa", null)
-
-
         }
         drawerTitle.text = drawerTitler
         enrollNo.text = getString(Enrol_No)+enrollNor
@@ -298,6 +298,7 @@ class StudentDashboard : AppCompatActivity() {
 
         val timer = Timer()
         timer.scheduleAtFixedRate(MyTimerTask(), 2000, 4000)
+
         //ViewPager
 
         progressDiag = ProgressDialog(this)

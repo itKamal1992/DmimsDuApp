@@ -116,11 +116,8 @@ class MainActivity : AppCompatActivity() {
                                 intent.putExtra("STUD_ID_KEY", result.Data1!!.STUDENTID)
                                 startActivity(intent)
                             }
-                            if (result.Data2?.USER_ROLE != null && result.Data2?.USER_ROLE.equals(
-                                    "Parent",
-                                    ignoreCase = true
-                                )
-                            ) {
+                            if (result.Data2?.USER_ROLE != null && result.Data2?.USER_ROLE.equals("Parent", ignoreCase = true))
+                            {
                                 dialog.dismiss()
                                 val intent =
                                     Intent(applicationContext, StudentDashboard::class.java)

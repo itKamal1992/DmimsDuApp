@@ -110,11 +110,18 @@ class InstituteNoticeBoard : AppCompatActivity() {
     var extras: Bundle? = null
     var REQUEST_CODE: Int = 0
     lateinit var fileUri: Uri
+    lateinit var progressBar:ProgressBar
+
+
+
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_institute_notice_board)
+
+
+
 
         btnPickImage = findViewById<Button>(R.id.admin_notice_upload)
         btnPubNotice = findViewById<Button>(R.id.btn_publish_notice2)
@@ -1045,6 +1052,7 @@ class InstituteNoticeBoard : AppCompatActivity() {
             uri = data!!.data
             if(uri.toString().isNotEmpty()) {
                 confirmStatus = "T"
+
                 PdfUploadFunction()
             }
              else
@@ -1198,8 +1206,13 @@ class InstituteNoticeBoard : AppCompatActivity() {
                     .startUpload()
                 dialog.dismiss()
 
+
+
+
+
             } catch (exception: Exception) {
                 dialog.dismiss()
+
 
                 Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
             }

@@ -3,6 +3,7 @@ package com.dmims.dmims.activity
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
@@ -10,8 +11,10 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.annotation.RequiresApi
 import android.support.v4.content.CursorLoader
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -30,6 +33,8 @@ import com.dmims.dmims.remote.IMyAPI
 import com.dmims.dmims.remote.PhpApiInterface
 import com.google.gson.GsonBuilder
 import dmax.dialog.SpotsDialog
+import net.gotev.uploadservice.MultipartUploadRequest
+import net.gotev.uploadservice.UploadNotificationConfig
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -37,6 +42,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -92,6 +98,12 @@ class AdminNoticeBoard : AppCompatActivity() {
     private lateinit var roleadmin: String
     private val REQUEST_GALLERY_CODE = 111
     private lateinit var progressBarsubmit: ProgressBar
+    var REQUEST_CODE: Int = 0
+    var type : String? = null
+    var PdfPathHolder: String? = null
+    private var PdfID: String? = null
+    private var random: Int? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_notice_board)
@@ -346,9 +358,41 @@ try {
         btnPickImage.setOnClickListener {
 //            val intent = Intent(applicationContext, ImageUpload::class.java)
 //            startActivityForResult(intent, 1)
-            val i = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            println("path >> " + i.data)
-            startActivityForResult(i, 100)
+            var CustDialog = Dialog(this)
+            CustDialog.setContentView(R.layout.dialog_select_uploadtype_custom_popup)
+            var ivNegClose1: ImageView = CustDialog.findViewById(R.id.cross_image) as ImageView
+            var btnCamera: ImageButton = CustDialog.findViewById(R.id.btnCamera) as ImageButton
+            var btnGallary: ImageButton = CustDialog.findViewById(R.id.btnGallary) as ImageButton
+            var btnpdf: ImageButton = CustDialog.findViewById(R.id.btnPdf) as ImageButton
+
+//    GenericPublicVariable.CustDialog.setCancelable(false)
+            ivNegClose1.setOnClickListener {
+                CustDialog.dismiss()
+
+            }
+            btnCamera.setOnClickListener {
+
+                CustDialog.dismiss()
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (intent.resolveActivity(packageManager) != null) {
+                    startActivityForResult(intent, 100)
+                }
+            }
+            btnGallary.setOnClickListener {
+                CustDialog.dismiss()
+                pickImage()
+
+            }
+            btnpdf.setOnClickListener {
+                REQUEST_CODE = 200
+                CustDialog.dismiss()
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                intent.setType("*/*")
+                startActivityForResult(intent, 200)
+
+            }
+//            CustDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            CustDialog.show()
         }
 
         btnPubNotice.setOnClickListener {
@@ -357,6 +401,14 @@ try {
 
         }
 
+    }
+
+    fun pickImage() {
+        REQUEST_CODE = 100
+        val i = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        println("path >> " + i.data)
+
+        startActivityForResult(i, 101)
     }
 
 
@@ -713,27 +765,78 @@ try {
 //                Toast.makeText(this@AdminNoticeBoard, "Nothing Selected", Toast.LENGTH_SHORT)
 //            }
 //        }
-        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
+        if (requestCode == 101 && resultCode == RESULT_OK && data != null) {
+            type = "image"
             //the image URI
             selectedImage = data.getData()
             var bitmap: Bitmap? = getThumbnail(selectedImage!!)
             //calling the upload file method after choosing the file
             if (selectedImage != null) {
                 println("Selected Image >>> " + selectedImage)
-                var CustDialog = Dialog(this)
-                CustDialog.setContentView(R.layout.dialog_image_yes_no_custom_popup)
-                var ivNegClose1: ImageView = CustDialog.findViewById(R.id.ivCustomDialogNegClose) as ImageView
-                var btnOk: Button = CustDialog.findViewById(R.id.btnCustomDialogAccept) as Button
-                var btnCustomDialogCancel: Button = CustDialog.findViewById(R.id.btnCustomDialogCancel) as Button
-                var tvMsg: TextView = CustDialog.findViewById(R.id.tvMsgCustomDialog) as TextView
-                var image: ImageView = CustDialog.findViewById(R.id.dialog_image) as ImageView
+                var CustDialog2 = Dialog(this)
+                CustDialog2.setContentView(R.layout.dialog_image_yes_no_custom_popup)
+                var ivNegClose1: ImageView =
+                    CustDialog2.findViewById(R.id.ivCustomDialogNegClose) as ImageView
+                var btnOk: Button = CustDialog2.findViewById(R.id.btnCustomDialogAccept) as Button
+                var btnCustomDialogCancel: Button =
+                    CustDialog2.findViewById(R.id.btnCustomDialogCancel) as Button
+                var tvMsg: TextView = CustDialog2.findViewById(R.id.tvMsgCustomDialog) as TextView
+                var image: ImageView = CustDialog2.findViewById(R.id.dialog_image) as ImageView
                 image.setImageBitmap(bitmap)
 
                 tvMsg.text = "Do you want to Submit Selected Image?"
-//    GenericPublicVariable.CustDialog.setCancelable(false)
+                //    GenericPublicVariable.CustDialog.setCancelable(false)
+                btnOk.setOnClickListener {
+                    CustDialog2.dismiss()
+                    confirmStatus = "T"
+
+                }
+                btnCustomDialogCancel.setOnClickListener {
+                    CustDialog2.dismiss()
+                    confirmStatus = "F"
+                }
+                ivNegClose1.setOnClickListener {
+                    CustDialog2.dismiss()
+                    confirmStatus = "F"
+                }
+                CustDialog2.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                CustDialog2.show()
+
+//               uploadFile(selectedImage, "My Image")
+            }
+        } else if (requestCode == 100 && resultCode == Activity.RESULT_OK && data != null) {
+            var bitmap: Bitmap = data.getExtras().get("data") as Bitmap
+            type = "image"
+//        // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
+            var tempUri: Uri? = getImageUri(getApplicationContext(), bitmap)
+            selectedImage = tempUri
+            var bitmaps: Bitmap? = getThumbnail(tempUri!!)
+//        // CALL THIS METHOD TO GET THE ACTUAL PATH
+//            var finalFile: File = File(getRealPathFromURI(tempUri!!))
+//            println("finalFile >>>> " + finalFile.toURI())
+
+
+            if (selectedImage != null) {
+                println("Selected Image >>> " + selectedImage)
+                var CustDialog = Dialog(this)
+                CustDialog.setContentView(R.layout.dialog_image_yes_no_custom_popup)
+                var ivNegClose1: ImageView =
+                    CustDialog.findViewById(R.id.ivCustomDialogNegClose) as ImageView
+                var btnOk: Button =
+                    CustDialog.findViewById(R.id.btnCustomDialogAccept) as Button
+                var btnCustomDialogCancel: Button =
+                    CustDialog.findViewById(R.id.btnCustomDialogCancel) as Button
+                var tvMsg: TextView =
+                    CustDialog.findViewById(R.id.tvMsgCustomDialog) as TextView
+                var image: ImageView = CustDialog.findViewById(R.id.dialog_image) as ImageView
+                image.setImageBitmap(bitmaps)
+
+                tvMsg.text = "Do you want to Submit Selected Image?"
+                //    GenericPublicVariable.CustDialog.setCancelable(false)
                 btnOk.setOnClickListener {
                     CustDialog.dismiss()
                     confirmStatus = "T"
+//                    finish()
                 }
                 btnCustomDialogCancel.setOnClickListener {
                     CustDialog.dismiss()
@@ -745,9 +848,22 @@ try {
                 }
                 CustDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                 CustDialog.show()
-
-//                uploadFile(selectedImage, "My Image")
+//
             }
+        } else if (requestCode == 200 && resultCode == Activity.RESULT_OK) {
+            type = "pdf"
+            uri = data!!.data
+            if(uri.toString().isNotEmpty()) {
+                confirmStatus = "T"
+                PdfUploadFunction()
+            }
+            else
+            {
+                confirmStatus = "F"
+            }
+//            println("file uri here " + fileUri)
+//            extras = data?.extras!!
+
         }
     }
 
@@ -758,6 +874,63 @@ try {
             DialogWithoutFile()
         }
     }
+
+    fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
+        var byte: ByteArrayOutputStream = ByteArrayOutputStream(100000)
+//    ByteArrayOutputStream bytes = new ByteArrayOutputStream()
+//    inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+//    String path = Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+//    return uri.parse(path);
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, byte)
+        var path: String =
+            MediaStore.Images.Media.insertImage(inContext!!.contentResolver, inImage, "Title", null)
+        return Uri.parse(path)
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    fun PdfUploadFunction() {
+
+        // PdfNameHolder = txt_fileStart.text.toString() + "_" + edit_upload_fname!!.text.toString().trim()
+
+        PdfPathHolder = FilePath.getPath(this, uri)
+
+        if (PdfPathHolder == null) {
+
+            Toast.makeText(
+                this,
+                "Please move your PDF file to internal storage & try again.",
+                Toast.LENGTH_LONG
+            ).show()
+
+        } else {
+            //Dialog Start
+            val dialog: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
+            try {
+                dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
+                dialog.setCancelable(false)
+                dialog.show()
+                //Dialog End
+
+
+                PdfID = UUID.randomUUID().toString()
+                random = Random().nextInt(61) + 20
+                MultipartUploadRequest(this, PdfID, InstituteNoticeBoard.PDF_UPLOAD_HTTP_URL)
+                    .addFileToUpload(PdfPathHolder, "pdf")
+                    .addParameter("name", PdfID+random.toString())
+                    .setNotificationConfig(UploadNotificationConfig())
+                    .setMaxRetries(5)
+                    .startUpload()
+                dialog.dismiss()
+
+            } catch (exception: Exception) {
+                dialog.dismiss()
+
+                Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
+            }
+
+        }
+    }
+
     @Throws(FileNotFoundException::class, IOException::class)
     fun getThumbnail(uri: Uri): Bitmap? {
         var input = this.contentResolver.openInputStream(uri)
@@ -1085,6 +1258,11 @@ try {
         val result = cursor.getString(column_index)
         cursor.close()
         return result
+    }
+
+    companion object {
+        //val PDF_UPLOAD_HTTP_URL = "http://avbrh.gearhostpreview.com/pdfupload/upload.php"
+        val PDF_UPLOAD_HTTP_URL = "http://dmimsdu.in/web/pdfupload/pdfnoticeupload.php"
     }
 }
 
