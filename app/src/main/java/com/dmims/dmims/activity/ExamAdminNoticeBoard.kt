@@ -25,6 +25,7 @@ import com.dmims.dmims.Generic.GenericUserFunction
 import com.dmims.dmims.ImageClass
 import com.dmims.dmims.ImageUpload
 import com.dmims.dmims.R
+import com.dmims.dmims.broadCasts.SingleUploadBroadcastReceiver
 import com.dmims.dmims.common.Common
 import com.dmims.dmims.model.APIResponse
 import com.dmims.dmims.model.MyResponse
@@ -51,8 +52,116 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ExamAdminNoticeBoard : AppCompatActivity()
-{
+class ExamAdminNoticeBoard : AppCompatActivity(), SingleUploadBroadcastReceiver.Delegate{
+    private val TAG1: String = "AndroidUploadService"
+    var dialogCommon: android.app.AlertDialog ?= null
+    val uploadReceiver: SingleUploadBroadcastReceiver = SingleUploadBroadcastReceiver()
+
+    override fun onResume() {
+        super.onResume()
+        uploadReceiver.register(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        uploadReceiver.unregister(this)
+    }
+
+
+
+    override fun onError(exception: Exception) {
+        println("onError >>> "+exception!!.stackTrace)
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+
+    override fun onCompleted(serverResponseCode: Int, serverResponseBody: ByteArray) {
+        println("onCompleted >>> serverResponseCode >>> "+serverResponseCode +" serverResponseBody >>> "+serverResponseBody)
+
+        val charset = Charsets.UTF_8
+        println("onCompleted 1 >>> "+serverResponseBody.contentToString()) // [72, 101, 108, 108, 111]
+        println("onCompleted 2 >>> "+serverResponseBody.toString(charset))
+
+        filename = serverResponseBody.toString(charset)
+//
+        try {
+            mServices.UploadNotice(
+                notice_date,
+                notice_title,
+                notice_desc,
+                selectedInstituteName,
+                selectedcourselist,
+                selecteddeptlist,
+                selectedNoticeType,
+                selectedFacultyStud,
+                confirmStatus,
+                UserRole,
+                UserID,
+                filename,
+                course_id,
+                dept_id,
+                student_flag,
+                faculty_flag,
+                admin_flag
+            ).enqueue(object : Callback<APIResponse> {
+                override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                    dialogCommon!!.dismiss()
+
+                    Toast.makeText(
+                        this@ExamAdminNoticeBoard,
+                        t.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                override fun onResponse(
+                    call: Call<APIResponse>,
+                    response: Response<APIResponse>
+                ) {
+                    dialogCommon!!.dismiss()
+                    //  val result: APIResponse? = response.body()
+//                                        Toast.makeText(this@InstituteNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
+//                                            .show()
+                    GenericUserFunction.showPositivePopUp(
+                        this@ExamAdminNoticeBoard,
+                        "Notice Send Successfully"
+                    )
+                }
+            })
+        } catch (ex: Exception) {
+            dialogCommon!!.dismiss()
+
+            ex.printStackTrace()
+            GenericUserFunction.showApiError(
+                applicationContext,
+                "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
+            )
+        }
+
+
+
+
+
+//        println("onCompleted >>> "+response)
+
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onProgress(progress: Int) {
+        println("onProgress 1 >>> uploadedBytes "+progress)
+    }
+
+
+
+    override fun onProgress(uploadedBytes: Long, totalBytes: Long) {
+        println("onProgress 2 >>> uploadedBytes "+uploadedBytes+" totalBytes >>> "+totalBytes)
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onCancelled() {
+        println("onCancelled >>> ")
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
     private var selectedImage: Uri? = null
     private var READ_REQUEST_CODE = 300
     private var confirmStatus = "F"
@@ -112,10 +221,11 @@ class ExamAdminNoticeBoard : AppCompatActivity()
     private var PdfID: String? = null
     private var random: Int? = null
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_exam_admin_notice_board)
-
+        dialogCommon= SpotsDialog.Builder().setContext(this).build()
         btnPickImage = findViewById<Button>(R.id.admin_notice_upload)
         btnPubNotice = findViewById<Button>(R.id.btn_publish_notice2)
         editNoticeDate = findViewById(R.id.select_date)
@@ -467,6 +577,7 @@ class ExamAdminNoticeBoard : AppCompatActivity()
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun sendNotice() {
         if (editNoticeDate.text.toString().isEmpty()) {
             editNoticeDate.error = "Please select notice date"
@@ -496,8 +607,15 @@ class ExamAdminNoticeBoard : AppCompatActivity()
             Toast.makeText(this, "Please select valid institute name", Toast.LENGTH_SHORT).show()
             return
         }
-        // if (RESOU_FLAG == "T") {
-        if (confirmStatus == "T") {
+        // if (RESOU_FLAG == "T") {  PdfUploadFunction()
+        if(confirmStatus == "T" && type == "pdf")
+        {
+            dialogCommon!!.setMessage("Please Wait!!! \nwhile we are sending your notice")
+            dialogCommon!!.setCancelable(false)
+            dialogCommon!!.show()
+            PdfUploadFunction()
+        }
+        if (confirmStatus == "T"&& type == "image") {
             try {
                 //Dialog Start
                 val dialog: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
@@ -857,7 +975,7 @@ class ExamAdminNoticeBoard : AppCompatActivity()
             uri = data!!.data
             if(uri.toString().isNotEmpty()) {
                 confirmStatus = "T"
-                PdfUploadFunction()
+
             }
             else
             {
@@ -984,34 +1102,37 @@ class ExamAdminNoticeBoard : AppCompatActivity()
 
         if (PdfPathHolder == null)
         {
+            dialogCommon!!.dismiss()
          Toast.makeText(this, "Please move your PDF file to internal storage & try again.", Toast.LENGTH_LONG).show()
         }
         else
         { //Dialog Start
-            val dialog: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
+//            val dialog: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
             try
             {
-                dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
-                dialog.setCancelable(false)
-                dialog.show()
+//                dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
+//                dialog.setCancelable(false)
+//                dialog.show()
                 //Dialog End
 
 
 
                 PdfID = UUID.randomUUID().toString()
                 random = Random().nextInt(61) + 20
+                uploadReceiver.setDelegate(this)
+                uploadReceiver.setUploadID(PdfID!!)
                 MultipartUploadRequest(this, PdfID, PDF_UPLOAD_HTTP_URL)
                     .addFileToUpload(PdfPathHolder, "pdf")
                     .addParameter("name", PdfID+random.toString())
                     .setNotificationConfig(UploadNotificationConfig())
                     .setMaxRetries(5)
                     .startUpload()
-                dialog.dismiss()
+
 
             }
             catch (exception: Exception)
             {
-                dialog.dismiss()
+                dialogCommon!!.dismiss()
                 Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
             }
         }

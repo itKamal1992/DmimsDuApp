@@ -71,7 +71,6 @@ class ExamCellDashboard : AppCompatActivity() {
 
         var mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
         var drawer_titler = mypref.getString("key_drawer_title", null)
-        var enroll_nor = mypref.getString("key_enroll_no", null)
         id_admin = mypref.getString("Stud_id_key", null)
         roleadmin = mypref.getString("key_userrole", null)
 

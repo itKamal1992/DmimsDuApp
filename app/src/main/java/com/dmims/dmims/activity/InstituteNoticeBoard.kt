@@ -50,7 +50,7 @@ import com.dmims.dmims.broadCasts.SingleUploadBroadcastReceiverAdmin
 
 class InstituteNoticeBoard() : AppCompatActivity(), SingleUploadBroadcastReceiver.Delegate{
     private val TAG1: String = "AndroidUploadService"
-//    val dialog: AlertDialog = SpotsDialog.Builder().setContext(this).build()
+    var dialogCommon: android.app.AlertDialog ?= null
     val uploadReceiver:SingleUploadBroadcastReceiver = SingleUploadBroadcastReceiver()
 
     override fun onResume() {
@@ -78,9 +78,6 @@ class InstituteNoticeBoard() : AppCompatActivity(), SingleUploadBroadcastReceive
         println("onCompleted 1 >>> "+serverResponseBody.contentToString()) // [72, 101, 108, 108, 111]
         println("onCompleted 2 >>> "+serverResponseBody.toString(charset))
 
-//        dialog.setMessage("Please Wait!!! \nwhile we are sending your notice")
-//        dialog.setCancelable(false)
-//        dialog.show()
                 filename = serverResponseBody.toString(charset)
 //
                 try {
@@ -104,10 +101,8 @@ class InstituteNoticeBoard() : AppCompatActivity(), SingleUploadBroadcastReceive
                         admin_flag
                     ).enqueue(object : Callback<APIResponse> {
                         override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-//                            dialog.dismiss()
-                            btnPubNotice.isClickable=true
-                            btnPubNotice.setBackgroundResource(R.drawable.blue_button_bg)
-                            pb_notice_institute.visibility=View.INVISIBLE
+                            dialogCommon!!.dismiss()
+
                             Toast.makeText(
                                 this@InstituteNoticeBoard,
                                 t.message,
@@ -119,10 +114,7 @@ class InstituteNoticeBoard() : AppCompatActivity(), SingleUploadBroadcastReceive
                             call: Call<APIResponse>,
                             response: Response<APIResponse>
                         ) {
-                            btnPubNotice.isClickable=true
-                            btnPubNotice.setBackgroundResource(R.drawable.blue_button_bg)
-                            pb_notice_institute.visibility=View.INVISIBLE
-//                            dialog.dismiss()
+                            dialogCommon!!.dismiss()
                             //  val result: APIResponse? = response.body()
 //                                        Toast.makeText(this@InstituteNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
 //                                            .show()
@@ -133,7 +125,7 @@ class InstituteNoticeBoard() : AppCompatActivity(), SingleUploadBroadcastReceive
                         }
                     })
                 } catch (ex: Exception) {
-//                    dialog.dismiss()
+                    dialogCommon!!.dismiss()
 
                     ex.printStackTrace()
                     GenericUserFunction.showApiError(
@@ -233,8 +225,7 @@ class InstituteNoticeBoard() : AppCompatActivity(), SingleUploadBroadcastReceive
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_institute_notice_board)
-
-
+        dialogCommon= SpotsDialog.Builder().setContext(this).build()
 
         btnPickImage = findViewById<Button>(R.id.admin_notice_upload)
         btnPubNotice = findViewById<Button>(R.id.btn_publish_notice2)
@@ -670,25 +661,12 @@ class InstituteNoticeBoard() : AppCompatActivity(), SingleUploadBroadcastReceive
 
         if (confirmStatus == "T" && type == "pdf") {
             try {
-                btnPubNotice.isClickable=false
-                btnPubNotice.setBackgroundResource(R.drawable.btn_round_inactive)
-                pb_notice_institute.visibility=View.VISIBLE
-
+                dialogCommon!!.setMessage("Please Wait!!! \nwhile we are sending your notice")
+                dialogCommon!!.setCancelable(false)
+                dialogCommon!!.show()
 
                 PdfUploadFunction()
-//            var phpApiInterface: PhpApiInterface = ApiClientPhp.getClient().create(PhpApiInterface::class.java)
-//            var call: Call<ImageClass> = phpApiInterface.uploadImage(rTitle, rImage)
-//            call.enqueue(object : Callback<ImageClass> {
-//                override fun onFailure(call: Call<ImageClass>, t: Throwable) {
-//                    Toast.makeText(this@InstituteNoticeBoard, "Server Response" + t.message, Toast.LENGTH_SHORT)
-//                }
-//
-//                override fun onResponse(call: Call<ImageClass>, response: Response<ImageClass>) {
-//                    var imageClass: ImageClass? = response.body()
-//                    Toast.makeText(this@InstituteNoticeBoard, imageClass!!.getResponse(), Toast.LENGTH_SHORT)
-//                    filename = "http://avbrh.gearhostpreview.com/imageupload/" + imageClass.getuploadPath()
-//                }
-//            })
+
             } catch (ex: Exception) {
 
                 ex.printStackTrace()
@@ -1212,9 +1190,7 @@ class InstituteNoticeBoard() : AppCompatActivity(), SingleUploadBroadcastReceive
 
         if (PdfPathHolder == null) {
 
-            btnPubNotice.isClickable=true
-            btnPubNotice.setBackgroundResource(R.drawable.blue_button_bg)
-            pb_notice_institute.visibility=View.INVISIBLE
+            dialogCommon!!.dismiss()
             Toast.makeText(
                 this,
                 "Please move your PDF file to internal storage & try again.",
@@ -1231,8 +1207,8 @@ class InstituteNoticeBoard() : AppCompatActivity(), SingleUploadBroadcastReceive
 
                 PdfID = UUID.randomUUID().toString()
                 random = Random().nextInt(61) + 20
-                uploadReceiver.setDelegate(this);
-                uploadReceiver.setUploadID(PdfID!!);
+                uploadReceiver.setDelegate(this)
+                uploadReceiver.setUploadID(PdfID!!)
 
                 MultipartUploadRequest(this, PdfID, PDF_UPLOAD_HTTP_URL)
                     .addFileToUpload(PdfPathHolder, "pdf")
@@ -1246,7 +1222,7 @@ class InstituteNoticeBoard() : AppCompatActivity(), SingleUploadBroadcastReceive
 
 
             } catch (exception: Exception) {
-//                dialog.dismiss()
+                dialogCommon!!.dismiss()
                 Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
             }
 
