@@ -22,14 +22,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activity.ViewGrievPrincipal"></activity>
+
         <receiver
-            android:name=".broadCasts.SingleUploadBroadcastReceiver" android:exported="false">
+            android:name=".broadCasts.SingleUploadBroadcastReceiverAdmin"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.dmims.dmims.broadCasts.uploadservice.broadcast.status" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activity.GreivanceStudFile"></activity>
+        <activity android:name=".activity.GreivanceStudFile" />
         <activity android:name=".activity.ScheduledFeedbackEI" />
         <activity android:name=".activity.Student_Feedback_SummativeExam" />
         <activity android:name=".activity.FeedbackOptionActivity" />
@@ -190,6 +193,9 @@
             android:theme="@style/AppTheme2" />
         <activity
             android:name=".dashboard.RegisterarCellDashboard"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".dashboard.PrincipalDashboard"
             android:theme="@style/AppTheme2" />
         <activity
             android:name=".activity.ExamMCQ"

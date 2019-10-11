@@ -84,11 +84,23 @@ class FeedbackOptionActivity : AppCompatActivity() {
             {
                 Toast.makeText(this,feedbackSelected,Toast.LENGTH_LONG).show()
 
-            }else
-            {
-                val intent=Intent(this@FeedbackOptionActivity,FeedbackOptionType::class.java)
-                startActivity(intent)
             }
+            else if(selected_Af_SS_Q1_Answer.equals("EXAM FEEDBACK FORMATIVE",ignoreCase = true))
+            {
+            val intentStudentSurvey = Intent(this@FeedbackOptionActivity, FormativeFeedbackActivity::class.java)
+            startActivity(intentStudentSurvey)
+            finish()
+        }
+        else if(selected_Af_SS_Q1_Answer.equals("EXAM FEEDBACK SUMMATIVE",ignoreCase = true))
+            {
+                val intentStudentSurvey = Intent(this@FeedbackOptionActivity, Student_Feedback_SummativeExam::class.java)
+                startActivity(intentStudentSurvey)
+                finish()
+            }
+            else  if(selected_Af_SS_Q1_Answer.equals("Select Your Choice",ignoreCase = true))
+                {
+                    GenericUserFunction.DisplayToast(this@FeedbackOptionActivity,"Please select available feedback name to proceed further.")
+                }
             println("feedbackSelected  "+feedbackSelected)
 
 

@@ -24,7 +24,7 @@ import com.dmims.dmims.Generic.GenericUserFunction
 import com.dmims.dmims.ImageClass
 import com.dmims.dmims.ImageUpload
 import com.dmims.dmims.R
-import com.dmims.dmims.broadCasts.SingleUploadBroadcastReceiver
+/*import com.dmims.dmims.broadCasts.SingleUploadBroadcastReceiver*/
 import com.dmims.dmims.broadCasts.SingleUploadBroadcastReceiverAdmin
 import com.dmims.dmims.common.Common
 import com.dmims.dmims.model.APIResponse

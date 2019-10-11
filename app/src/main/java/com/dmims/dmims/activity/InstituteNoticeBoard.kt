@@ -45,7 +45,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import com.dmims.dmims.broadCasts.SingleUploadBroadcastReceiver
+import com.dmims.dmims.broadCasts.SingleUploadBroadcastReceiverAdmin
 
 
 class InstituteNoticeBoard() : AppCompatActivity(), SingleUploadBroadcastReceiver.Delegate{
@@ -429,6 +429,7 @@ class InstituteNoticeBoard() : AppCompatActivity(), SingleUploadBroadcastReceive
         spinner_courselist.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 try {
+
                     selectedcourselist = p0!!.getItemAtPosition(p2) as String
                     deptlist.clear()
                     mServices.GetInstituteData()

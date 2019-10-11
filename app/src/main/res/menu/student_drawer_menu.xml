@@ -58,6 +58,13 @@
 			android:title="Help"
 			android:icon="@drawable/ic_help_drawer"
 	/>
+
+	<item
+		android:id="@+id/action_dummy"
+		android:title="Test"
+		android:icon="@drawable/ic_help_drawer"
+		/>
+
 	<item
 			android:id="@+id/action_logout"
 			android:title="Logout"
