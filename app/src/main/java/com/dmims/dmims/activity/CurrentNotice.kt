@@ -91,23 +91,34 @@ class CurrentNotice : AppCompatActivity() {
 //                                            if(( result.Data14!![i].USER_ROLE == "ADMIN" )||( result.Data14!![i].USER_ROLE == "EXAMINCHARGE" )){
                                             {
                                                 if (result.Data14!![i].RESOU_FLAG == "T") {
-                                                    k = R.drawable.ic_notice_yes
+//                                        k = R.drawable.ic_notice_yes
+                                                    result.Data14!![i].ID
+
+                                                    if(result.Data14!![i].FILENAME.contains(".jpg",ignoreCase = true)||result.Data14!![i].FILENAME.contains(".png",ignoreCase = true))
+                                                    {
+                                                        k = R.drawable.ic_jpg
+                                                    }else
+                                                        if(result.Data14!![i].FILENAME.contains(".pdf",ignoreCase = true)) {
+                                                            k = R.drawable.icon_pdf
+                                                        }
+//                                        ???
+
                                                 } else {
                                                     k = R.drawable.ic_anotice_no
                                                 }
                                                 users.add(
                                                     NoticeStudCurrent(
-                                                        "NOTICE TITLE: " + result.Data14!![i].NOTICE_TITLE,
-                                                        "SENDER: " + result.Data14!![i].USER_ROLE,
-                                                        "NOTICE FOR: " + result.Data14!![i].USER_TYPE,
-                                                        "NOTICE TYPE: " + result.Data14!![i].NOTICE_TYPE,
-                                                        "NOTICE DESC: " + result.Data14!![i].NOTICE_DESC,
-                                                        "NOTICE DATE: " + result.Data14!![i].NOTICE_DATE,
-                                                        "INSTITUTE: " + result.Data14!![i].INSTITUTE_NAME,
-                                                        "COURSE NAME: " + result.Data14!![i].COURSE_NAME,
-                                                        "COURSE ID: " + result.Data14!![i].COURSE_ID,
-                                                        "DEPT NAME: " + result.Data14!![i].DEPT_NAME,
-                                                        "DEPT ID: " + result.Data14!![i].DEPT_ID,
+                                                        "Notice Title : " + result.Data14!![i].NOTICE_TITLE,
+                                                        "Sender : " + result.Data14!![i].USER_ROLE,
+                                                        "Notice For : " + result.Data14!![i].USER_TYPE,
+                                                        "Notice Type : " + result.Data14!![i].NOTICE_TYPE,
+                                                        "Notice Desc : " + result.Data14!![i].NOTICE_DESC,
+                                                        "Notice Date : " + result.Data14!![i].NOTICE_DATE,
+                                                        "Institute : " + result.Data14!![i].INSTITUTE_NAME,
+                                                        "Course Name : " + result.Data14!![i].COURSE_NAME,
+                                                        "Course ID : " + result.Data14!![i].COURSE_ID,
+                                                        "Dept Name : " + result.Data14!![i].DEPT_NAME,
+                                                        "Dept ID : " + result.Data14!![i].DEPT_ID,
                                                         "ATTACHMENT STATUS: " + result.Data14!![i].RESOU_FLAG,
                                                         result.Data14!![i].FILENAME,
                                                         k

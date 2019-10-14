@@ -349,6 +349,52 @@
 				
 				
 				</LinearLayout>
+
+				<!-- MULTIPLE YEAR -->
+				<LinearLayout android:orientation="horizontal"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="20dp"
+					android:layout_marginBottom="20dp"
+					android:layout_marginRight="20dp">
+					<!-- Left icon !-->
+					<LinearLayout android:layout_width="60dp"
+						android:orientation="vertical"
+						android:layout_height="wrap_content">
+
+						<LinearLayout android:layout_width="60dp"
+							android:orientation="vertical"
+							android:background="@drawable/white_right_corner_bg2"
+							android:layout_height="wrap_content">
+
+							<LinearLayout android:orientation="vertical"
+								android:gravity="center_vertical|center_horizontal"
+								android:layout_width="match_parent"
+								android:layout_height="50dp">
+
+								<ImageView android:background="@drawable/ic_notice_type"
+									android:scaleType="fitCenter"
+									android:layout_width="30dp"
+									android:layout_height="30dp"/>
+
+							</LinearLayout>
+						</LinearLayout>
+					</LinearLayout>
+					<LinearLayout android:layout_width="fill_parent"
+						android:orientation="vertical"
+						android:background="@drawable/white_right_corner_bg"
+						android:layout_height="50dp">
+						<com.androidbuts.multispinnerfilter.MultiSpinnerSearch
+							android:id="@+id/MultiSpinnerYear"
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:layout_margin="10dp"
+							app:hintText="Select Year" />
+
+					</LinearLayout>
+
+
+				</LinearLayout>
 				
 				 <!--Institute List-->
 				<LinearLayout android:orientation="horizontal"

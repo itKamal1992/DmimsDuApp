@@ -7,7 +7,9 @@
         android:endColor="#ef5350"
 
               android:gradientRadius="300dp"/>
+<stroke android:color="@color/colorblack" android:width="3dp">
 
+</stroke>
     <corners android:radius="20dp"/>
     <!--              android:startColor="#2476a6"-->
     <!--              android:endColor="#053754"-->

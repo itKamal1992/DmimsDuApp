@@ -37,7 +37,9 @@
 						  android:layout_marginTop="10dp"
 						  android:layout_marginBottom="10dp"
 						  android:layout_marginLeft="10dp"
-						  android:layout_marginRight="10dp">
+						  android:layout_marginRight="10dp"
+				android:background="@drawable/gradient_bg"
+				android:padding="5dp">
 				<!-- Left icon !-->
 				<LinearLayout android:layout_width="60dp"
 							  android:orientation="vertical"
@@ -69,76 +71,89 @@
 				</LinearLayout>
 				<LinearLayout android:layout_width="match_parent"
 							  android:orientation="vertical"
-							  android:background="@drawable/white_right_corner_bg"
 							  android:layout_height="wrap_content">
 
 
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtNOTICE_TITLE"
 							  android:textStyle="bold"
-							  android:textColor="#EB333D"
+							  android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:text="NOTICE TITLE"
 							  android:layout_height="wrap_content"/>
+					<LinearLayout android:layout_width="match_parent"
+						android:layout_height="2dp"
+						android:background="@color/colorblack"
+						android:layout_marginRight="2dp"
+						android:layout_marginLeft="2dp"/>
 
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtUSER_ROLE"
 							  android:text="USER_ROLE"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtUSER_TYPE"
 							  android:text="USER_TYPE"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtNOTICE_TYPE"
 							  android:text="NOTICE_TYPE"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtNOTICE_DESC"
 							  android:text="NOTICE_DESC"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtNOTICE_DATE"
 							  android:text="NOTICE_DATE"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtINSTITUTE_NAME"
 							  android:text="INSTITUTE_NAME"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtCOURSE_NAME"
 							  android:text="COURSE_NAME"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtCOURSE_ID"
 							  android:text="COURSE_ID"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtDEPT_NAME"
-
 							  android:text="DEPT_NAME"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtDEPT_ID"
 							  android:text="DEPT_ID"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 					<!--<TextView android:layout_width="match_parent"-->

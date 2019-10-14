@@ -103,7 +103,7 @@ class StudentDashboard : AppCompatActivity()
         }
         drawerTitle.text = drawerTitler
         enrollNo.text = getString(Enrol_No)+enrollNor
-        title_Mobile.text= "MB No: "+mypref.getString("key_editmob", null)
+        title_Mobile.text= "MB No : "+mypref.getString("key_editmob", null)
         //Set Event
         setSingleEvent(attendanceGrid)
         setTimeTable(time_table_grid)
@@ -333,8 +333,8 @@ class StudentDashboard : AppCompatActivity()
                     users.clear()
                    Deptlist = response.body()!!.Data
                     if (Deptlist!!.size>0)
-                    txt_Institute.text="Ins Name: "+Deptlist!![0].COURSE_INSTITUTE
-                    txt_Course.text="Course Name: "+Deptlist!![0].COURSE_NAME
+                    txt_Institute.text="Ins Name : "+Deptlist!![0].COURSE_INSTITUTE
+                    txt_Course.text="Course Name : "+Deptlist!![0].COURSE_NAME
 
                     val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
                     val editor = mypref.edit()
