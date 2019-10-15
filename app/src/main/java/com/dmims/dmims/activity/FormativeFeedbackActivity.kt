@@ -607,21 +607,31 @@ class FormativeFeedbackActivity : AppCompatActivity() {
         rootObject.put("ROLL_NO", Stud_Roll_No)//.replace("-", " ")
         rootObject.put("COURSE", Course)
         rootObject.put("INSTITUTE_NAME", Stud_Institute)
-        //  rootObject.put("Summative", objSummative)
+          rootObject.put("Summative", objSummative)
         rootObject.put("Formative", obj_formative)
 
 
         val dialog: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
         try {
-            println("rootObject >>> " + rootObject)
+            println("rootObject >>> " + rootObject.toString())
 
             dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
             dialog.setCancelable(false)
             dialog.show()
             //Dialog End
             GenericPublicVariable.mServices.SubmitExamFeedback(rootObject.toString())
+//            GenericPublicVariable.mServices.SubmitExamFeedback(
+//                "Formative",
+//                Course_ID,
+//                Stud_ID,
+//                Stud_Name,
+//                Stud_Roll_No,
+//                Course,
+//                Stud_Institute,
+//                rootObject.toString())
                 .enqueue(object : Callback<APIResponse> {
                     override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                        dialog.dismiss()
                         Toast.makeText(
                             this@FormativeFeedbackActivity,
                             t.message,

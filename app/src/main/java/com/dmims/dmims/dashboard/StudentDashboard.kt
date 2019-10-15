@@ -60,6 +60,7 @@ class StudentDashboard : AppCompatActivity()
     lateinit var title_Mobile: TextView
     lateinit var title_Institute: TextView
     lateinit var title_Course: TextView
+    lateinit var user_role: TextView
     lateinit var viewPager: ViewPager
     lateinit var sliderDotsPanel: LinearLayout
     private var dotsCount: Int = 0
@@ -89,6 +90,7 @@ class StudentDashboard : AppCompatActivity()
         title_Mobile = findViewById<TextView>(R.id.txt_Mobile) as TextView
         title_Institute = findViewById<TextView>(R.id.txt_Institute) as TextView
         title_Course = findViewById<TextView>(R.id.txt_Course) as TextView
+        user_role = findViewById(R.id.user_role)
 
         val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
         COURSE_ID = mypref.getString("course_id", null)
@@ -102,7 +104,8 @@ class StudentDashboard : AppCompatActivity()
             dateOfAdmission = mypref.getString("key_doa", null)
         }
         drawerTitle.text = drawerTitler
-        enrollNo.text = getString(Enrol_No)+enrollNor
+        user_role.text = "User : "+mypref.getString("key_userrole", null)
+        enrollNo.text = "Enrol_No : "+enrollNor
         title_Mobile.text= "MB No : "+mypref.getString("key_editmob", null)
         //Set Event
         setSingleEvent(attendanceGrid)

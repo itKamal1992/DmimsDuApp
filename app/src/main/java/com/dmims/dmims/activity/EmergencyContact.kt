@@ -37,7 +37,7 @@ class EmergencyContact : AppCompatActivity() {
                 .enqueue(object : Callback<APIResponse> {
                     override fun onFailure(call: Call<APIResponse>, t: Throwable) {
                         Toast.makeText(this@EmergencyContact, t.message, Toast.LENGTH_SHORT).show()
-                        progressBar.visibility = View.INVISIBLE
+                        progressBar.visibility = View.GONE
                     }
 
                     override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
@@ -59,11 +59,11 @@ class EmergencyContact : AppCompatActivity() {
                                     )
                                 )
                             }
-                            progressBar.visibility = View.INVISIBLE
+                            progressBar.visibility = View.GONE
                             val adapter = EmergencyContactAdapter(this@EmergencyContact,users1)
                             recyclerView.adapter = adapter
                         } else {
-                            progressBar.visibility = View.INVISIBLE
+                            progressBar.visibility = View.GONE
                             Toast.makeText(this@EmergencyContact, result.Status, Toast.LENGTH_SHORT).show()
                         }
                     }

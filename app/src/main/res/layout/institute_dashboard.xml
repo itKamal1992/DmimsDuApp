@@ -265,12 +265,9 @@
 			android:background="@drawable/nav_bg"
 			android:orientation="horizontal">
 			<LinearLayout
-				android:layout_width="100dp"
-				android:layout_height="100dp"
+				android:layout_width="80dp"
+				android:layout_height="80dp"
 				android:layout_gravity="center_horizontal|center_vertical"
-				android:layout_marginTop="5dp"
-
-
 				android:orientation="horizontal">
 
 				<ImageView
@@ -278,7 +275,6 @@
 					android:layout_width="match_parent"
 					android:layout_height="match_parent"
 					android:layout_gravity="center"
-					android:layout_margin="2dp"
 					android:background="@drawable/drawer_profile"
 					/>
 			</LinearLayout>
@@ -286,8 +282,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
-				android:paddingLeft="10dp"
-				android:layout_margin="@dimen/elevation_5dp"
+				android:paddingLeft="5dp"
 			>
 
 				<TextView
@@ -295,10 +290,9 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_marginTop="4dp"
-					android:layout_marginBottom="5dp"
 					android:text="Student Name"
 					android:textColor="@color/colorWhite"
-					android:textSize="20dp"
+					android:textSize="14sp"
 					android:textStyle="bold"
 				/>
 				<TextView
@@ -306,33 +300,27 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_marginTop="0dp"
-					android:layout_marginBottom="5dp"
 					android:text="Role."
 					android:textColor="@color/colorWhite"
-					android:textSize="16dp"
-					android:textStyle="bold"
+					android:textSize="14sp"
 				/>
 				<TextView
 					android:id="@+id/txt_designation"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_marginTop="0dp"
-					android:layout_marginBottom="5dp"
 					android:text="Designation"
 					android:textColor="@color/colorWhite"
-					android:textSize="16dp"
-					android:textStyle="bold"
+					android:textSize="14sp"
 				/>
 				<TextView
 					android:id="@+id/txt_Institute"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_marginTop="0dp"
-					android:layout_marginBottom="5dp"
 					android:text="Institute"
 					android:textColor="@color/colorWhite"
-					android:textSize="16dp"
-					android:textStyle="bold"
+					android:textSize="14sp"
 				/>
 
 				<TextView
@@ -340,11 +328,9 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_marginTop="0dp"
-					android:layout_marginBottom="5dp"
 					android:text="Mobile"
 					android:textColor="@color/colorWhite"
-					android:textSize="16dp"
-					android:textStyle="bold"
+					android:textSize="14sp"
 				/>
 
 
@@ -356,8 +342,7 @@
 					android:layout_marginBottom="5dp"
 					android:text="Enrollment No."
 					android:textColor="@color/colorWhite"
-					android:textSize="16dp"
-					android:textStyle="bold"
+					android:textSize="14sp"
 				/>
 			</LinearLayout>
 		</LinearLayout>
