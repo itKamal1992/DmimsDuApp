@@ -30,6 +30,8 @@ class InstituteDashboard : AppCompatActivity() {
     lateinit var notification: LinearLayout
     lateinit var emergencygrid: LinearLayout
     lateinit var helpdiloadboad: LinearLayout
+    lateinit var academicCalenderInsti: LinearLayout
+
     lateinit var noticeInboxGrid: LinearLayout
     lateinit var academicCalBoard: LinearLayout
     lateinit var drawerTitle: TextView
@@ -54,6 +56,7 @@ class InstituteDashboard : AppCompatActivity() {
 
         noticeboardgrid = findViewById<View>(R.id.noticeboardgrid) as LinearLayout
         notification = findViewById<View>(R.id.notification) as LinearLayout
+        academicCalenderInsti=findViewById(R.id.academic_cal_uploadIns)
         helpdiloadboad = findViewById<View>(R.id.helpdiloadboad) as LinearLayout
         noticeInboxGrid = findViewById<View>(R.id.noticeInboxGrid) as LinearLayout
 
@@ -85,7 +88,7 @@ class InstituteDashboard : AppCompatActivity() {
         setNoticeEvent(noticeboardgrid)
         getNotice(notification)
         setHelpalertEvent(helpdiloadboad)
-        
+        setAcademicCalenderEvent(academicCalenderInsti)
         setnoticeInboxGridEvent(noticeInboxGrid)
         setSupportActionBar(toolbar)
         val actionBar = supportActionBar
@@ -269,6 +272,8 @@ class InstituteDashboard : AppCompatActivity() {
         dialog.show()
     }
 
+
+
     private fun displayhelphostelalert() {
         val dialog = AlertDialog.Builder(this)
         val dialogView = layoutInflater.inflate(R.layout.custom_dialog_hostle, null)
@@ -281,6 +286,14 @@ class InstituteDashboard : AppCompatActivity() {
         }
         dialog.show()
     }
+
+    private fun setAcademicCalenderEvent(academicCalenderInsti: LinearLayout) {
+        academicCalenderInsti.setOnClickListener(View.OnClickListener {
+           val intent=Intent(this@InstituteDashboard,AcademicCalUploadInsti::class.java)
+            startActivity(intent)
+        })
+    }
+
 
     private fun setHelpalertEvent(helpdiloadboad: LinearLayout) {
         helpdiloadboad.setOnClickListener(View.OnClickListener {

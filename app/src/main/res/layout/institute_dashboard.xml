@@ -176,7 +176,36 @@
 						android:weightSum="3"
 					>
 
+						<LinearLayout
+							android:id="@+id/academic_cal_uploadIns"
+							android:layout_width="0dp"
+							android:layout_height="130dp"
+							android:layout_margin="2dp"
+							android:layout_weight="1"
+							android:background="@color/colorWhite"
+							android:orientation="vertical"
+							>
+							<ImageView
+								android:layout_width="60dp"
+								android:layout_height="60dp"
+								android:layout_gravity="center"
+								android:layout_marginTop="20dp"
+								android:background="@drawable/white_right_corner_bg"
+								android:src="@drawable/ic_notice"
+								/>
+							<TextView
+								android:layout_width="match_parent"
+								android:layout_height="match_parent"
+								android:layout_marginTop="0dp"
+								android:background="@drawable/white_right_corner_bg"
+								android:padding="8dp"
+								android:text="Academic Calender Upload"
+								android:textAlignment="center"
+								android:textColor="#000"
+								android:textSize="14sp"
+								/>
 
+						</LinearLayout>
 						<LinearLayout
 							android:id="@+id/helpdiloadboad"
 							android:layout_width="0dp"

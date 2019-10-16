@@ -39,7 +39,7 @@ class Activity_student_notice : AppCompatActivity() {
     var current_date: String = "-"
     var instname : String? = null
     var COURSE_ID: String? = null
-   var progressBar: ProgressBar? = null
+    var progressBar: ProgressBar? = null
     private lateinit var mServices: IMyAPI
     var cal = Calendar.getInstance()
 
@@ -52,8 +52,7 @@ class Activity_student_notice : AppCompatActivity() {
         instname = mypref.getString("key_institute_stud", null)
         stud_k = Integer.parseInt(intent.getStringExtra("stud_k"))
         date_of_admiss_k = intent.getStringExtra("date_of_admiss_k")
-        to_date = findViewById(R.
-            id.select_to_date)
+        to_date = findViewById(R.id.select_to_date)
         from_date = findViewById(R.id.select_from_date)
         search_id = findViewById<Button>(R.id.search_id)
         btn_current_id = findViewById<Button>(R.id.btn_currentattend)

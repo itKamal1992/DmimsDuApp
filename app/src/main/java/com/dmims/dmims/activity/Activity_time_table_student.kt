@@ -60,42 +60,42 @@ class Activity_time_table_student : AppCompatActivity() {
         progressBar2 = findViewById(R.id.progressBar2)
         progressBar1.visibility = View.INVISIBLE //visible
         progressBar2.visibility = View.INVISIBLE //visible
+
         typeoftimetbl.add("Select type")
-        try {
+
+        try
+        {
             mServices = Common.getAPI()
             mServices.StudentSearch(stud_k)
-                .enqueue(object : Callback<APIResponse> {
-                    override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                        Toast.makeText(
-                            this@Activity_time_table_student,
-                            t.message,
-                            Toast.LENGTH_SHORT
+                .enqueue(object : Callback<APIResponse>
+                {
+                    override fun onFailure(call: Call<APIResponse>, t: Throwable)
+                    {
+                        Toast.makeText(this@Activity_time_table_student, t.message, Toast.LENGTH_SHORT
                         ).show()
                     }
 
-                    override fun onResponse(
-                        call: Call<APIResponse>,
-                        response: Response<APIResponse>
-                    ) {
+                    override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>)
+                    {
                         val result: APIResponse? = response.body()
                         if (result!!.Status == "ok") {
                             institute_name = result.Data7!!.course_institute
 
                             //  typeoftimetbl.clear()
-                            if (institute_name == "JNMC") {
-
+                            if (institute_name == "JNMC")
+                            {
                                 typeoftimetbl.add("Clinical")
                                 typeoftimetbl.add("Theory")
                             }
-                            if (institute_name == "RNPC" || institute_name == "SPDC") {
-
+                            if (institute_name == "RNPC" || institute_name == "SPDC")
+                            {
                                 typeoftimetbl.add("TH_CL")
                             }
-
                         }
                     }
                 })
-        } catch (ex: Exception) {
+        } catch (ex: Exception)
+        {
 
             ex.printStackTrace()
             GenericUserFunction.showApiError(
@@ -360,6 +360,7 @@ class Activity_time_table_student : AppCompatActivity() {
                                         }
                                     }
                                 }
+
                             }
                         }
                         downloadpdf(time_table_url)

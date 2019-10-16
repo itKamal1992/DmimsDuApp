@@ -97,6 +97,8 @@ class GreivanceStudFile : AppCompatActivity()
      var  G_AGAINST:String=""
      var  G_DISCRIPTION:String=""
 
+    lateinit var btnViewGriev:Button
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,6 +114,13 @@ class GreivanceStudFile : AppCompatActivity()
         spinner_ComplaintToGriev=findViewById(R.id.spinner_ComplaintToGriev)
         et_DateGriev=findViewById(R.id.et_dateGriev)
         btnPickerFile=findViewById(R.id.admin_griev_upload)
+
+        btnViewGriev=findViewById(R.id.btn_ViewSubmitGriev)
+        btnViewGriev.setOnClickListener {
+
+            val intent=Intent(this@GreivanceStudFile,StudentSubmittedGrievance::class.java)
+       startActivity(intent)
+        }
 
         btnPickerFile.setOnClickListener {
             val i = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
