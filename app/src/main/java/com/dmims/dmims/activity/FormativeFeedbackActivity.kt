@@ -9,9 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.*
 import com.dmims.dmims.ExamFeedBack.CommonFeedBack
-import com.dmims.dmims.ExamFeedBack.Feed_Form_SectA
-import com.dmims.dmims.ExamFeedBack.Feed_Form_SectB
-import com.dmims.dmims.ExamFeedBack.FormativeSub
+import com.dmims.dmims.ExamFeedBack.Formative
 import com.dmims.dmims.Generic.GenericPublicVariable
 import com.dmims.dmims.Generic.GenericUserFunction
 import com.dmims.dmims.R
@@ -21,7 +19,6 @@ import com.dmims.dmims.model.DeptListStudDataRef
 import com.dmims.dmims.remote.ApiClientPhp
 import com.dmims.dmims.remote.PhpApiInterface
 import dmax.dialog.SpotsDialog
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -625,37 +622,6 @@ class FormativeFeedbackActivity : AppCompatActivity() {
             //Dialog End
             var task = Task(1, "my task title")
 
-            var feedFormSectb = Feed_Form_SectB(
-                Ex_S2_Rdg1_radioButton_Text,
-                Ex_S2_Rdg2_radioButton_Text,
-                Ex_S2_Rdg3_radioButton_Text,
-                Af_Ex_S2_Q3_Text,
-                Ex_S2_Rdg4_radioButton_Text,
-                Ex_S2_Rdg5_Rdg5_q1_radioButton_Text,
-                Af_Ex_S2_Q5_q1_Text,
-                Ex_S2_Rdg5_Rdg5_q2_radioButton_Text,
-                Af_Ex_S2_Q5_q2_Text,
-                Ex_S2_Rdg5_Rdg5_q3_radioButton_Text,
-                Af_Ex_S2_Q5_q3_Text,
-                Ex_S2_Rdg5_Rdg5_q4_radioButton_Text,
-                Af_Ex_S2_Q5_q4_Text
-            )
-
-            var feedFormSecta = Feed_Form_SectA(
-                Ex_S1_Rdg1_radioButton_Text,
-                Ex_S1_Rdg2_radioButton_Text,
-                Ex_S1_Rdg3_radioButton_Text,
-                Ex_S1_Rdg4_radioButton_Text,
-                Ex_S1_Rdg5_radioButton_Text
-            )
-            var formativeSub =
-                FormativeSub(
-                    selected_spinner_FeedbackFaculty,
-                    CurrentDate,
-                    Af_Ex_S3_suggest_Text,
-                    feedFormSecta,
-                    feedFormSectb
-                    )
             var commonFeedBack = CommonFeedBack(
                 "Formative",
                 Course_ID,
@@ -664,7 +630,33 @@ class FormativeFeedbackActivity : AppCompatActivity() {
                 Stud_Roll_No,
                 Course,
                 Stud_Institute,
-                formativeSub
+                Formative(
+                    selected_spinner_FeedbackFaculty,
+                    CurrentDate,
+                    Af_Ex_S3_suggest_Text,
+                    Feed_Form_SectA(
+                        Ex_S1_Rdg1_radioButton_Text,
+                        Ex_S1_Rdg2_radioButton_Text,
+                        Ex_S1_Rdg3_radioButton_Text,
+                        Ex_S1_Rdg4_radioButton_Text,
+                        Ex_S1_Rdg5_radioButton_Text
+                    ),
+                    Feed_Form_SectB(
+                        Ex_S2_Rdg1_radioButton_Text,
+                        Ex_S2_Rdg2_radioButton_Text,
+                        Ex_S2_Rdg3_radioButton_Text,
+                        Af_Ex_S2_Q3_Text,
+                        Ex_S2_Rdg4_radioButton_Text,
+                        Ex_S2_Rdg5_Rdg5_q1_radioButton_Text,
+                        Af_Ex_S2_Q5_q1_Text,
+                        Ex_S2_Rdg5_Rdg5_q2_radioButton_Text,
+                        Af_Ex_S2_Q5_q2_Text,
+                        Ex_S2_Rdg5_Rdg5_q3_radioButton_Text,
+                        Af_Ex_S2_Q5_q3_Text,
+                        Ex_S2_Rdg5_Rdg5_q4_radioButton_Text,
+                        Af_Ex_S2_Q5_q4_Text
+                    )
+                )
             )
             //
 //            var commonFeedBacks = CommonFeedBack()
@@ -701,7 +693,7 @@ class FormativeFeedbackActivity : AppCompatActivity() {
 //                                            .show()
                         GenericUserFunction.showPositivePopUp(
                             this@FormativeFeedbackActivity,
-                            result.toString()
+                            result.Status
                         )
                     }
                 })
