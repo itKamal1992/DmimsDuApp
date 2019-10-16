@@ -8,6 +8,10 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.*
+import com.dmims.dmims.ExamFeedBack.CommonFeedBack
+import com.dmims.dmims.ExamFeedBack.Feed_Form_SectA
+import com.dmims.dmims.ExamFeedBack.Feed_Form_SectB
+import com.dmims.dmims.ExamFeedBack.FormativeSub
 import com.dmims.dmims.Generic.GenericPublicVariable
 import com.dmims.dmims.Generic.GenericUserFunction
 import com.dmims.dmims.R
@@ -568,18 +572,18 @@ class FormativeFeedbackActivity : AppCompatActivity() {
 //
 //        //Layer 4
 //        val obj_Feed_Form_SectB = JSONObject()
-//        obj_Feed_Form_SectB.put("FB1", Ex_S2_Rdg1_radioButton_Text)
-//        obj_Feed_Form_SectB.put("FB2", Ex_S2_Rdg2_radioButton_Text)
-//        obj_Feed_Form_SectB.put("FB3", Ex_S2_Rdg3_radioButton_Text)
-//        obj_Feed_Form_SectB.put("FB3_DES", Af_Ex_S2_Q3_Text)
-//        obj_Feed_Form_SectB.put("FB4", Ex_S2_Rdg4_radioButton_Text)
-//        obj_Feed_Form_SectB.put("FB5A", Ex_S2_Rdg5_Rdg5_q1_radioButton_Text)
+//        obj_Feed_Form_SectB.put("FB1",      Ex_S2_Rdg1_radioButton_Text)
+//        obj_Feed_Form_SectB.put("FB2",      Ex_S2_Rdg2_radioButton_Text)
+//        obj_Feed_Form_SectB.put("FB3",      Ex_S2_Rdg3_radioButton_Text)
+//        obj_Feed_Form_SectB.put("FB3_DES",  Af_Ex_S2_Q3_Text)
+//        obj_Feed_Form_SectB.put("FB4",      Ex_S2_Rdg4_radioButton_Text)
+//        obj_Feed_Form_SectB.put("FB5A",     Ex_S2_Rdg5_Rdg5_q1_radioButton_Text)
 //        obj_Feed_Form_SectB.put("FB5A_DES", Af_Ex_S2_Q5_q1_Text)
-//        obj_Feed_Form_SectB.put("FB5B", Ex_S2_Rdg5_Rdg5_q2_radioButton_Text)
+//        obj_Feed_Form_SectB.put("FB5B",     Ex_S2_Rdg5_Rdg5_q2_radioButton_Text)
 //        obj_Feed_Form_SectB.put("FB5B_DES", Af_Ex_S2_Q5_q2_Text)
-//        obj_Feed_Form_SectB.put("FB5C", Ex_S2_Rdg5_Rdg5_q3_radioButton_Text)
+//        obj_Feed_Form_SectB.put("FB5C",     Ex_S2_Rdg5_Rdg5_q3_radioButton_Text)
 //        obj_Feed_Form_SectB.put("FB5C_DES", Af_Ex_S2_Q5_q3_Text)
-//        obj_Feed_Form_SectB.put("FB5D", Ex_S2_Rdg5_Rdg5_q4_radioButton_Text)
+//        obj_Feed_Form_SectB.put("FB5D",     Ex_S2_Rdg5_Rdg5_q4_radioButton_Text)
 //        obj_Feed_Form_SectB.put("FB5D_DES", Af_Ex_S2_Q5_q4_Text)
 //
 //        //Layer 3
@@ -620,7 +624,50 @@ class FormativeFeedbackActivity : AppCompatActivity() {
             dialog.show()
             //Dialog End
             var task = Task(1, "my task title")
-            GenericPublicVariable.mServices.SubmitExamFeedback(task)
+
+            var feedFormSectb = Feed_Form_SectB(
+                Ex_S2_Rdg1_radioButton_Text,
+                Ex_S2_Rdg2_radioButton_Text,
+                Ex_S2_Rdg3_radioButton_Text,
+                Af_Ex_S2_Q3_Text,
+                Ex_S2_Rdg4_radioButton_Text,
+                Ex_S2_Rdg5_Rdg5_q1_radioButton_Text,
+                Af_Ex_S2_Q5_q1_Text,
+                Ex_S2_Rdg5_Rdg5_q2_radioButton_Text,
+                Af_Ex_S2_Q5_q2_Text,
+                Ex_S2_Rdg5_Rdg5_q3_radioButton_Text,
+                Af_Ex_S2_Q5_q3_Text,
+                Ex_S2_Rdg5_Rdg5_q4_radioButton_Text,
+                Af_Ex_S2_Q5_q4_Text
+            )
+
+            var feedFormSecta = Feed_Form_SectA(
+                Ex_S1_Rdg1_radioButton_Text,
+                Ex_S1_Rdg2_radioButton_Text,
+                Ex_S1_Rdg3_radioButton_Text,
+                Ex_S1_Rdg4_radioButton_Text,
+                Ex_S1_Rdg5_radioButton_Text
+            )
+            var formativeSub =
+                FormativeSub(
+                    selected_spinner_FeedbackFaculty,
+                    CurrentDate,
+                    Af_Ex_S3_suggest_Text,
+                    feedFormSecta,
+                    feedFormSectb
+                    )
+            var commonFeedBack = CommonFeedBack(
+                "Formative",
+                Course_ID,
+                Stud_ID,
+                Stud_Name,
+                Stud_Roll_No,
+                Course,
+                Stud_Institute,
+                formativeSub
+            )
+//            var commonFeedBacks = CommonFeedBack()
+            GenericPublicVariable.mServices.SubmitExamFeedback(commonFeedBack)
 //            GenericPublicVariable.mServices.SubmitExamFeedback(
 //                "Formative",
 //                Course_ID,

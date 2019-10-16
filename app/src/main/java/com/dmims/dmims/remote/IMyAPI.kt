@@ -1,5 +1,6 @@
 package com.dmims.dmims.remote
 
+import com.dmims.dmims.ExamFeedBack.CommonFeedBack
 import com.dmims.dmims.activity.Task
 import com.dmims.dmims.model.APIResponse
 import org.json.JSONObject
@@ -103,8 +104,9 @@ interface IMyAPI {
     fun StudentSearchByRollNo(@Field("roll_no") roll_no: String, @Field("course_id")course_id:String): Call<APIResponse>
 
 
-    @POST("Feedback/Feedback_Post")
-    fun SubmitExamFeedback(@Body task: Task): Call<APIResponse>
+    @POST("Feedback/Feedback_Form_Summ")
+//    fun SubmitExamFeedback(@Body task: Task): Call<APIResponse>
+    fun SubmitExamFeedback(@Body commonFeedBack: CommonFeedBack): Call<APIResponse>
 
 //    fun SubmitExamFeedback(@Field ("FEEDBACK_TYPE")FEEDBACK_TYPE: String,
 //                           @Field ("COURSE_ID")COURSE_ID: String,
