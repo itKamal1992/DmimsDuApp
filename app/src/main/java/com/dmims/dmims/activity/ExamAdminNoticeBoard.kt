@@ -22,9 +22,9 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.*
-import com.androidbuts.multispinnerfilter.KeyPairBoolData
-import com.androidbuts.multispinnerfilter.MultiSpinnerSearch
-import com.androidbuts.multispinnerfilter.SpinnerListener
+//import com.androidbuts.multispinnerfilter.KeyPairBoolData
+//import com.androidbuts.multispinnerfilter.MultiSpinnerSearch
+//import com.androidbuts.multispinnerfilter.SpinnerListener
 import com.dmims.dmims.Generic.GenericUserFunction
 import com.dmims.dmims.ImageClass
 import com.dmims.dmims.ImageUpload
@@ -179,7 +179,7 @@ class ExamAdminNoticeBoard : AppCompatActivity(), SingleUploadBroadcastReceiver.
     private lateinit var btnPubNotice: Button
     private lateinit var spinner_noticetype: Spinner
     private lateinit var spinner_facultystud: Spinner
-    private lateinit var MultiSpinnerYear: MultiSpinnerSearch
+//    private lateinit var MultiSpinnerYear: MultiSpinnerSearch
     
     private lateinit var spinner_institue: Spinner
     private lateinit var spinner_courselist: Spinner
@@ -242,38 +242,38 @@ class ExamAdminNoticeBoard : AppCompatActivity(), SingleUploadBroadcastReceiver.
         spinner_courselist = findViewById(R.id.spinner_courselist)
         spinner_deptlist = findViewById(R.id.spinner_deptlist)
         spinner_facultystud = findViewById(R.id.spinner_facultystud)
-        MultiSpinnerYear= findViewById(R.id.MultiSpinnerYear)
-        //val progressBar = findViewById<ProgressBar>(R.id.progressBar2)
-
-        val list = Arrays.asList(*resources.getStringArray(R.array.StudYear))
-        val listArray0 = java.util.ArrayList<KeyPairBoolData>()
-
-        for (i in list.indices) {
-            val h = KeyPairBoolData()
-            h.id = (i + 1).toLong()
-            h.name = list.get(i)
-            h.isSelected = false
-            listArray0.add(h)
-        }
-        MultiSpinnerYear.setEmptyTitle("No Data Found")
-        MultiSpinnerYear.setSearchHint("Find Hint")
-//        MultiSpinnerYear.setItems(listArray0, -1,object :SpinnerListener{
+//        MultiSpinnerYear= findViewById(R.id.MultiSpinnerYear)
+//        //val progressBar = findViewById<ProgressBar>(R.id.progressBar2)
 //
-//            onItemsSelecte
+//        val list = Arrays.asList(*resources.getStringArray(R.array.StudYear))
+//        val listArray0 = java.util.ArrayList<KeyPairBoolData>()
+//
+//        for (i in list.indices) {
+//            val h = KeyPairBoolData()
+//            h.id = (i + 1).toLong()
+//            h.name = list.get(i)
+//            h.isSelected = false
+//            listArray0.add(h)
 //        }
-//        )
-
-        MultiSpinnerYear.setItems(listArray0, -1,
-            SpinnerListener { items ->
-                for (i in items.indices) {
-                    if (items[i].isSelected) {
-                        Log.i(
-                            TAG,
-                            i.toString() + " : " + items[i].name + " : " + items[i].isSelected
-                        )
-                    }
-                }
-            })
+//        MultiSpinnerYear.setEmptyTitle("No Data Found")
+//        MultiSpinnerYear.setSearchHint("Find Hint")
+////        MultiSpinnerYear.setItems(listArray0, -1,object :SpinnerListener{
+////
+////            onItemsSelecte
+////        }
+////        )
+//
+//        MultiSpinnerYear.setItems(listArray0, -1,
+//            SpinnerListener { items ->
+//                for (i in items.indices) {
+//                    if (items[i].isSelected) {
+//                        Log.i(
+//                            TAG,
+//                            i.toString() + " : " + items[i].name + " : " + items[i].isSelected
+//                        )
+//                    }
+//                }
+//            })
 
 
 
