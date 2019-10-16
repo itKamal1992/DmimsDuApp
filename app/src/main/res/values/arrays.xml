@@ -212,4 +212,9 @@
         <item>Conveor</item>
     </string-array>
 
+    <string-array name="arr_session">
+
+
+    </string-array>
+
 </resources>
