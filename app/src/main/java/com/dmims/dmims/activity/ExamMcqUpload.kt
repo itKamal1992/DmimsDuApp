@@ -36,16 +36,67 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ExamMcqUpload : AppCompatActivity() {
+class ExamMcqUpload : AppCompatActivity() , com.dmims.dmims.broadCasts.SingleUploadBroadcastReceiver.Delegate{
+    private val TAG1: String = "AndroidUploadService"
+    var dialogCommon: android.app.AlertDialog ?= null
+    val uploadReceiver: com.dmims.dmims.broadCasts.SingleUploadBroadcastReceiver =
+        com.dmims.dmims.broadCasts.SingleUploadBroadcastReceiver()
 
+    override fun onResume() {
+        super.onResume()
+        uploadReceiver.register(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        uploadReceiver.unregister(this)
+    }
+
+
+
+    override fun onError(exception: Exception) {
+        println("onError >>> "+exception!!.stackTrace)
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+
+    override fun onCompleted(serverResponseCode: Int, serverResponseBody: ByteArray) {
+        println("onCompleted >>> serverResponseCode >>> "+serverResponseCode +" serverResponseBody >>> "+serverResponseBody)
+
+        val charset = Charsets.UTF_8
+        println("onCompleted 1 >>> "+serverResponseBody.contentToString()) // [72, 101, 108, 108, 111]
+        println("onCompleted 2 >>> "+serverResponseBody.toString(charset))
+
+        UpdateNotice()
+
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onProgress(progress: Int) {
+        println("onProgress 1 >>> uploadedBytes "+progress)
+    }
+
+
+
+    override fun onProgress(uploadedBytes: Long, totalBytes: Long) {
+        println("onProgress 2 >>> uploadedBytes "+uploadedBytes+" totalBytes >>> "+totalBytes)
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onCancelled() {
+        println("onCancelled >>> ")
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
     private lateinit var spinner_institue: Spinner
     private lateinit var spinner_courselist: Spinner
     private lateinit var spinner_deptlist: Spinner
     private lateinit var spinner_yearlist: Spinner
     private lateinit var from_date_layout: LinearLayout
     private lateinit var start_date: TextView
+    private lateinit var start_date_send: String
     private lateinit var to_date_layout: LinearLayout
     private lateinit var end_date: TextView
+    private lateinit var end_date_send: String
     private lateinit var btn_gallary: Button
     private lateinit var btn_Submit: Button
 //    private lateinit var btn_GetMCQ: Button
@@ -92,6 +143,7 @@ class ExamMcqUpload : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mcq__examcell)
+        dialogCommon= SpotsDialog.Builder().setContext(this).build()
         spinner_institue = findViewById(R.id.spinner_institue)
         spinner_courselist = findViewById(R.id.spinner_courselist)
         spinner_deptlist = findViewById(R.id.spinner_deptlist)
@@ -142,6 +194,11 @@ class ExamMcqUpload : AppCompatActivity() {
         val sdf = SimpleDateFormat(myFormat, Locale.US)
         end_date!!.text = sdf.format(cal.time).toString()
         start_date!!.text = sdf.format(cal.time).toString()
+
+        val myFormat_send = "yyyy-MM-dd" // mention the format you need
+        val sdf_send = SimpleDateFormat(myFormat_send, Locale.US)
+        start_date_send=sdf_send.format(cal.time).toString()
+        end_date_send=sdf_send.format(cal.time).toString()
 
 
 
@@ -471,16 +528,19 @@ class ExamMcqUpload : AppCompatActivity() {
 
         } else {
             //Dialog Start
-            val dialog: AlertDialog = SpotsDialog.Builder().setContext(this).build()
+
 
             try {
-                dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
-                dialog.setCancelable(false)
-                dialog.show()
+                dialogCommon!!.setMessage("Please Wait!!! \nwhile we are updating your Exam Key")
+                dialogCommon!!.setCancelable(false)
+                dialogCommon!!.show()
                 //Dialog End
 
 
                 PdfID = UUID.randomUUID().toString()
+
+                uploadReceiver.setDelegate(this)
+                uploadReceiver.setUploadID(PdfID!!)
 
                 MultipartUploadRequest(this, PdfID, PDF_UPLOAD_HTTP_URL)
                     .addFileToUpload(PdfPathHolder, "pdf")
@@ -496,16 +556,16 @@ class ExamMcqUpload : AppCompatActivity() {
                     .addParameter("Department", selecteddeptlist)
                     .addParameter("Year", selectedStudyear)
                     .addParameter("McqUploadDate", McqUploadDate)
-                    .addParameter("StartDate", start_date.text.toString())
-                    .addParameter("EndDate", end_date.text.toString())
+                    .addParameter("StartDate", start_date_send)
+                    .addParameter("EndDate", end_date_send)
                     .setNotificationConfig(UploadNotificationConfig())
                     .setMaxRetries(5)
                     .startUpload()
 
-                dialog.dismiss()
-                UpdateNotice()
+
+
             } catch (exception: Exception) {
-                dialog.dismiss()
+                dialogCommon!!.dismiss()
 
                 Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
             }
@@ -517,12 +577,12 @@ class ExamMcqUpload : AppCompatActivity() {
         var success: Boolean = false
         var filename = "-"
         //Dialog Start
-        val dialog: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
+//        val dialog: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
         try {
 
-            dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
-            dialog.setCancelable(false)
-            dialog.show()
+//            dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
+//            dialog.setCancelable(false)
+//            dialog.show()
             //Dialog End
             mServices.UploadNotice(
                 start_date.text.toString(),
@@ -544,12 +604,13 @@ class ExamMcqUpload : AppCompatActivity() {
                 "T"
             ).enqueue(object : Callback<APIResponse> {
                 override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                    dialogCommon!!.dismiss()
                     Toast.makeText(this@ExamMcqUpload, t.message, Toast.LENGTH_SHORT).show()
                     success = false
                 }
 
                 override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
-                    dialog.dismiss()
+                    dialogCommon!!.dismiss()
                     val result: APIResponse? = response.body()
 //                                        Toast.makeText(this@InstituteNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
 //                                            .show()
@@ -558,7 +619,7 @@ class ExamMcqUpload : AppCompatActivity() {
                 }
             })
         } catch (ex: Exception) {
-            dialog.dismiss()
+            dialogCommon!!.dismiss()
 
             ex.printStackTrace()
             GenericUserFunction.showApiError(
@@ -623,12 +684,17 @@ class ExamMcqUpload : AppCompatActivity() {
             R.style.AppTheme4, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 println(view)
                 println(year)
+
+                val myFormat_send = "yyyy-MM-dd" // mention the format you need
+                val sdf_send = SimpleDateFormat(myFormat_send, Locale.US)
+
                 val myFormat = "dd-MM-yyyy" // mention the format you need
                 val sdf = SimpleDateFormat(myFormat, Locale.US)
                 cal.set(year, monthOfYear, dayOfMonth)
                 val date = cal.time
                 sdf.format(date)
                 start_date!!.text = sdf.format(date).toString()
+                start_date_send=sdf_send.format(date).toString()
             }, year, month, day
         )
         dpd.show()
@@ -647,12 +713,17 @@ class ExamMcqUpload : AppCompatActivity() {
             R.style.AppTheme4, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 println(view)
                 println(year)
+
+                val myFormat_send = "yyyy-MM-dd" // mention the format you need
+                val sdf_send = SimpleDateFormat(myFormat_send, Locale.US)
+
                 val myFormat = "dd-MM-yyyy" // mention the format you need
                 val sdf = SimpleDateFormat(myFormat, Locale.US)
                 cal.set(year, monthOfYear, dayOfMonth)
                 val date = cal.time
                 sdf.format(date)
                 end_date!!.text = sdf.format(date).toString()
+                end_date_send=sdf_send.format(date).toString()
             }, year, month, day
         )
         dpd.show()

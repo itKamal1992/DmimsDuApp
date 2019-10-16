@@ -49,6 +49,7 @@ class Student_GET_UploadMCQ : AppCompatActivity() {
     var k: Int = 0
     private lateinit var mServices: IMyAPI
     var cal = Calendar.getInstance()
+    var cal2 = Calendar.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_get_mcq_upload)
@@ -84,13 +85,17 @@ class Student_GET_UploadMCQ : AppCompatActivity() {
         setTimeToEndofDay(cal)
         var end = sdf.format(cal.time).toString()
 
+        val myFormat_send = "yyyy-MM-dd" // mention the format you need
+        val sdf_send = SimpleDateFormat(myFormat_send, Locale.US)
+        var current_date_send:String =sdf_send.format(cal2.time).toString()
+
 //        Toast.makeText(this@Student_CurrentNotification, begining.toString() + "  and   " + end.toString(),Toast.LENGTH_SHORT).show()
         progressBar.visibility = View.VISIBLE
         try {
             var phpApiInterface: PhpApiInterface = ApiClientPhp.getClient().create(
                 PhpApiInterface::class.java
             )
-            var call2: Call<MCQListUpload> = phpApiInterface.GetUploadMCQ()
+            var call2: Call<MCQListUpload> = phpApiInterface.GetUploadMCQbyDate(current_date_send)
             call2.enqueue(object : Callback<MCQListUpload> {
                 override fun onFailure(call: Call<MCQListUpload>, t: Throwable) {
                     Toast.makeText(this@Student_GET_UploadMCQ, t.message, Toast.LENGTH_SHORT).show()

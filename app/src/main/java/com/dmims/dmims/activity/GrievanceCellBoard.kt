@@ -201,7 +201,7 @@ class GrievanceCellBoard : AppCompatActivity() {
 
                 override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
                     val result: APIResponse? = response.body()
-                    if (result!!.Responsecode == 200) {
+                    if (result!!.Responsecode == 200) {                                                                                                                                          4
                         Toast.makeText(this@GrievanceCellBoard, result.Status, Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(this@GrievanceCellBoard, result.Status, Toast.LENGTH_SHORT).show()

@@ -52,18 +52,30 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AdminNoticeBoard : AppCompatActivity(), SingleUploadBroadcastReceiverAdmin.Delegate{
+class AdminNoticeBoard : AppCompatActivity(), SingleUploadBroadcastReceiver.Delegate{
+
+    private val TAG1: String = "AndroidUploadService"
+    var dialogCommon: android.app.AlertDialog ?= null
+    val uploadReceiver: SingleUploadBroadcastReceiver = SingleUploadBroadcastReceiver()
+    override fun onPause() {
+        super.onPause()
+        uploadReceiver.unregister(this)
+    }
+    override fun onResume() {
+        super.onResume()
+        uploadReceiver.register(this)
+    }
 
     override fun onProgress(progress: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        println("onProgress 1 >>> uploadedBytes "+progress)
     }
 
     override fun onProgress(uploadedBytes: Long, totalBytes: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        println("onProgress 2 >>> uploadedBytes "+uploadedBytes+" totalBytes >>> "+totalBytes)
     }
 
     override fun onError(exception: Exception) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        println("onError >>> "+exception!!.stackTrace)
     }
 
     override fun onCompleted(serverResponseCode: Int, serverResponseBody: ByteArray) {
@@ -73,26 +85,55 @@ class AdminNoticeBoard : AppCompatActivity(), SingleUploadBroadcastReceiverAdmin
         println("onCompleted 1 >>> "+serverResponseBody.contentToString()) // [72, 101, 108, 108, 111]
         println("onCompleted 2 >>> "+serverResponseBody.toString(charset))
 
-//        dialog.setMessage("Please Wait!!! \nwhile we are sending your notice")
-//        dialog.setCancelable(false)
-//        dialog.show()
         filename = serverResponseBody.toString(charset)
+
+
+        try {
+            mServices.UploadNotice(
+                notice_date,
+                notice_title,
+                notice_desc,
+                selectedInstituteName,
+                selectedcourselist,
+                selecteddeptlist,
+                selectedNoticeType,
+                selectedFacultyStud,
+                confirmStatus,
+                roleadmin,
+                id_admin,
+                filename,
+                course_id,
+                dept_id,
+                student_flag,
+                faculty_flag,
+                admin_flag
+            ).enqueue(object : Callback<APIResponse> {
+                override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                    dialogCommon!!.dismiss()
+                    Toast.makeText(this@AdminNoticeBoard, t.message, Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                    dialogCommon!!.dismiss()
+                    val result: APIResponse? = response.body()
+//                                        Toast.makeText(this@AdminNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
+//                                            .show()
+                    GenericUserFunction.showPositivePopUp(this@AdminNoticeBoard,"Notice Send Successfully")
+                }
+            })
+        } catch (ex: Exception) {
+            dialogCommon!!.dismiss()
+
+            ex.printStackTrace()
+            GenericUserFunction.showApiError(
+                applicationContext,
+                "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
+            )
+        }
     }
 
     override fun onCancelled() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    private val TAG1: String = "AndroidUploadService"
-    //    val dialog: AlertDialog = SpotsDialog.Builder().setContext(this).build()
-    val uploadReceiver: SingleUploadBroadcastReceiverAdmin = SingleUploadBroadcastReceiverAdmin()
-    override fun onPause() {
-        super.onPause()
-        uploadReceiver.unregister(this)
-    }
-    override fun onResume() {
-        super.onResume()
-        uploadReceiver.register(this)
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 
@@ -153,6 +194,7 @@ class AdminNoticeBoard : AppCompatActivity(), SingleUploadBroadcastReceiverAdmin
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_notice_board)
+        dialogCommon= SpotsDialog.Builder().setContext(this).build()
 //        progressBarsubmit = findViewById(R.id.pb_notice_admin)
         btnPickImage = findViewById<Button>(R.id.admin_notice_upload)
         btnPubNotice = findViewById<Button>(R.id.btn_publish_notice2)
@@ -614,34 +656,8 @@ try {
 
                     }
 
-
-//                    override fun onFailure(call: retrofit2.Call<MyResponse>, t: Throwable) {
-//                        Toast.makeText(applicationContext, t.message.toString(), Toast.LENGTH_LONG).show()
-//                    }
-//
-//                    override fun onResponse(call: retrofit2.Call<MyResponse>, response: Response<MyResponse>) {
-//                        if (!response.body()!!.error) {
-//                            filename = response.message()
-//                                Toast.makeText(getApplicationContext(),  response.message(), Toast.LENGTH_LONG).show()
-//
-//                        } else {
-//                            Toast.makeText(getApplicationContext(), "Some error occurred...", Toast.LENGTH_LONG).show()
-//                        }
-//                    }
                 })
-//            var phpApiInterface: PhpApiInterface = ApiClientPhp.getClient().create(PhpApiInterface::class.java)
-//            var call: Call<ImageClass> = phpApiInterface.uploadImage(rTitle, rImage)
-//            call.enqueue(object : Callback<ImageClass> {
-//                override fun onFailure(call: Call<ImageClass>, t: Throwable) {
-//                    Toast.makeText(this@AdminNoticeBoard, "Server Response" + t.message, Toast.LENGTH_SHORT)
-//                }
-//
-//                override fun onResponse(call: Call<ImageClass>, response: Response<ImageClass>) {
-//                    var imageClass: ImageClass? = response.body()
-//                    Toast.makeText(this@AdminNoticeBoard, imageClass!!.getResponse(), Toast.LENGTH_SHORT)
-//                    filename = "http://avbrh.gearhostpreview.com/imageupload/" + imageClass.getuploadPath()
-//                }
-//            })
+
             } catch (ex: Exception) {
 
                 ex.printStackTrace()
@@ -941,9 +957,7 @@ try {
         PdfPathHolder = FilePath.getPath(this, uri)
 
         if (PdfPathHolder == null) {
-            btnPubNotice.isClickable=true
-            btnPubNotice.setBackgroundResource(R.drawable.blue_button_bg)
-            pb_notice_institute.visibility=View.INVISIBLE
+            dialogCommon!!.dismiss()
 
             Toast.makeText(
                 this,
@@ -963,6 +977,8 @@ try {
 
                 PdfID = UUID.randomUUID().toString()
                 random = Random().nextInt(61) + 20
+                uploadReceiver.setDelegate(this)
+                uploadReceiver.setUploadID(PdfID!!)
                 MultipartUploadRequest(this, PdfID, PDF_UPLOAD_HTTP_URL)
                     .addFileToUpload(PdfPathHolder, "pdf")
                     .addParameter("name", PdfID+random.toString())
@@ -972,7 +988,7 @@ try {
 //                dialog.dismiss()
 
             } catch (exception: Exception) {
-//                dialog.dismiss()
+                dialogCommon!!.dismiss()
 
                 Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
             }
@@ -1051,9 +1067,10 @@ try {
         // if (RESOU_FLAG == "T") {
         if(confirmStatus == "T" && type == "pdf")
         {
-            btnPubNotice.isClickable=false
-            btnPubNotice.setBackgroundResource(R.drawable.btn_round_inactive)
-            pb_notice_institute.visibility=View.VISIBLE
+
+        dialogCommon!!.setMessage("Please Wait!!! \nwhile we are sending your notice")
+            dialogCommon!!.setCancelable(false)
+            dialogCommon!!.show()
             PdfUploadFunction()
         }
         if (confirmStatus == "T"&& type == "image") {
@@ -1124,6 +1141,7 @@ try {
 //                                        Toast.makeText(this@AdminNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
 //                                            .show()
                                         GenericUserFunction.showPositivePopUp(this@AdminNoticeBoard,"Notice Send Successfully")
+
                                     }
                                 })
                             } catch (ex: Exception) {

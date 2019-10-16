@@ -18,5 +18,6 @@ class APIResponse {
      var Data7: StudentSearch? = null
      var success: String = ""
      var Status: String = ""
+     var Status1: String = ""
      var response: String = ""
 }

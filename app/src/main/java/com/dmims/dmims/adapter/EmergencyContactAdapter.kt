@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.support.v7.widget.RecyclerView
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,9 +67,10 @@ try
 
 
         fun setData(cc: EmUser?, position: Int) {
-            itemView.txtpurpose?.text="Submited by : "+cc!!.purpose
-            itemView.txtname?.text="Submited by : "+cc!!.name
-            itemView.txtcontact?.text="Submited by : "+cc!!.contact
+            itemView.txtpurpose?.text="Department : \n"+cc!!.purpose
+            itemView.txtname?.text="Contact person : "+cc!!.name
+            itemView.txtcontact?.text= Html.fromHtml("Contact No :<b> <font size=3 color=#4A89DC>"+cc!!.contact+"</font></b>")//("Contact No : <color:'#abc123'>"+cc!!.contact+"</color>")
+//            itemView.txtcontact?.text="Contact No : "+cc!!.contact
             itemView.camera_image?.setImageResource(cc!!.image)
             this.emUser = cc
             this.currentPosition = position

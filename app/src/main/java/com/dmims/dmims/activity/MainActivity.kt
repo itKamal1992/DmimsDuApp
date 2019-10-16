@@ -165,11 +165,13 @@ class MainActivity : AppCompatActivity() {
                                 saveData(
                                     result.Data4!!.USER_ROLE,
                                     result.Data4!!.ADMIN_NAME,
-                                    result.Data4!!.ID,
+                                    "",
                                     result.Data4!!.ID,
                                     "-",
                                     "-",
-                                    "-"
+                                    "-",
+                                    result.Data4!!.DESIGNATION,
+                                    result.Data4!!.EMAIL
                                 )
                                 startActivity(intent)
                             }

@@ -99,7 +99,7 @@ class ExamInBoxGetMCQAdapter(val userlist: ArrayList<McqFields>, context: Contex
 //
             itemView.txtNOTICE_TITLE ?.text="Exam Key"
             itemView.txtUploader_Name ?.text="Submited by : "+cc!!.UserName
-            itemView.txtUploaded_Date ?.text=cc!!.McqUploadDate
+            itemView.txtUploaded_Date ?.text="Upload Date : "+cc!!.McqUploadDate
 
             itemView.txtInstitute ?.text="Institute : "+cc!!.Institute
             itemView.txtCourse?.text="Course : "+cc!!.Course

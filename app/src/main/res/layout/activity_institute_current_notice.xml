@@ -16,17 +16,20 @@
 		<LinearLayout android:id="@+id/llSplashScreen"
 		              android:layout_width="match_parent"
 		              android:layout_height="wrap_content"
-		              android:orientation="vertical">
+		              android:orientation="vertical"
+			>
+
 			<TextView
 					android:id="@+id/text_login7"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_marginTop="22dp"
+					android:layout_marginTop="10dp"
 					android:layout_below="@id/tvMainHeading2"
 					android:layout_gravity="center_horizontal"
 					android:fontFamily="sans-serif-medium"
 					android:text="Current Notice"
-					android:layout_marginBottom="22dp"
+				    android:textStyle="bold"
+					android:layout_marginBottom="10dp"
 					android:textColor="#fff"
 					android:textSize="22sp"
 			/>

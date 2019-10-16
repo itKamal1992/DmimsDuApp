@@ -37,7 +37,9 @@
 						  android:layout_marginTop="10dp"
 						  android:layout_marginBottom="10dp"
 						  android:layout_marginLeft="10dp"
-						  android:layout_marginRight="10dp">
+						  android:layout_marginRight="10dp"
+				android:background="@drawable/gradient_bg"
+				android:padding="5dp">
 				<!-- Left icon !-->
 				<LinearLayout android:layout_width="60dp"
 							  android:orientation="vertical"
@@ -69,72 +71,93 @@
 				</LinearLayout>
 				<LinearLayout android:layout_width="match_parent"
 							  android:orientation="vertical"
-							  android:background="@drawable/white_right_corner_bg"
-							  android:layout_height="wrap_content">
 
+							  android:layout_height="wrap_content"
+					>
 
+<!--<LinearLayout android:layout_width="match_parent"-->
+<!--	android:layout_height="2dp"-->
+<!--	android:background="@color/colorblack"-->
+<!--	android:layout_marginRight="2dp"-->
+<!--	android:layout_marginLeft="2dp"/>-->
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtNOTICE_TITLE"
 							  android:textStyle="bold"
-							  android:textColor="#EB333D"
+							  android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:text="Exam Key"
 							  android:layout_height="wrap_content"/>
-
+					<LinearLayout android:layout_width="match_parent"
+						android:layout_height="2dp"
+						android:background="@color/colorblack"
+						android:layout_marginRight="2dp"
+						android:layout_marginLeft="2dp"/>
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtUploader_Name"
-							  android:textColor="@color/colorblack"
+							  android:textColor="@color/colorWhite"
 							  android:text="Submitted by: Kumar swami"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtUploaded_Date"
 							  android:text="Uploaded on: 12-09-2019"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtInstitute"
 							  android:text="Institute : JNMC"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtCourse"
 							  android:text="Course : MBBS"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtDepartment"
 							  android:text="Department : Anatomy"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtYear"
 							  android:text="Std in Year : 2"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtStartDate"
 							  android:text="StartDate : 24-09-2019"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtEndDate"
 							  android:text="EndDate : 29-09-2019"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 
 					<TextView android:layout_width="match_parent"
 							  android:id="@+id/txtFileName"
 							  android:text="FileName : JNMC_MBBS_Anatomy_2_Check"
+						android:textColor="@color/colorWhite"
 							  android:textAppearance="@style/TextAppearance.AppCompat.Small"
 							  android:layout_height="match_parent"/>
 
-
+<!--					<LinearLayout android:layout_width="match_parent"-->
+<!--						android:layout_height="2dp"-->
+<!--						android:background="@color/colorblack"-->
+<!--						android:layout_marginRight="2dp"-->
+<!--						android:layout_marginLeft="2dp"/>-->
 					<!--<TextView android:layout_width="match_parent"-->
 					<!--android:id="@+id/txtRESOU_FLAG"-->
 					<!--android:text="RESOU_FLAG"-->

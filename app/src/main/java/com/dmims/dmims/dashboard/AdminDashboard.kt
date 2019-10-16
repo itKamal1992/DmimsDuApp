@@ -28,7 +28,6 @@ class AdminDashboard : AppCompatActivity() {
     lateinit var noticeInboxGrid: LinearLayout
     lateinit var helpdiloadboad: LinearLayout
     lateinit var academicCalBoard: LinearLayout
-    lateinit var academicCalBoardUpload: LinearLayout
     lateinit var drawerTitle: TextView
     lateinit var enrollNo: TextView
     lateinit var user_role: TextView
@@ -47,7 +46,6 @@ class AdminDashboard : AppCompatActivity() {
        noticeInboxGrid = findViewById<View>(R.id.noticeInboxGrid) as LinearLayout
         helpdiloadboad = findViewById<View>(R.id.helpdiloadboad) as LinearLayout
         academicCalBoard = findViewById<View>(R.id.academic_cal_board) as LinearLayout
-        academicCalBoardUpload=findViewById(R.id.upload_aca_Cal)
         drawerTitle = findViewById(R.id.drawer_title)
         enrollNo = findViewById(R.id.enroll_no)
         user_role = findViewById(R.id.user_role)
@@ -66,7 +64,6 @@ class AdminDashboard : AppCompatActivity() {
        setnoticeInboxGridEvent(noticeInboxGrid)
         setHelpalertEvent(helpdiloadboad)
         setacdemicCalEvent(academicCalBoard)
-        setacdemicCalUploadEvent(academicCalBoardUpload)
         // Configure action bar
         setSupportActionBar(toolbar)
         val actionBar = supportActionBar
@@ -236,13 +233,6 @@ class AdminDashboard : AppCompatActivity() {
         academic_cal_board.setOnClickListener(View.OnClickListener {
             val intent = Intent(this@AdminDashboard, AcademicCalender::class.java)
             intent.putExtra("info", "Notice board")
-            startActivity(intent)
-        })
-    }
-
-    private fun setacdemicCalUploadEvent(academic_cal_board: LinearLayout) {
-        academic_cal_board.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this@AdminDashboard, AcademicCalenderUploadA::class.java)
             startActivity(intent)
         })
     }

@@ -1,5 +1,7 @@
 package com.dmims.dmims.remote
 
+import com.dmims.dmims.ExamFeedBack.CommonFeedBack
+import com.dmims.dmims.activity.Task
 import com.dmims.dmims.model.APIResponse
 import org.json.JSONObject
 import retrofit2.Call
@@ -101,9 +103,20 @@ interface IMyAPI {
     @POST("Login/StudentSearchByRollNo")
     fun StudentSearchByRollNo(@Field("roll_no") roll_no: String, @Field("course_id")course_id:String): Call<APIResponse>
 
-    @FormUrlEncoded
+
     @POST("Feedback/Feedback_Form_Summ")
-    fun SubmitExamFeedback(@Field ("jsonstring")jsonstring: String): Call<APIResponse>
+//    fun SubmitExamFeedback(@Body task: Task): Call<APIResponse>
+    fun SubmitExamFeedback(@Body commonFeedBack: CommonFeedBack): Call<APIResponse>
+
+//    fun SubmitExamFeedback(@Field ("FEEDBACK_TYPE")FEEDBACK_TYPE: String,
+//                           @Field ("COURSE_ID")COURSE_ID: String,
+//                           @Field ("STUD_ID")STUD_ID: String,
+//                           @Field ("STUD_NAME")STUD_NAME: String,
+//                           @Field ("ROLL_NO")ROLL_NO: String,
+//                           @Field ("COURSE")COURSE: String,
+//                           @Field ("INSTITUTE_NAME")INSTITUTE_NAME: String,
+//                           @Field ("Formative1")Formative1: String)
+//            : Call<APIResponse>
 
 
 

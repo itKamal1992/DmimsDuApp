@@ -818,22 +818,22 @@ class Student_Feedback_SummativeExam : AppCompatActivity()
             dialog.setCancelable(false)
             dialog.show()
             //Dialog End
-            GenericPublicVariable.mServices.SubmitExamFeedback(rootObject.toString()).enqueue(object : Callback<APIResponse> {
-                override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                    Toast.makeText(this@Student_Feedback_SummativeExam, t.message, Toast.LENGTH_SHORT).show()
-                }
-
-
-                override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
-                    dialog.dismiss()
-                    val result: APIResponse? = response.body()
-                   println("Result >>> "+result)
-
-//                                        Toast.makeText(this@InstituteNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
-//                                            .show()
-                    GenericUserFunction.showPositivePopUp(this@Student_Feedback_SummativeExam, "Summative Feedback Submited Successfully")
-                }
-            })
+//            GenericPublicVariable.mServices.SubmitExamFeedback(rootObject.toString()).enqueue(object : Callback<APIResponse> {
+//                override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+//                    Toast.makeText(this@Student_Feedback_SummativeExam, t.message, Toast.LENGTH_SHORT).show()
+//                }
+//
+//
+//                override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+//                    dialog.dismiss()
+//                    val result: APIResponse? = response.body()
+//                   println("Result >>> "+result)
+//
+////                                        Toast.makeText(this@InstituteNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
+////                                            .show()
+//                    GenericUserFunction.showPositivePopUp(this@Student_Feedback_SummativeExam, "Summative Feedback Submited Successfully")
+//                }
+//            })
 
 
         }

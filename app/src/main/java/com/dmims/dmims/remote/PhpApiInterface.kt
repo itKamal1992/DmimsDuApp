@@ -150,6 +150,9 @@ interface PhpApiInterface  {
     @GET("pdfupload/GetMCQUploadData.php")
     fun GetUploadMCQ(): Call<MCQListUpload>
 
+    @FormUrlEncoded
+    @POST("pdfupload/GetMCQUploadByDate.php")
+    fun GetUploadMCQbyDate(@Field("CURRENT_DATE") CurrentDate: String): Call<MCQListUpload>
 
     @FormUrlEncoded
     @POST("feedback_type/GetFeedbackDetails.php")

@@ -31,65 +31,58 @@
 		
 		
 		
-		<LinearLayout android:orientation="horizontal"
+		<LinearLayout
+			android:orientation="horizontal"
 		              android:layout_width="match_parent"
 		              android:layout_height="wrap_content"
-		              android:layout_marginTop="10dp"
-		              android:layout_marginBottom="10dp"
-		              android:layout_marginLeft="10dp"
-		              android:layout_marginRight="10dp">
+			android:layout_margin="2dp"
+			>
 			<!-- Left icon !-->
-			<LinearLayout android:layout_width="60dp"
-			              android:orientation="vertical"
-			              android:layout_marginLeft="-8dp"
-			              android:layout_marginRight="13dp"
-			              android:layout_height="wrap_content">
+
 				
-				<LinearLayout android:layout_width="match_parent"
-				              android:orientation="vertical"
-				              android:layout_marginLeft="-19dp"
-				              android:layout_marginRight="-5dp"
-				              android:layout_height="match_parent">
+
 					
-					<LinearLayout android:orientation="vertical"
-					              android:gravity="center_vertical|center_horizontal"
-					              android:layout_width="match_parent"
-					              android:layout_marginLeft="11dp"
-					              android:layout_marginRight="-19dp"
-					              android:layout_height="80dp">
+					<LinearLayout
+						android:orientation="vertical"
+					              android:layout_width="40dp"
+					              android:layout_height="40dp"
+						android:layout_gravity="center_vertical"
+						android:layout_margin="5dp">
 						
 						<ImageView
 								android:id="@+id/camera_image"
-								android:scaleType="fitCenter"
-								android:layout_width="44dp"
-								android:layout_height="44dp"/>
+								android:scaleType="fitXY"
+								android:layout_width="match_parent"
+								android:layout_height="match_parent"
+							android:layout_gravity="center_vertical"
+							/>
 					
-					</LinearLayout>
-				</LinearLayout>
+
+
 			</LinearLayout>
-			<LinearLayout android:layout_width="match_parent"
+			<LinearLayout android:layout_width="wrap_content"
 			              android:orientation="vertical"
 			              android:background="@drawable/white_right_corner_bg"
-			              android:layout_height="wrap_content">
-				
-				
+			              android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical">
+
 				<TextView android:layout_width="match_parent"
 				          android:id="@+id/txtpurpose"
 				          android:textStyle="bold"
-				          android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+				          android:textAppearance="@style/TextAppearance.AppCompat.Body2"
 				          android:text="Purpose"
 				          android:layout_height="wrap_content"/>
 				
 				<TextView android:layout_width="match_parent"
 				          android:id="@+id/txtname"
 				          android:text="Nagpur"
-				          android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+				          android:textAppearance="@style/TextAppearance.AppCompat.Body1"
 				          android:layout_height="match_parent"/>
 				
 				<TextView android:layout_width="match_parent"
 				          android:id="@+id/txtcontact"
 				          android:text="Nagpur"
-				          android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+				          android:textAppearance="@style/TextAppearance.AppCompat.Body1"
 				          android:layout_height="match_parent"/>
 			</LinearLayout>
 		</LinearLayout>
