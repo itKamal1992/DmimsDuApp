@@ -339,7 +339,7 @@ class AcademicCalUploadInsti : AppCompatActivity()
 
         }
     }
-
+//
     companion object {
 
         //val PDF_UPLOAD_HTTP_URL = "http://avbrh.gearhostpreview.com/pdfupload/upload.php"
