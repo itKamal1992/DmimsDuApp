@@ -214,10 +214,10 @@
 
     <string-array name="arr_session">
         <item>--Select Session--</item>
-<item>2019-2020</item>
-        <item>2020-2021</item>
-        <item>2021-2022</item>
-        <item>2022-2023</item>
+<item>2019-20</item>
+        <item>2020-21</item>
+        <item>2021-22</item>
+        <item>2022-23</item>
     </string-array>
 
 </resources>

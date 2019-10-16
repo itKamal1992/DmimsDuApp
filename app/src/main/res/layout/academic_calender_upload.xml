@@ -182,7 +182,7 @@
             android:orientation="vertical"
             android:background="@drawable/white_right_corner_bg"
             android:layout_height="50dp">
-            <EditText android:layout_width="match_parent"
+            <TextView android:layout_width="match_parent"
                 android:id="@+id/et_pdfname"
                 android:hint="Pdf Name"
                 android:textSize="15sp"
@@ -192,6 +192,7 @@
                 android:layout_marginRight="10dp"
                 android:gravity="center_vertical"
                 android:layout_height="match_parent"
+                android:enabled="false"
                 android:textColor="@android:color/background_dark"/>
         </LinearLayout>
 

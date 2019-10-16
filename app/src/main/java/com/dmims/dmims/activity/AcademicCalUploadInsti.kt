@@ -293,12 +293,26 @@ class AcademicCalUploadInsti : AppCompatActivity()
         PdfPathHolder = FilePath.getPath(this, uri)
         println("PdfNameHolder "+PdfNameHolder+"PdfPathHolder "+PdfPathHolder)
         subtype=spinner_timetabletype.selectedItem.toString()
+        if (institute_name.equals("SPDC") || institute_name.equals("RNPC"))
+        {
+            subtype="TH_CL"
+        }
+        else
+        {
+            if(subtype.equals("Theory"))
+            {
+                subtype="TH"
+            }
+            else
+            {
+                subtype="CL"
+            }
+        }
         year_tt=spinner_yearlist.selectedItem.toString()
             sem_tt=spinner_semester.selectedItem.toString()
 
-        pdfName=institute_name+"_"+subtype.substring(0,2)+"_"+year_tt+"_"+sem_tt
+        pdfName=institute_name+"_"+sem_tt+"_"+subtype+"_"+year_tt
 
-        println(" data "+institute_name+subtype+year_tt+sem_tt+" "+pdfName)
 
        if (PdfPathHolder == null) {
 
@@ -318,10 +332,10 @@ class AcademicCalUploadInsti : AppCompatActivity()
                 PdfID = UUID.randomUUID().toString()
 
 
-                MultipartUploadRequest(this, PdfID, ExamMcqUpload.PDF_UPLOAD_HTTP_URL)
+                MultipartUploadRequest(this, PdfID, PDF_UPLOAD_HTTP_URL)
                     .addFileToUpload(PdfPathHolder, "pdf")
                     .addParameter("name",pdfName )
-                    .addParameter("institute",pdfName )
+                    .addParameter("institute",institute_name )
                     .addParameter("subtype",subtype )
                     .addParameter("year",year_tt )
                     .addParameter("sem",sem_tt )
@@ -343,7 +357,7 @@ class AcademicCalUploadInsti : AppCompatActivity()
     companion object {
 
         //val PDF_UPLOAD_HTTP_URL = "http://avbrh.gearhostpreview.com/pdfupload/upload.php"
-        val PDF_UPLOAD_HTTP_URL = "http://dmimsdu.in/web/pdfupload/upload.php"
+        val PDF_UPLOAD_HTTP_URL = "http://dmimsdu.in/web/uploadAcademicCalender.php"
     }
 
 

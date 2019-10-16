@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.annotation.RequiresApi
+import android.view.View
 import android.widget.*
 import com.dmims.dmims.R
 import dmax.dialog.SpotsDialog
@@ -33,8 +34,8 @@ class AcademicCalenderUploadA : AppCompatActivity() {
     lateinit var spinnerSession: Spinner
     lateinit var str_spinnerSession:String
 
-    lateinit var et_pdfName:EditText
-    var pdfName:String=""
+    lateinit var et_pdfName:TextView
+    var pdfName1:String? = null
      var PdfNameHolder:String=""
      var PdfPathHolder:String=""
     lateinit var PdfID:String
@@ -48,7 +49,18 @@ class AcademicCalenderUploadA : AppCompatActivity() {
         spinnerSession=findViewById(R.id.spinner_sessionAc)
         et_pdfName=findViewById(R.id.et_pdfname)
 
+        spinnerSession.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                var selectedtypeoftimetbl = p0!!.getItemAtPosition(p2) as String
+                if(!selectedtypeoftimetbl.equals("--Select Session--")) {
+                    pdfName1 = "CAAC_" + selectedtypeoftimetbl
+                    et_pdfName.text = pdfName1
+                }
+            }
 
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
+        }
 
         btnPickPdf=findViewById(R.id.btn_pdfChoose)
         btnPickPdf.setOnClickListener {
@@ -79,9 +91,8 @@ class AcademicCalenderUploadA : AppCompatActivity() {
             type = "pdf"
             uri = data!!.data
             println("Uri pdf"+uri)
-            pdfName=titlename+spinnerSession.selectedItem.toString()
 
-            println("pdfName pdf " +pdfName)
+
             if(uri.toString().isNotEmpty()) {
                 confirmStatus = "T"
 
@@ -100,10 +111,7 @@ class AcademicCalenderUploadA : AppCompatActivity() {
         {
             Toast.makeText(applicationContext,"Please Select Session",Toast.LENGTH_LONG).show()
         }
-        else if (et_pdfName.text.toString().equals(""))
-        {
-            et_pdfName.setError("Please Enter Pdf Name")
-        }else if (uri==null)
+        else if (uri==null)
         {
             println("no uri")
         }
@@ -115,9 +123,6 @@ class AcademicCalenderUploadA : AppCompatActivity() {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     fun PdfUploadFunction() {
-
-        PdfNameHolder = pdfName + "_" +et_pdfName.text.toString()
-
 
        PdfPathHolder = FilePath.getPath(this, uri)
 
@@ -144,9 +149,9 @@ class AcademicCalenderUploadA : AppCompatActivity() {
                 PdfID = UUID.randomUUID().toString()
                 str_spinnerSession=spinnerSession.selectedItem.toString()
 
-                MultipartUploadRequest(this, PdfID, ExamMcqUpload.PDF_UPLOAD_HTTP_URL)
+                MultipartUploadRequest(this, PdfID, PDF_UPLOAD_HTTP_URL)
                     .addFileToUpload(PdfPathHolder, "pdf")
-                    .addParameter("name", PdfNameHolder)
+                    .addParameter("name", pdfName1)
                     .addParameter("Session", str_spinnerSession)
                     .setNotificationConfig(UploadNotificationConfig())
                     .setMaxRetries(5)
@@ -163,5 +168,9 @@ class AcademicCalenderUploadA : AppCompatActivity() {
         }
 
     }
+    companion object {
 
+        //val PDF_UPLOAD_HTTP_URL = "http://avbrh.gearhostpreview.com/pdfupload/upload.php"
+        val PDF_UPLOAD_HTTP_URL = "http://dmimsdu.in/web/uploadAcademicCalenderA.php"
+    }
 }

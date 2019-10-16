@@ -291,7 +291,7 @@
 								android:padding="8dp"
 								android:layout_marginTop="0dp"
 								android:background="@drawable/white_right_corner_bg"
-								android:text="Academic Calender Upload"
+								android:text="Acad Cal Upload"
 								android:textSize="14sp"
 								android:textAlignment="center"
 								android:textColor="#000"

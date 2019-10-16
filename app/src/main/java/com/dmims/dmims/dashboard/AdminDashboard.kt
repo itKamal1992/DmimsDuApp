@@ -28,6 +28,7 @@ class AdminDashboard : AppCompatActivity() {
     lateinit var noticeInboxGrid: LinearLayout
     lateinit var helpdiloadboad: LinearLayout
     lateinit var academicCalBoard: LinearLayout
+    lateinit var academicCalUploadBoard: LinearLayout
     lateinit var drawerTitle: TextView
     lateinit var enrollNo: TextView
     lateinit var user_role: TextView
@@ -37,7 +38,6 @@ class AdminDashboard : AppCompatActivity() {
     private var dots: Array<ImageView?>? = null
     private var id_admin: String? = null
     private var roleadmin: String? = null
-    private var dateOfAdmission: String = "-"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.admin_dashboard)
@@ -46,12 +46,12 @@ class AdminDashboard : AppCompatActivity() {
        noticeInboxGrid = findViewById<View>(R.id.noticeInboxGrid) as LinearLayout
         helpdiloadboad = findViewById<View>(R.id.helpdiloadboad) as LinearLayout
         academicCalBoard = findViewById<View>(R.id.academic_cal_board) as LinearLayout
+        academicCalUploadBoard = findViewById<View>(R.id.upload_aca_Cal) as LinearLayout
         drawerTitle = findViewById(R.id.drawer_title)
         enrollNo = findViewById(R.id.enroll_no)
         user_role = findViewById(R.id.user_role)
         var mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
         var drawer_titler = mypref.getString("key_drawer_title", null)
-        dateOfAdmission = mypref.getString("key_doa", null)
         var enroll_nor = mypref.getString("key_enroll_no", null)
         id_admin = mypref.getString("Stud_id_key", null)
         roleadmin = mypref.getString("key_userrole", null)
@@ -64,6 +64,7 @@ class AdminDashboard : AppCompatActivity() {
        setnoticeInboxGridEvent(noticeInboxGrid)
         setHelpalertEvent(helpdiloadboad)
         setacdemicCalEvent(academicCalBoard)
+        setacdemicCalUpdateEvent(academicCalUploadBoard)
         // Configure action bar
         setSupportActionBar(toolbar)
         val actionBar = supportActionBar
@@ -232,6 +233,13 @@ class AdminDashboard : AppCompatActivity() {
     private fun setacdemicCalEvent(academic_cal_board: LinearLayout) {
         academic_cal_board.setOnClickListener(View.OnClickListener {
             val intent = Intent(this@AdminDashboard, AcademicCalender::class.java)
+            intent.putExtra("info", "Notice board")
+            startActivity(intent)
+        })
+    }
+    private fun setacdemicCalUpdateEvent(upload_aca_Cal: LinearLayout) {
+        upload_aca_Cal.setOnClickListener(View.OnClickListener {
+            val intent = Intent(this@AdminDashboard, AcademicCalenderUploadA::class.java)
             intent.putExtra("info", "Notice board")
             startActivity(intent)
         })
