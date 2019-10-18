@@ -5,7 +5,6 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -17,20 +16,19 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.annotation.RequiresApi
 import android.support.v4.content.CursorLoader
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.*
-//import com.androidbuts.multispinnerfilter.KeyPairBoolData
-//import com.androidbuts.multispinnerfilter.MultiSpinnerSearch
-//import com.androidbuts.multispinnerfilter.SpinnerListener
+import com.androidbuts.multispinnerfilter.KeyPairBoolData
+import com.androidbuts.multispinnerfilter.MultiSpinnerSearch
+import com.androidbuts.multispinnerfilter.SpinnerListener
 import com.dmims.dmims.Generic.GenericUserFunction
-import com.dmims.dmims.ImageClass
-import com.dmims.dmims.ImageUpload
 import com.dmims.dmims.R
+import com.dmims.dmims.adapter.MultiSelectAdap_U
 import com.dmims.dmims.broadCasts.SingleUploadBroadcastReceiver
 import com.dmims.dmims.common.Common
+import com.dmims.dmims.dataclass.MultiSelectData
 import com.dmims.dmims.model.APIResponse
 import com.dmims.dmims.model.MyResponse
 import com.dmims.dmims.remote.Api
@@ -75,6 +73,10 @@ class ExamAdminNoticeBoard : AppCompatActivity(), SingleUploadBroadcastReceiver.
 
     override fun onError(exception: Exception) {
         println("onError >>> "+exception!!.stackTrace)
+        GenericUserFunction.showApiError(
+            this,
+            "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
+        )
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -179,7 +181,9 @@ class ExamAdminNoticeBoard : AppCompatActivity(), SingleUploadBroadcastReceiver.
     private lateinit var btnPubNotice: Button
     private lateinit var spinner_noticetype: Spinner
     private lateinit var spinner_facultystud: Spinner
-//    private lateinit var MultiSpinnerYear: MultiSpinnerSearch
+    private lateinit var MultiSpinnerYear: MultiSpinnerSearch
+    private lateinit var spinner_multiple: Spinner
+
     
     private lateinit var spinner_institue: Spinner
     private lateinit var spinner_courselist: Spinner
@@ -242,38 +246,66 @@ class ExamAdminNoticeBoard : AppCompatActivity(), SingleUploadBroadcastReceiver.
         spinner_courselist = findViewById(R.id.spinner_courselist)
         spinner_deptlist = findViewById(R.id.spinner_deptlist)
         spinner_facultystud = findViewById(R.id.spinner_facultystud)
-//        MultiSpinnerYear= findViewById(R.id.MultiSpinnerYear)
-//        //val progressBar = findViewById<ProgressBar>(R.id.progressBar2)
+        MultiSpinnerYear= findViewById(R.id.MultiSpinnerYear)
+        spinner_multiple=findViewById(R.id.spinner_multiple)
+        //val progressBar = findViewById<ProgressBar>(R.id.progressBar2)
+
+//        MultiSpinnerYear.isColorSeparation=true
+        MultiSpinnerYear.setBackgroundColor(Color.CYAN)
+
+
+        val yr_list = Arrays.asList(*resources.getStringArray(R.array.StudYear))
+        val listArray0 = java.util.ArrayList<KeyPairBoolData>()
+
+        var listSize = yr_list.size
+        val yearData = ArrayList<MultiSelectData>()
+        for (i in 0..listSize - 1) {
+        yearData.add(
+            MultiSelectData(yr_list[i],false)
+        )
+        }
+
+        val multiSelectAdapter = MultiSelectAdap_U(this,yearData)
+        spinner_multiple.adapter=multiSelectAdapter
+
+//        spinner_multiple.onItemSelectedListener= object : AdapterView.OnItemSelectedListener {
+//            override fun onNothingSelected(p0: AdapterView<*>?) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+//            }
 //
-//        val list = Arrays.asList(*resources.getStringArray(R.array.StudYear))
-//        val listArray0 = java.util.ArrayList<KeyPairBoolData>()
-//
-//        for (i in list.indices) {
-//            val h = KeyPairBoolData()
-//            h.id = (i + 1).toLong()
-//            h.name = list.get(i)
-//            h.isSelected = false
-//            listArray0.add(h)
+//            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+//                Toast.makeText(this@ExamAdminNoticeBoard,yr_list[p2] , Toast.LENGTH_LONG).show();
+////                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+//            }
 //        }
-//        MultiSpinnerYear.setEmptyTitle("No Data Found")
-//        MultiSpinnerYear.setSearchHint("Find Hint")
-////        MultiSpinnerYear.setItems(listArray0, -1,object :SpinnerListener{
-////
-////            onItemsSelecte
-////        }
-////        )
+
+
+        for (i in yr_list.indices) {
+            val h = KeyPairBoolData()
+            h.id = (i + 1).toLong()
+            h.name = yr_list.get(i)
+            h.isSelected = false
+            listArray0.add(h)
+        }
+        MultiSpinnerYear.setEmptyTitle("No Data Found")
+        MultiSpinnerYear.setSearchHint("Find Hint")
+//        MultiSpinnerYear.setItems(listArray0, -1,object :SpinnerListener{
 //
-//        MultiSpinnerYear.setItems(listArray0, -1,
-//            SpinnerListener { items ->
-//                for (i in items.indices) {
-//                    if (items[i].isSelected) {
-//                        Log.i(
-//                            TAG,
-//                            i.toString() + " : " + items[i].name + " : " + items[i].isSelected
-//                        )
-//                    }
-//                }
-//            })
+//            onItemsSelecte
+//        }
+//        )
+
+        MultiSpinnerYear.setItems(listArray0, -1,
+            SpinnerListener { items ->
+                for (i in items.indices) {
+                    if (items[i].isSelected) {
+                        Log.i(
+                            TAG,
+                            i.toString() + " : " + items[i].name + " : " + items[i].isSelected
+                        )
+                    }
+                }
+            })
 
 
 

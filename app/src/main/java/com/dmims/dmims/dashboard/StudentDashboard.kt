@@ -219,12 +219,6 @@ class StudentDashboard : AppCompatActivity()
                 R.id.action_help -> {
                     displayHelpAlert()
                 }
-                R.id.action_dummy->
-                {
-                val intent=Intent(this,DeanDashboard::class.java)
-                    startActivity(intent)
-
-                }
 
                 R.id.action_logout -> {
                     var sharepref = getSharedPreferences("mypref", Context.MODE_PRIVATE)

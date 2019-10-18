@@ -56,6 +56,10 @@ class ExamMcqUpload : AppCompatActivity() , com.dmims.dmims.broadCasts.SingleUpl
 
     override fun onError(exception: Exception) {
         println("onError >>> "+exception!!.stackTrace)
+        GenericUserFunction.showApiError(
+            this,
+            "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
+        )
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
