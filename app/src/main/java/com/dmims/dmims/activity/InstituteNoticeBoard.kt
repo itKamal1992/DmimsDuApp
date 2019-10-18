@@ -67,6 +67,7 @@ class InstituteNoticeBoard() : AppCompatActivity(), SingleUploadBroadcastReceive
 
     override fun onError(exception: Exception) {
         println("onError >>> "+exception!!.stackTrace)
+        dialogCommon!!.dismiss()
         GenericUserFunction.showApiError(
             this,
             "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."

@@ -56,32 +56,32 @@ class InstituteDashboard : AppCompatActivity() {
 
         noticeboardgrid = findViewById<View>(R.id.noticeboardgrid) as LinearLayout
         notification = findViewById<View>(R.id.notification) as LinearLayout
-        academicCalenderInsti=findViewById(R.id.academic_cal_uploadIns)
+        academicCalenderInsti = findViewById(R.id.academic_cal_uploadIns)
         helpdiloadboad = findViewById<View>(R.id.helpdiloadboad) as LinearLayout
         noticeInboxGrid = findViewById<View>(R.id.noticeInboxGrid) as LinearLayout
 
         drawerTitle = findViewById(R.id.drawer_title)
         user_role = findViewById(R.id.roleadmin)
-        enroll_nor= findViewById(R.id.enroll_no)
-        txt_Mobile= findViewById(R.id.txt_Mobile)
-        txt_Institute= findViewById(R.id.txt_Institute)
-        txt_designation= findViewById(R.id.txt_designation)
+        enroll_nor = findViewById(R.id.enroll_no)
+        txt_Mobile = findViewById(R.id.txt_Mobile)
+        txt_Institute = findViewById(R.id.txt_Institute)
+        txt_designation = findViewById(R.id.txt_designation)
 
         var mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
         var drawer_titler = mypref.getString("key_drawer_title", null)
         id_admin = mypref.getString("Stud_id_key", null)
         roleadmin = mypref.getString("key_userrole", null)
 
-        var key_editmob:String? =mypref.getString("key_editmob",null)
-        var key_institute:String? =mypref.getString("key_institute",null)
-        var key_designation:String?=mypref.getString("key_designation",null)
+        var key_editmob: String? = mypref.getString("key_editmob", null)
+        var key_institute: String? = mypref.getString("key_institute", null)
+        var key_designation: String? = mypref.getString("key_designation", null)
 
         drawerTitle.text = drawer_titler
-        user_role.text = "User: "+roleadmin!!
-        enroll_nor.text= "ID: "+id_admin!!
-        txt_Mobile.text= "MB No: "+key_editmob!!
-        txt_Institute.text= "Ins Name: "+key_institute!!
-        txt_designation.text= "Designation: "+key_designation!!
+        user_role.text = "User: " + roleadmin!!
+        enroll_nor.text = "ID: " + id_admin!!
+        txt_Mobile.text = "MB No: " + key_editmob!!
+        txt_Institute.text = "Ins Name: " + key_institute!!
+        txt_designation.text = "Designation: " + key_designation!!
 
         //Set Event
 
@@ -110,8 +110,13 @@ class InstituteDashboard : AppCompatActivity() {
         // Set navigation view navigation item selected listener
         navigation_view.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.action_noticeInbox ->{
-                    val intent = Intent(this@InstituteDashboard, Activity_Institute_Admin_Inbox_notice::class.java)
+
+                R.id.action_academic_cal_upload -> {
+                    val intent = Intent(this@InstituteDashboard, AcademicCalUploadInsti::class.java)
+                    startActivity(intent)
+                }
+                R.id.action_noticeInbox -> {
+                    val intent = Intent(this@InstituteDashboard,Activity_Institute_Admin_Inbox_notice::class.java)
                     intent.putExtra("info", "noticeInboxGrid")
                     startActivity(intent)
                 }
@@ -123,7 +128,10 @@ class InstituteDashboard : AppCompatActivity() {
                     startActivity(intent)
                 }
                 R.id.action_notification -> {
-                    val intent = Intent(this@InstituteDashboard, Activity_Notification_Institute_Admin::class.java)
+                    val intent = Intent(
+                        this@InstituteDashboard,
+                        Activity_Notification_Institute_Admin::class.java
+                    )
                     intent.putExtra("roleadmin", roleadmin)
                     intent.putExtra("id_admin", id_admin)
                     startActivity(intent)
@@ -137,7 +145,10 @@ class InstituteDashboard : AppCompatActivity() {
                     var editor = sharepref.edit()
                     editor.clear()
                     editor.commit()
-                    val intentlogout = Intent(this@InstituteDashboard, com.dmims.dmims.activity.SplashScreen::class.java)
+                    val intentlogout = Intent(
+                        this@InstituteDashboard,
+                        com.dmims.dmims.activity.SplashScreen::class.java
+                    )
                     startActivity(intentlogout)
                 }
 
@@ -178,7 +189,11 @@ class InstituteDashboard : AppCompatActivity() {
             )
         )
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
             }
 
             override fun onPageSelected(position: Int) {
@@ -244,9 +259,13 @@ class InstituteDashboard : AppCompatActivity() {
             startActivity(intent)
         })
     }
+
     private fun getNotice(notification: LinearLayout) {
         notification.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this@InstituteDashboard, Activity_Notification_Institute_Admin::class.java) ///Notification_Institute delete
+            val intent = Intent(
+                this@InstituteDashboard,
+                Activity_Notification_Institute_Admin::class.java
+            ) ///Notification_Institute delete
 
             startActivity(intent)
         })
@@ -254,7 +273,8 @@ class InstituteDashboard : AppCompatActivity() {
 
     private fun setnoticeInboxGridEvent(noticeInboxGrid: LinearLayout) {
         noticeInboxGrid.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this@InstituteDashboard, Activity_Institute_Admin_Inbox_notice::class.java)
+            val intent =
+                Intent(this@InstituteDashboard, Activity_Institute_Admin_Inbox_notice::class.java)
             intent.putExtra("info", "noticeInboxGrid")
             startActivity(intent)
         })
@@ -273,11 +293,10 @@ class InstituteDashboard : AppCompatActivity() {
     }
 
 
-
     private fun displayhelphostelalert() {
         val dialog = AlertDialog.Builder(this)
         val dialogView = layoutInflater.inflate(R.layout.custom_dialog_hostle, null)
-       // val txtviewlbl = dialogView.findViewById<TextView>(R.id.txt_labl2)
+        // val txtviewlbl = dialogView.findViewById<TextView>(R.id.txt_labl2)
         dialog.setView(dialogView)
         dialog.setCancelable(false)
         dialog.setPositiveButton("Ok") { dialogs: DialogInterface, i: Int ->
@@ -289,7 +308,7 @@ class InstituteDashboard : AppCompatActivity() {
 
     private fun setAcademicCalenderEvent(academicCalenderInsti: LinearLayout) {
         academicCalenderInsti.setOnClickListener(View.OnClickListener {
-           val intent=Intent(this@InstituteDashboard,AcademicCalUploadInsti::class.java)
+            val intent = Intent(this@InstituteDashboard, AcademicCalUploadInsti::class.java)
             startActivity(intent)
         })
     }

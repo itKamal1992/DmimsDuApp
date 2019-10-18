@@ -137,7 +137,7 @@ class NoticeDeleteAdapterCurrent(userlist: ArrayList<NoticeStudCurrent>, context
 //            itemView.txtDEPT_NAME?.text = cc!!.DEPT_NAME
 ////            itemView.txtRESOU_FLAG?.text = cc!!.RESOU_FLAG
 ////            itemView.txtFILENAME?.text = cc!!.FILENAME
-//            itemView.camera_image?.setImageResource(cc!!.image)
+            itemView.camera_image?.setImageResource(cc!!.image)
             this.currenNotice = cc
             this.currentPosition = position
         }

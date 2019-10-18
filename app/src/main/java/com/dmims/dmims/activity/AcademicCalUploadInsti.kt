@@ -24,6 +24,7 @@ import com.dmims.dmims.remote.PhpApiInterface
 import dmax.dialog.SpotsDialog
 import net.gotev.uploadservice.MultipartUploadRequest
 import net.gotev.uploadservice.UploadNotificationConfig
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -48,6 +49,7 @@ class AcademicCalUploadInsti : AppCompatActivity(), SingleUploadBroadcastReceive
 
     override fun onError(exception: Exception) {
         println("onError >>> " + exception!!.stackTrace)
+        dialogCommon!!.dismiss()
         GenericUserFunction.showApiError(
             this,
             "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
@@ -64,7 +66,8 @@ class AcademicCalUploadInsti : AppCompatActivity(), SingleUploadBroadcastReceive
 
         var filename = serverResponseBody.toString(charset)
         dialogCommon!!.dismiss()
-        GenericUserFunction.showPositivePopUp(this,filename)
+        var jsonObject= JSONObject(filename)
+        GenericUserFunction.showPositivePopUp(this,jsonObject.getString("response"))
 
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

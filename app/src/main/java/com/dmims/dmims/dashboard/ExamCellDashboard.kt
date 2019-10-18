@@ -75,11 +75,11 @@ class ExamCellDashboard : AppCompatActivity() {
         roleadmin = mypref.getString("key_userrole", null)
 
         drawerTitle.text = drawer_titler
-        user_role.text = "User: "+roleadmin
-        txt_designation.text="Designation: "+mypref.getString("key_designation", null)
-        txt_Email.text="E-mail: "+mypref.getString("key_email", null)
-        txt_Mobile.text="MB No: "+mypref.getString("key_editmob", null)
-        enrollNo.text = "ID: "+id_admin
+        user_role.text = "User : "+roleadmin
+        txt_designation.text="Designation : "+mypref.getString("key_designation", null)
+        txt_Email.text="E-mail : "+mypref.getString("key_email", null)
+        txt_Mobile.text="MB No : "+mypref.getString("key_editmob", null)
+        enrollNo.text = "ID : "+id_admin
 
         //Set Event
         setNoticeEvent(noticeboardgrid)

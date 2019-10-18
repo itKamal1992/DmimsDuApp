@@ -76,6 +76,7 @@ class AdminNoticeBoard : AppCompatActivity(), SingleUploadBroadcastReceiver.Dele
 
     override fun onError(exception: Exception) {
         println("onError >>> "+exception!!.stackTrace)
+        dialogCommon!!.dismiss()
         GenericUserFunction.showApiError(
             this,
             "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
@@ -211,8 +212,9 @@ class AdminNoticeBoard : AppCompatActivity(), SingleUploadBroadcastReceiver.Dele
         spinner_deptlist = findViewById(R.id.spinner_deptlist)
         spinner_facultystud = findViewById(R.id.spinner_facultystud)
         //val progressBar = findViewById<ProgressBar>(R.id.progressBar2)
-        roleadmin = intent.getStringExtra("roleadmin")
-        id_admin = intent.getStringExtra("id_admin")
+        var mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
+        roleadmin = mypref.getString("key_userrole", null)
+        id_admin =  mypref.getString("Stud_id_key", null)
         instituteName1.add("All")
         mServices = Common.getAPI()
 

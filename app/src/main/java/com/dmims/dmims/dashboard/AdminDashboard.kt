@@ -13,25 +13,55 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import com.dmims.dmims.*
 import com.dmims.dmims.activity.*
 import com.dmims.dmims.adapter.ViewPagerAdapter
-import kotlinx.android.synthetic.main.faculty_dashboard.*
+import kotlinx.android.synthetic.main.admin_dashboard.*
 import java.util.*
 import kotlin.system.exitProcess
 
-class AdminDashboard : AppCompatActivity() {
-    lateinit var noticeboardgrid: LinearLayout
-    lateinit var notification: LinearLayout
-    lateinit var noticeInboxGrid: LinearLayout
-    lateinit var helpdiloadboad: LinearLayout
-    lateinit var academicCalBoard: LinearLayout
-    lateinit var academicCalUploadBoard: LinearLayout
-    lateinit var drawerTitle: TextView
-    lateinit var enrollNo: TextView
-    lateinit var user_role: TextView
+
+class AdminDashboard : AppCompatActivity(), View.OnClickListener {
+    override fun onClick(p0: View?) {
+        // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        when (p0!!.id) {
+//                    noticeboardgrid
+//                    notification
+//                    noticeInboxGrid
+//                    helpdiloadboad
+//                    academicCalBoard
+//                    academicCalUploadBoard
+
+            R.id.academic_cal_board -> {
+                val intent = Intent(this@AdminDashboard, AcademicCalender::class.java)
+                startActivity(intent)
+            }
+            R.id.noticeboardgrid -> {
+                val intent = Intent(this@AdminDashboard, AdminNoticeBoard::class.java)
+                startActivity(intent)
+            }
+            R.id.notification -> {
+                val intent = Intent(this@AdminDashboard, Activity_Notification_Admin::class.java)
+                startActivity(intent)
+            }
+            R.id.noticeInboxGrid -> {
+                val intent = Intent(this@AdminDashboard, Activity_Admin_Inbox_notice::class.java)
+                startActivity(intent)
+            }
+            R.id.helpdiloadboad -> {
+                displayhelpalert()
+            }
+            R.id.upload_aca_Cal -> {
+                val intent = Intent(this@AdminDashboard, AcademicCalenderUploadA::class.java)
+                startActivity(intent)
+            }
+
+        }
+    }
+
+
+
     lateinit var viewPager: ViewPager
     lateinit var sliderDotsPanel: LinearLayout
     private var dotscount: Int = 0
@@ -41,30 +71,14 @@ class AdminDashboard : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.admin_dashboard)
-        noticeboardgrid = findViewById<View>(R.id.noticeboardgrid) as LinearLayout
-        notification = findViewById<View>(R.id.notification) as LinearLayout
-       noticeInboxGrid = findViewById<View>(R.id.noticeInboxGrid) as LinearLayout
-        helpdiloadboad = findViewById<View>(R.id.helpdiloadboad) as LinearLayout
-        academicCalBoard = findViewById<View>(R.id.academic_cal_board) as LinearLayout
-        academicCalUploadBoard = findViewById<View>(R.id.upload_aca_Cal) as LinearLayout
-        drawerTitle = findViewById(R.id.drawer_title)
-        enrollNo = findViewById(R.id.enroll_no)
-        user_role = findViewById(R.id.user_role)
         var mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
-        var drawer_titler = mypref.getString("key_drawer_title", null)
-        var enroll_nor = mypref.getString("key_enroll_no", null)
-        id_admin = mypref.getString("Stud_id_key", null)
-        roleadmin = mypref.getString("key_userrole", null)
-        drawerTitle.text = drawer_titler
-        enrollNo.text = enroll_nor
-        user_role.text = roleadmin
-        //Set Event
-        setNoticeEvent(noticeboardgrid)
-        getNotice(notification)
-       setnoticeInboxGridEvent(noticeInboxGrid)
-        setHelpalertEvent(helpdiloadboad)
-        setacdemicCalEvent(academicCalBoard)
-        setacdemicCalUpdateEvent(academicCalUploadBoard)
+        drawer_title.text = mypref.getString("key_drawer_title", null)
+        user_role.text = "User : "+mypref.getString("key_userrole", null)
+        txt_designation.text= "Designation : "+mypref.getString("key_designation", null)
+        txt_Email.text= "E-mail: "+mypref.getString("key_email", null)
+        txt_Mobile.text= "MB No : "+mypref.getString("key_editmob", null)
+        enroll_no.text= "ID : "+mypref.getString("Stud_id_key", null)
+
         // Configure action bar
         setSupportActionBar(toolbar)
         val actionBar = supportActionBar
@@ -83,6 +97,14 @@ class AdminDashboard : AppCompatActivity() {
         drawerToggle.isDrawerIndicatorEnabled = true
         drawer_layout.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
+
+        noticeboardgrid.setOnClickListener(this)
+        noticeInboxGrid.setOnClickListener(this)
+        notification.setOnClickListener(this)
+        academic_cal_board.setOnClickListener(this)
+        upload_aca_Cal.setOnClickListener(this)
+        helpdiloadboad.setOnClickListener(this)
+
         // Set navigation view navigation item selected listener
         navigation_view.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -94,18 +116,22 @@ class AdminDashboard : AppCompatActivity() {
                 }
                 R.id.action_noticeboard -> {
                     val intent = Intent(this@AdminDashboard, AdminNoticeBoard::class.java)
-                    intent.putExtra("roleadmin", roleadmin!!)
-                    intent.putExtra("id_admin", id_admin!!)
                     startActivity(intent)
                 }
                 R.id.action_notification -> {
-                    val intent = Intent(this@AdminDashboard, Activity_Notification_Admin::class.java)
-                    intent.putExtra("roleadmin", roleadmin!!)
-                    intent.putExtra("id_admin", id_admin!!)
+                    val intent =
+                        Intent(this@AdminDashboard, Activity_Notification_Admin::class.java)
                     startActivity(intent)
                 }
                 R.id.action_inbox -> {
-                    val intent = Intent(this@AdminDashboard, Activity_Admin_Inbox_notice::class.java)
+                    val intent =
+                        Intent(this@AdminDashboard, Activity_Admin_Inbox_notice::class.java)
+                    intent.putExtra("info", "Notice board")
+                    startActivity(intent)
+                }
+
+                R.id.action_calender_upload -> {
+                    val intent = Intent(this@AdminDashboard, AcademicCalenderUploadA::class.java)
                     intent.putExtra("info", "Notice board")
                     startActivity(intent)
                 }
@@ -117,7 +143,10 @@ class AdminDashboard : AppCompatActivity() {
                     var editor = sharepref.edit()
                     editor.clear()
                     editor.commit()
-                    val intentlogout = Intent(this@AdminDashboard, com.dmims.dmims.activity.SplashScreen::class.java)
+                    val intentlogout = Intent(
+                        this@AdminDashboard,
+                        com.dmims.dmims.activity.SplashScreen::class.java
+                    )
                     startActivity(intentlogout)
                 }
 
@@ -158,7 +187,11 @@ class AdminDashboard : AppCompatActivity() {
             )
         )
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
             }
 
             override fun onPageSelected(position: Int) {
@@ -213,44 +246,7 @@ class AdminDashboard : AppCompatActivity() {
         }
     }
 
-    private fun setNoticeEvent(noticeboardgrid: LinearLayout) {
-        noticeboardgrid.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this@AdminDashboard, AdminNoticeBoard::class.java)
-            intent.putExtra("roleadmin", roleadmin)
-            intent.putExtra("id_admin", id_admin)
-            startActivity(intent)
-        })
-    }
-    private fun getNotice(notification: LinearLayout) {
-        notification.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this@AdminDashboard, Activity_Notification_Admin::class.java)
-            intent.putExtra("roleadmin", roleadmin)
-            intent.putExtra("id_admin", id_admin)
-            startActivity(intent)
-        })
-    }
 
-    private fun setacdemicCalEvent(academic_cal_board: LinearLayout) {
-        academic_cal_board.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this@AdminDashboard, AcademicCalender::class.java)
-            intent.putExtra("info", "Notice board")
-            startActivity(intent)
-        })
-    }
-    private fun setacdemicCalUpdateEvent(upload_aca_Cal: LinearLayout) {
-        upload_aca_Cal.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this@AdminDashboard, AcademicCalenderUploadA::class.java)
-            intent.putExtra("info", "Notice board")
-            startActivity(intent)
-        })
-    }
-    private fun setnoticeInboxGridEvent(noticeInboxGrid: LinearLayout) {
-        noticeInboxGrid.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this@AdminDashboard, Activity_Admin_Inbox_notice::class.java)
-            intent.putExtra("info", "Notice board")
-            startActivity(intent)
-        })
-    }
 
     private fun displayhelpalert() {
         val dialog = AlertDialog.Builder(this)
@@ -265,11 +261,7 @@ class AdminDashboard : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun setHelpalertEvent(helpdiloadboad: LinearLayout) {
-        helpdiloadboad.setOnClickListener(View.OnClickListener {
-            displayhelpalert()
-        })
-    }
+
 
     override fun onBackPressed() {
         exitDialog()

@@ -32,7 +32,7 @@ class Activity_Notification_Admin : AppCompatActivity() {
     var to_date: TextView? = null
     var from_date: TextView? = null
     var search_id: Button? = null
-    var k:Int = 0
+    var k: Int = 0
     var btn_current_id: Button? = null
     var current_date: String? = "-"
     var COURSE_ID: String? = "-"
@@ -48,6 +48,7 @@ class Activity_Notification_Admin : AppCompatActivity() {
         val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
         COURSE_ID = mypref.getString("course_id", null)
         STUD_ID = mypref.getString("STUD_ID", null)
+
         to_date = findViewById(R.id.select_to_date)
         from_date = findViewById(R.id.select_from_date)
         search_id = findViewById<Button>(R.id.search_id)
@@ -65,28 +66,144 @@ class Activity_Notification_Admin : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.attendance_list)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
         try {
-            mServices.GetNotice( to_date_sel,from_date_sel)
+            mServices.GetNotice(to_date_sel, from_date_sel)
                 .enqueue(object : Callback<APIResponse> {
                     override fun onFailure(call: Call<APIResponse>, t: Throwable) {
 
-                        Toast.makeText(this@Activity_Notification_Admin, t.message, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@Activity_Notification_Admin,
+                            t.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
                         progressBar!!.visibility = View.INVISIBLE
                         progressBar!!.visibility = View.GONE
 
                     }
-                    override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+
+                    override fun onResponse(
+                        call: Call<APIResponse>,
+                        response: Response<APIResponse>
+                    ) {
                         val result: APIResponse? = response.body()
-                        println("result 1 >>> "+result.toString())
+                        println("result 1 >>> " + result.toString())
                         if (result!!.Status == "ok") {
                             println("result >>> $result")
-                            println("result.Data14!! >>> "+result.Data14!!)
+                            println("result.Data14!! >>> " + result.Data14!!)
                             var listSize = result.Data14!!.size
                             val users = ArrayList<NoticeStudCurrent>()
-                            println("result 4>>> "+users)
+                            println("result 4>>> " + users)
+
+                            for (i in 0..listSize - 1) {
+                                if (result.Data14!![i].ADMIN_FLAG == "T") {
+                                    //    if (result!!.Data14!![i].COURSE_ID == "All" || result!!.Data14!![i].COURSE_ID == COURSE_ID) {
+                                    if (result.Data14!![i].RESOU_FLAG == "T") {
+                                        k = R.drawable.ic_notice_yes
+                                    } else {
+                                        k = R.drawable.ic_anotice_no
+                                    }
+                                    users.add(
+                                        NoticeStudCurrent(
+                                            result.Data14!![i].NOTICE_TITLE,
+                                            result.Data14!![i].USER_ROLE,
+                                            result.Data14!![i].USER_TYPE,
+                                            result.Data14!![i].NOTICE_TYPE,
+                                            result.Data14!![i].NOTICE_DESC,
+                                            result.Data14!![i].NOTICE_DATE,
+                                            result.Data14!![i].INSTITUTE_NAME,
+                                            result.Data14!![i].COURSE_NAME,
+                                            result.Data14!![i].COURSE_ID,
+                                            result.Data14!![i].DEPT_NAME,
+//                                                result!!.Data14!![i].DEPT_ID,
+                                            result.Data14!![i].ID,// in this we have pass ROW ID instead of DEPT_ID() to delete perticular notice
+                                            result.Data14!![i].RESOU_FLAG,
+                                            result.Data14!![i].FILENAME,
+                                            k
+                                        )
+                                    )
+                                    // }
+                                }
+                            }
+                            progressBar!!.visibility = View.INVISIBLE
+                            progressBar!!.visibility = View.GONE
+                            val adapter = NoticeDeleteAdapterCurrent(
+                                users,
+                                this@Activity_Notification_Admin
+                            )//StudentNotificationAdapter
+                            recyclerView.adapter = adapter
+
+                        } else {
+                            if (result.Status.equals("No data found", ignoreCase = true)) {
+
+                                progressBar!!.visibility = View.INVISIBLE
+                                progressBar!!.visibility = View.GONE
+                                GenericUserFunction.showOopsError(
+                                    this@Activity_Notification_Admin,
+                                    "No Notices found for the current request"
+                                )
+                            } else {
+                                progressBar!!.visibility = View.INVISIBLE
+                                progressBar!!.visibility = View.GONE
+                                println("result 3>>>" + result.Status)
+                                Toast.makeText(
+                                    this@Activity_Notification_Admin,
+                                    result.Status,
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                            }
+                        }
+                    }
+                })
+
+        } catch (ex: Exception) {
+
+            ex.printStackTrace()
+            GenericUserFunction.showApiError(
+                this,
+                "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
+            )
+        }
+
+        btn_current_id!!.setOnClickListener {
+            val intent =
+                Intent(this@Activity_Notification_Admin, Admin_CurrentNotification::class.java)
+            startActivity(intent)
+        }
+
+        search_id!!.setOnClickListener {
+
+            validateDate()
+
+            progressBar!!.visibility = View.VISIBLE
+            try {
+                mServices.GetNotice(to_date_sel, from_date_sel)
+                    .enqueue(object : Callback<APIResponse> {
+                        override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+
+                            Toast.makeText(
+                                this@Activity_Notification_Admin,
+                                t.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            progressBar!!.visibility = View.INVISIBLE
+                            progressBar!!.visibility = View.GONE
+
+                        }
+
+                        override fun onResponse(
+                            call: Call<APIResponse>,
+                            response: Response<APIResponse>
+                        ) {
+                            val result: APIResponse? = response.body()
+                            println("result 1 >>> " + result.toString())
+                            if (result!!.Status == "ok") {
+                                var listSize = result.Data14!!.size
+                                val users = ArrayList<NoticeStudCurrent>()
+                                println("result 4>>> " + users)
 
                                 for (i in 0..listSize - 1) {
                                     if (result.Data14!![i].ADMIN_FLAG == "T") {
-                                        //    if (result!!.Data14!![i].COURSE_ID == "All" || result!!.Data14!![i].COURSE_ID == COURSE_ID) {
+                                        // if (result!!.Data14!![i].COURSE_ID == "All" || result!!.Data14!![i].COURSE_ID == COURSE_ID) {
                                         if (result.Data14!![i].RESOU_FLAG == "T") {
                                             k = R.drawable.ic_notice_yes
                                         } else {
@@ -104,7 +221,7 @@ class Activity_Notification_Admin : AppCompatActivity() {
                                                 result.Data14!![i].COURSE_NAME,
                                                 result.Data14!![i].COURSE_ID,
                                                 result.Data14!![i].DEPT_NAME,
-//                                                result!!.Data14!![i].DEPT_ID,
+//                                                    result!!.Data14!![i].DEPT_ID,
                                                 result.Data14!![i].ID,// in this we have pass ROW ID instead of DEPT_ID() to delete perticular notice
                                                 result.Data14!![i].RESOU_FLAG,
                                                 result.Data14!![i].FILENAME,
@@ -116,102 +233,14 @@ class Activity_Notification_Admin : AppCompatActivity() {
                                 }
                                 progressBar!!.visibility = View.INVISIBLE
                                 progressBar!!.visibility = View.GONE
+//                                    val adapter = StudentNotificationAdapter(users)
                                 val adapter = NoticeDeleteAdapterCurrent(
                                     users,
                                     this@Activity_Notification_Admin
-                                )//StudentNotificationAdapter
+                                )
                                 recyclerView.adapter = adapter
 
-                        }
-                        else {
-                            if (result.Status.equals("No data found",ignoreCase = true)) {
-
-                                progressBar!!.visibility = View.INVISIBLE
-                                progressBar!!.visibility = View.GONE
-                                GenericUserFunction.showOopsError(this@Activity_Notification_Admin,"No Notices found for the current request")
-                            }
-                            else {
-                                progressBar!!.visibility = View.INVISIBLE
-                                progressBar!!.visibility = View.GONE
-                                println("result 3>>>" + result.Status)
-                                Toast.makeText(this@Activity_Notification_Admin, result.Status, Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                        }
-                    }
-                })
-
-        } catch (ex: Exception) {
-
-            ex.printStackTrace()
-            GenericUserFunction.showApiError(this,"Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time.")
-        }
-
-        btn_current_id!!.setOnClickListener {
-            val intent = Intent(this@Activity_Notification_Admin,Admin_CurrentNotification::class.java)
-            startActivity(intent)
-        }
-
-        search_id!!.setOnClickListener {
-
-            validateDate()
-
-            progressBar!!.visibility = View.VISIBLE
-            try {
-                mServices.GetNotice( to_date_sel,from_date_sel)
-                    .enqueue(object : Callback<APIResponse> {
-                        override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-
-                            Toast.makeText(this@Activity_Notification_Admin, t.message, Toast.LENGTH_SHORT).show()
-                            progressBar!!.visibility = View.INVISIBLE
-                            progressBar!!.visibility = View.GONE
-
-                        }
-
-                        override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
-                            val result: APIResponse? = response.body()
-                            println("result 1 >>> "+result.toString())
-                            if (result!!.Status == "ok") {
-                                var listSize = result.Data14!!.size
-                                val users = ArrayList<NoticeStudCurrent>()
-                                println("result 4>>> "+users)
-
-                                    for (i in 0..listSize - 1) {
-                                        if (result.Data14!![i].ADMIN_FLAG == "T") {
-                                            // if (result!!.Data14!![i].COURSE_ID == "All" || result!!.Data14!![i].COURSE_ID == COURSE_ID) {
-                                            if (result.Data14!![i].RESOU_FLAG == "T") {
-                                                k = R.drawable.ic_notice_yes
-                                            } else {
-                                                k = R.drawable.ic_anotice_no
-                                            }
-                                            users.add(
-                                                NoticeStudCurrent(
-                                                    result.Data14!![i].NOTICE_TITLE,
-                                                    result.Data14!![i].USER_ROLE,
-                                                    result.Data14!![i].USER_TYPE,
-                                                    result.Data14!![i].NOTICE_TYPE,
-                                                    result.Data14!![i].NOTICE_DESC,
-                                                    result.Data14!![i].NOTICE_DATE,
-                                                    result.Data14!![i].INSTITUTE_NAME,
-                                                    result.Data14!![i].COURSE_NAME,
-                                                    result.Data14!![i].COURSE_ID,
-                                                    result.Data14!![i].DEPT_NAME,
-                                                    result.Data14!![i].DEPT_ID,
-                                                    result.Data14!![i].RESOU_FLAG,
-                                                    result.Data14!![i].FILENAME,
-                                                    k
-                                                )
-                                            )
-                                            // }
-                                        }
-                                    }
-                                    progressBar!!.visibility = View.INVISIBLE
-                                    progressBar!!.visibility = View.GONE
-                                    val adapter = StudentNotificationAdapter(users)
-                                    recyclerView.adapter = adapter
-
-                            }
-                            else {
+                            } else {
                                 if (result.Status.equals("No data found", ignoreCase = true)) {
 
                                     progressBar!!.visibility = View.INVISIBLE
@@ -235,11 +264,13 @@ class Activity_Notification_Admin : AppCompatActivity() {
                         }
                     })
 
-            }
-            catch (ex: Exception) {
+            } catch (ex: Exception) {
 
                 ex.printStackTrace()
-                GenericUserFunction.showApiError(this,"Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time.")
+                GenericUserFunction.showApiError(
+                    this,
+                    "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
+                )
             }
 
         }
@@ -254,7 +285,8 @@ class Activity_Notification_Admin : AppCompatActivity() {
         val day = c.get(Calendar.DAY_OF_MONTH)
         val dpd = DatePickerDialog(
             this,
-            R.style.AppTheme4, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            R.style.AppTheme4,
+            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 println(view)
                 println(year)
                 // Display Selected date in Toast
@@ -264,7 +296,10 @@ class Activity_Notification_Admin : AppCompatActivity() {
                 val date = cal.time
                 sdf.format(date)
                 from_date!!.text = sdf.format(date).toString()
-            }, year, month, day
+            },
+            year,
+            month,
+            day
         )
         dpd.show()
     }
@@ -278,7 +313,8 @@ class Activity_Notification_Admin : AppCompatActivity() {
 
         val dpd = DatePickerDialog(
             this,
-            R.style.AppTheme4, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            R.style.AppTheme4,
+            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 println(view)
                 println(year)
                 // Display Selected date in Toast
@@ -288,7 +324,10 @@ class Activity_Notification_Admin : AppCompatActivity() {
                 val date = cal.time
                 sdf.format(date)
                 to_date!!.text = sdf.format(date).toString()
-            }, year, month, day
+            },
+            year,
+            month,
+            day
         )
         dpd.show()
     }

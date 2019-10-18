@@ -15,14 +15,72 @@ import android.provider.MediaStore
 import android.support.annotation.RequiresApi
 import android.view.View
 import android.widget.*
+import com.dmims.dmims.Generic.GenericUserFunction
 import com.dmims.dmims.R
+import com.dmims.dmims.broadCasts.SingleUploadBroadcastReceiver
 import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.activity_mcq__examcell.*
 import net.gotev.uploadservice.MultipartUploadRequest
 import net.gotev.uploadservice.UploadNotificationConfig
+import org.json.JSONObject
 import java.util.*
 
-class AcademicCalenderUploadA : AppCompatActivity() {
+class AcademicCalenderUploadA : AppCompatActivity() , SingleUploadBroadcastReceiver.Delegate {
+    private val TAG1: String = "AndroidUploadService"
+    var dialogCommon: android.app.AlertDialog? = null
+    val uploadReceiver: SingleUploadBroadcastReceiver = SingleUploadBroadcastReceiver()
+
+    override fun onResume() {
+        super.onResume()
+        uploadReceiver.register(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        uploadReceiver.unregister(this)
+    }
+
+
+    override fun onError(exception: Exception) {
+        println("onError >>> " + exception!!.stackTrace)
+        dialogCommon!!.dismiss()
+        GenericUserFunction.showApiError(
+            this,
+            "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
+        )
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+
+    override fun onCompleted(serverResponseCode: Int, serverResponseBody: ByteArray) {
+        println("onCompleted >>> serverResponseCode >>> " + serverResponseCode + " serverResponseBody >>> " + serverResponseBody)
+
+        val charset = Charsets.UTF_8
+        println("onCompleted 1 >>> " + serverResponseBody.toString(charset))
+
+        var filename = serverResponseBody.toString(charset)
+        dialogCommon!!.dismiss()
+        var jsonObject=JSONObject(filename)
+        GenericUserFunction.showPositivePopUp(this,jsonObject.getString("response"))
+
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onProgress(progress: Int) {
+        println("onProgress 1 >>> uploadedBytes " + progress)
+    }
+
+
+    override fun onProgress(uploadedBytes: Long, totalBytes: Long) {
+        println("onProgress 2 >>> uploadedBytes " + uploadedBytes + " totalBytes >>> " + totalBytes)
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onCancelled() {
+        println("onCancelled >>> ")
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     private lateinit var btnPickPdf: Button
     private lateinit var btnPublishCal: Button
     var REQUEST_CODE: Int = 0
@@ -45,6 +103,8 @@ class AcademicCalenderUploadA : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.academic_calender_upload)
+
+        dialogCommon = SpotsDialog.Builder().setContext(this).build()
 
         spinnerSession=findViewById(R.id.spinner_sessionAc)
         et_pdfName=findViewById(R.id.et_pdfname)
@@ -137,16 +197,17 @@ class AcademicCalenderUploadA : AppCompatActivity() {
 
         } else {
             //Dialog Start
-            val dialog: AlertDialog = SpotsDialog.Builder().setContext(this).build()
+
+         //Dialog Start
+         dialogCommon!!.setMessage("Please Wait!!! \nwhile we are Uploading Calender")
+         dialogCommon!!.setCancelable(false)
+         dialogCommon!!.show()
 
             try {
-                dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
-                dialog.setCancelable(false)
-                dialog.show()
-                //Dialog End
-
 
                 PdfID = UUID.randomUUID().toString()
+                uploadReceiver.setDelegate(this)
+                uploadReceiver.setUploadID(PdfID!!)
                 str_spinnerSession=spinnerSession.selectedItem.toString()
 
                 MultipartUploadRequest(this, PdfID, PDF_UPLOAD_HTTP_URL)
@@ -157,10 +218,9 @@ class AcademicCalenderUploadA : AppCompatActivity() {
                     .setMaxRetries(5)
                     .startUpload()
 
-                dialog.dismiss()
 
             } catch (exception: Exception) {
-                dialog.dismiss()
+                dialogCommon!!.dismiss()
 
                 Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
             }
