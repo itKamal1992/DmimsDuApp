@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
                             Toast.makeText(this@MainActivity, result.Status, Toast.LENGTH_SHORT)
                                 .show()
                         } else {
-                            if (result.Data1?.USER_ROLE != null && result.Data1?.USER_ROLE.equals(
+                            if (result.Data1?.USER_ROLE        != null && result.Data1?.USER_ROLE.equals(
                                     "Student",
                                     ignoreCase = true
                                 )

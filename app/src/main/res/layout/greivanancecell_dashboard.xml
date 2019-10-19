@@ -222,7 +222,8 @@
             
             
                     </LinearLayout>
-            
+
+
                     <!-- Second Row-->
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -237,9 +238,9 @@
                             android:layout_weight="1"
                             android:layout_margin="2dp"
                             android:orientation="vertical"
-
                             android:background="@color/colorWhite"
                             >
+
                             <ImageView
                                 android:layout_width="60dp"
                                 android:layout_height="60dp"
@@ -248,6 +249,7 @@
                                 android:src="@drawable/ic_attendence"
                                 android:background="@drawable/white_right_corner_bg"
                                 />
+
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -264,7 +266,37 @@
 
 
 
+                        <LinearLayout
+                            android:id="@+id/response_Griv_Princ"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:orientation="vertical"
+                            android:background="@color/colorWhite"
+                            >
 
+                            <ImageView
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:layout_marginTop="20dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_attendence"
+                                android:background="@drawable/white_right_corner_bg"
+                                />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="8dp"
+                                android:layout_marginTop="0dp"
+                                android:background="@drawable/white_right_corner_bg"
+                                android:text="Response Grievance"
+                                android:textSize="14sp"
+                                android:textAlignment="center"
+                                android:textColor="#000"
+                                />
+
+                        </LinearLayout>
 
 
                     </LinearLayout>
@@ -286,7 +318,8 @@
                         <!--android:background="@color/colorWhite"-->
                         <!--&gt;-->
                             <!--<ImageView-->
-                                    <!--android:layout_width="60dp"-->
+                                    <!--android:lay
+                                    out_width="60dp"-->
                                     <!--android:layout_height="60dp"-->
                                     <!--android:layout_marginTop="20dp"-->
                                     <!--android:layout_gravity="center"-->
@@ -377,6 +410,7 @@
     
             </ScrollView>
         </LinearLayout>
+
         <LinearLayout
                 android:id="@+id/drawer_header"
                 android:layout_width="match_parent"
@@ -441,7 +475,9 @@
                     android:layout_height="wrap_content"
                     app:menu="@menu/greivance_cell_drawer_menu"
             />
+
         </LinearLayout>
+
     </android.support.v4.widget.DrawerLayout>
     
     
