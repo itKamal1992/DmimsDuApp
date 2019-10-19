@@ -44,16 +44,11 @@ import kotlin.system.exitProcess
 class HodDashboard : AppCompatActivity()
 {
     lateinit var time_table_grid: LinearLayout
-    lateinit var greviancegrid: LinearLayout
     lateinit var View_Griv_Princ: LinearLayout
-    lateinit var exam_grid: LinearLayout
-    lateinit var appraisal_grid: LinearLayout
     lateinit var noticeboardgrid: LinearLayout
     lateinit var notification: LinearLayout
     lateinit var emergencygrid: LinearLayout
     lateinit var helpdiloadboad: LinearLayout
-    lateinit var feedback_grid: LinearLayout
-    lateinit var academicCalBoard: LinearLayout
     lateinit var drawerTitle: TextView
     lateinit var enrollNo: TextView
 
@@ -68,6 +63,8 @@ class HodDashboard : AppCompatActivity()
     private var dots: Array<ImageView?>? = null
     private lateinit var progressDiag: ProgressDialog
     private var Deptlist: ArrayList<DeptListStudDataRef>? = null
+
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -143,6 +143,8 @@ class Feed_Form_SectB(
 }
 
 class Summative(
+
+
     FACULTY_TYPE: String,
     EXAM_TYPE: String,
     EXAM_YEAR: String,

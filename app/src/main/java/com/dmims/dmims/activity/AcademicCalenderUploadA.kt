@@ -99,6 +99,9 @@ class AcademicCalenderUploadA : AppCompatActivity() , SingleUploadBroadcastRecei
     lateinit var PdfID:String
 
 
+
+
+
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,6 +112,8 @@ class AcademicCalenderUploadA : AppCompatActivity() , SingleUploadBroadcastRecei
         spinnerSession=findViewById(R.id.spinner_sessionAc)
         et_pdfName=findViewById(R.id.et_pdfname)
 
+
+
         spinnerSession.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 var selectedtypeoftimetbl = p0!!.getItemAtPosition(p2) as String
@@ -117,7 +122,6 @@ class AcademicCalenderUploadA : AppCompatActivity() , SingleUploadBroadcastRecei
                     et_pdfName.text = pdfName1
                 }
             }
-
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
         }

@@ -7,6 +7,7 @@ class APIResponse {
      var Data12: List<GetGreivance>? = null
      var Data15: GetAppVersion? = null
      var Data16: StudentSearchRoll? = null
+     var Data18: List<GrievanceDataField>? = null
      var Data14: List<GetNotice>? = null
      var Data2: GetParentData? = null
      var Data3: GetFacultyData? = null

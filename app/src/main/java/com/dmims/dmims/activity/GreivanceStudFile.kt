@@ -16,11 +16,14 @@ import android.view.View
 import android.widget.*
 import com.dmims.dmims.Generic.GenericUserFunction
 import com.dmims.dmims.R
+import com.dmims.dmims.adapter.ScheduledFeedbackAdapter
 import com.dmims.dmims.common.Common
-import com.dmims.dmims.model.APIResponse
-import com.dmims.dmims.model.MyResponse
+import com.dmims.dmims.dataclass.ListScheduledFeedback
+import com.dmims.dmims.model.*
 import com.dmims.dmims.remote.Api
+import com.dmims.dmims.remote.ApiClientPhp
 import com.dmims.dmims.remote.IMyAPI
+import com.dmims.dmims.remote.PhpApiInterface
 import com.google.gson.GsonBuilder
 import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.activity_greivance_stud_file.*
@@ -59,7 +62,7 @@ class GreivanceStudFile : AppCompatActivity()
     lateinit var et_DateGriev:EditText
 
     lateinit var spinner_CategoryGriev: Spinner
-    lateinit var spinner_CollegeNameGriev: Spinner
+    lateinit var spinner_Name: Spinner
     lateinit var spinner_ComplaintToGriev: Spinner
 
     lateinit var btnPickerFile:Button
@@ -80,6 +83,7 @@ class GreivanceStudFile : AppCompatActivity()
     lateinit var STUD_ID:String
     lateinit var course_id:String
     lateinit var roll_no:String
+    var instituteName:String=""
    // lateinit var course_id:String
 
      var  Grev_Filename:String=""
@@ -99,6 +103,10 @@ class GreivanceStudFile : AppCompatActivity()
 
     lateinit var btnViewGriev:Button
 
+    var listsinstz: Int = 0
+    var instituteName1 = ArrayList<String>()
+    var instituteData= ArrayList<String>()
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,7 +118,7 @@ class GreivanceStudFile : AppCompatActivity()
         spinner_CategoryGriev=findViewById(R.id.spinner_studGriveCategory)
         et_ComplaintAgainstDetailGriev=findViewById(R.id.et_DetailsComplaintGrive)
         et_DetailDescriGriev=findViewById(R.id.et_DetailsDescriGrive)
-        spinner_CollegeNameGriev=findViewById(R.id.spinner_CollegeNameGriev)
+        spinner_Name=findViewById(R.id.spinner_Name)
         spinner_ComplaintToGriev=findViewById(R.id.spinner_ComplaintToGriev)
         et_DateGriev=findViewById(R.id.et_dateGriev)
         btnPickerFile=findViewById(R.id.admin_griev_upload)
@@ -121,6 +129,8 @@ class GreivanceStudFile : AppCompatActivity()
             val intent=Intent(this@GreivanceStudFile,StudentSubmittedGrievance::class.java)
        startActivity(intent)
         }
+
+        instituteName1.add("Select ")
 
         btnPickerFile.setOnClickListener {
             val i = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -133,6 +143,10 @@ class GreivanceStudFile : AppCompatActivity()
 
         val myFormat = "dd-MM-yyyy" // mention the format you need
         val sdf = SimpleDateFormat(myFormat, Locale.US)
+
+
+
+
 
 
         current_date = sdf.format(cal.time)
@@ -149,7 +163,7 @@ class GreivanceStudFile : AppCompatActivity()
         var STUD_ID = mypref.getString("Stud_id_key", null)
         var course_id = mypref.getString("course_id", null)
         var roll_no = mypref.getString("roll_no", null)
-
+        instituteName=mypref.getString("key_stud_course",null)
 
 
         btn_submit_grievance.setOnClickListener {
@@ -172,7 +186,7 @@ class GreivanceStudFile : AppCompatActivity()
             }else  if (et_DetailDescriGriev.text.toString().equals(""))
             {
                 et_DetailDescriGriev.setError("Plese fill information")
-            }else  if (spinner_CollegeNameGriev.selectedItem.equals("--Select College--"))
+            }else  if (spinner_Name.selectedItem.equals("--Select College--"))
             {
                 Toast.makeText(this,"Select College",Toast.LENGTH_LONG).show()
             }
@@ -187,7 +201,7 @@ class GreivanceStudFile : AppCompatActivity()
                 str_CategoryGriev=spinner_CategoryGriev.selectedItem.toString()
                 str_ComplaintAgainstDetailGriev=et_ComplaintAgainstDetailGriev.text.toString()
                 str_DetailDescriGriev=et_DetailDescriGriev.text.toString()
-                str_CollegeNameGrievGriev=spinner_CollegeNameGriev.selectedItem.toString()
+                str_CollegeNameGrievGriev=spinner_Name.selectedItem.toString()
                 str_ComplaintToGriev=spinner_ComplaintToGriev.selectedItem.toString()
                 str_DateGriev=et_DateGriev.text.toString()
 
@@ -406,10 +420,124 @@ class GreivanceStudFile : AppCompatActivity()
 
         }
 
+        spinner_ComplaintToGriev.onItemSelectedListener=object :AdapterView.OnItemSelectedListener
+        {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long)
+            {
+                getGrievanceData()
+            }
+        }
 
 
 
 
+
+
+    }
+
+    private fun getGrievanceData()
+    {
+        var roll=spinner_ComplaintToGriev.selectedItem.toString()
+if (roll.equals("--Select Complaint To--"))
+{
+
+}else
+{
+    println("instituteName  j "+instituteName)
+
+
+    println("roll "+roll)
+
+    mServices.GetGreivanceData(instituteName,roll)
+        .enqueue(object :Callback<APIResponse>{
+            override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+
+            }
+
+            override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                val result: APIResponse? = response.body()
+
+
+
+                if (result?.Status.equals("No Data Found"))
+                {
+                    println("No Data found")
+                }else
+                {
+                    listsinstz= result?.Data18!!.size
+                    println("list intSIze "+listsinstz)
+                    for (i in 0..listsinstz - 1) {
+                        instituteName1.add(result.Data18!![i].FNAME+"("+result.Data18!![i].DEPNAM01+")")
+                    }
+                    println("result  "+ result?.Data18!![0].FNAME+result?.Data18!![0].MNAME+result?.Data18!![0].LNAME)
+                    var DepartmentAdap: ArrayAdapter<String> = ArrayAdapter<String>(
+                        this@GreivanceStudFile,
+                        R.layout.support_simple_spinner_dropdown_item, instituteName1
+                    )
+                    /* var DepartmentAdap2: ArrayAdapter<String> = ArrayAdapter<String>(
+                         this@GreivanceStudFile,
+                         R.layout.support_simple_spinner_dropdown_item, instituteData
+                     )*/
+
+
+                    spinner_Name!!.adapter = DepartmentAdap
+
+                    println(" Data found")
+                }
+
+
+            }
+
+        })
+
+
+    //spinner_Name!!.adapter = DepartmentAdap2
+}
+
+
+
+
+
+      /*  var phpApiInterface: PhpApiInterface = ApiClientPhp.getClient().create(PhpApiInterface::class.java)
+        var submitdate: Call<FeedBackSchedule> = phpApiInterface.CurrentDateSubmit(current_date)
+        submitdate.enqueue(object :Callback<FeedBackSchedule>{
+            override fun onFailure(call: Call<FeedBackSchedule>, t: Throwable) {
+
+            }
+
+            override fun onResponse(call: Call<FeedBackSchedule>, response: Response<FeedBackSchedule>)
+            {
+                val result: List<FeedBackScheduleField>? = response.body()!!.Data
+                println("Response1 >> "+result!![0].id)
+                if (result!![0].id == "error") {
+                    Toast.makeText(
+                        this@GreivanceStudFile,
+                        "No Data in faculty Master.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else
+                {
+                    val userdata= ArrayList<ListScheduledFeedback>()
+                    var listSize = result!!.size
+                    for (i in 0..listSize - 1)
+                    {
+                        userdata.add(
+                            ListScheduledFeedback(
+                                result!![i].FEEDBACK_NAME,
+                                result!![i].SCHEDULE_DATE,
+                                result!![i].START_DATE,
+                                result!![i].END_DATE
+                            )
+                        )
+                    }
+                    val adapter = ScheduledFeedbackAdapter(userdata)
+                    recyclerView.adapter = adapter
+                }
+            }
+        })*/
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)

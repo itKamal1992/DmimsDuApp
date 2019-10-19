@@ -22,7 +22,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.AcademicCalUploadInsti"></activity>
+        <activity android:name=".activity.ViewGrievance"></activity>
+        <activity android:name=".activity.AcademicCalUploadInsti" />
         <activity android:name=".activity.AcademicCalenderUploadA" />
         <activity android:name=".activity.StudentSubmittedGrievance" />
         <activity android:name=".activity.ViewGrievPrincipal" />

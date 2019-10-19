@@ -1,5 +1,6 @@
 package com.dmims.dmims.dashboard
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -18,6 +19,7 @@ import android.widget.Toast
 import com.dmims.dmims.R
 import com.dmims.dmims.activity.*
 import com.dmims.dmims.adapter.ViewPagerAdapter
+import com.dmims.dmims.model.DeptListStudDataRef
 import kotlinx.android.synthetic.main.faculty_dashboard.*
 import java.util.*
 
@@ -25,6 +27,7 @@ class GreivanceCellDashboard : AppCompatActivity() {
     lateinit var greivanceGrid: LinearLayout
     lateinit var notificationGrid: LinearLayout
     lateinit var helpdiloadboad: LinearLayout
+    lateinit var View_Griv_Princ: LinearLayout
     lateinit var drawerTitle: TextView
     lateinit var enrollNo: TextView
     lateinit var user_role: TextView
@@ -34,12 +37,30 @@ class GreivanceCellDashboard : AppCompatActivity() {
     private var dots: Array<ImageView?>? = null
     private lateinit var id_admin: String
     private lateinit var roleadmin: String
+
+
+    lateinit var time_table_grid: LinearLayout
+    lateinit var noticeboardgrid: LinearLayout
+    lateinit var notification: LinearLayout
+    lateinit var emergencygrid: LinearLayout
+
+
+    lateinit var title_Mobile: TextView
+    lateinit var title_Institute: TextView
+    lateinit var title_Course: TextView
+
+    private var dotsCount: Int = 0
+    private var dateOfAdmission: String? = "-"
+    var COURSE_ID: String? = null
+    private var Deptlist: ArrayList<DeptListStudDataRef>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.greivanancecell_dashboard)
         greivanceGrid = findViewById<View>(R.id.greivanceGrid) as LinearLayout
         notificationGrid = findViewById<View>(R.id.notificationGrid) as LinearLayout
         helpdiloadboad = findViewById<View>(R.id.helpdiloadboad) as LinearLayout
+        View_Griv_Princ = findViewById<View>(R.id.view_Griv_Princ) as LinearLayout
         drawerTitle = findViewById(R.id.drawer_title)
         enrollNo = findViewById(R.id.enroll_no)
         user_role = findViewById(R.id.user_role)
@@ -53,6 +74,7 @@ class GreivanceCellDashboard : AppCompatActivity() {
         user_role.text = roleadmin
         //Set Event
         setSingleEvent(greivanceGrid)
+        setViewGrievance(View_Griv_Princ)
         setNoticeEvent(notificationGrid)
         setHealerEvent(helpdiloadboad)
         setSupportActionBar(toolbar)
@@ -198,6 +220,14 @@ class GreivanceCellDashboard : AppCompatActivity() {
             intent.putExtra("info", "Get Greivance Activity")
             startActivity(intent)
         })
+    }
+
+    private fun setViewGrievance(View_Griv_Princ:LinearLayout)
+    {View_Griv_Princ.setOnClickListener {
+        val intent = Intent(this@GreivanceCellDashboard, ViewGrievance::class.java)
+        startActivity(intent)
+    }
+
     }
 
     private fun setNoticeEvent(notificationGrid: LinearLayout) {

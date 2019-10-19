@@ -3,6 +3,7 @@ package com.dmims.dmims.remote
 import com.dmims.dmims.ExamFeedBack.CommonFeedBack
 import com.dmims.dmims.activity.Task
 import com.dmims.dmims.model.APIResponse
+import com.dmims.dmims.model.GetGreivance
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.*
@@ -150,6 +151,10 @@ interface IMyAPI {
 
                                 ):Call<APIResponse>
 
+
+    @FormUrlEncoded
+    @POST("Feedback/Get_Clg_Head")
+    fun GetGreivanceData(@Field("INST_NAME") INST_NAME: String, @Field("ROLL")ROLL:String): Call<APIResponse>
 
 }
 
