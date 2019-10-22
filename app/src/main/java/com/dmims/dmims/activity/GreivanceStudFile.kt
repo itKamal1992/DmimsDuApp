@@ -53,7 +53,8 @@ class GreivanceStudFile : AppCompatActivity()
     lateinit var str_ComplaintToGriev: String
     lateinit var str_DateGriev: String
 
-
+    private var hodName: ArrayList<String>? = null
+    private var deptName: ArrayList<String>? = null
 
     lateinit var et_NameGriev:EditText
     lateinit var et_SubOfComplaintGriev:EditText
@@ -167,8 +168,6 @@ class GreivanceStudFile : AppCompatActivity()
 
 
         btn_submit_grievance.setOnClickListener {
-
-
             if (et_NameGriev.text.toString().equals(""))
             {
                 et_NameGriev.setError("Plese fill information")
@@ -265,10 +264,6 @@ class GreivanceStudFile : AppCompatActivity()
                                                 course_id,
                                                 roll_no,
                                                 str_NameGriev,
-                                                str_SubOfComplaintGriev,
-                                                str_CategoryGriev,
-                                                str_ComplaintAgainstDetailGriev,
-                                                str_DetailDescriGriev,
                                                 str_CollegeNameGrievGriev,
                                                 str_ComplaintToGriev,
                                                 current_date,
@@ -279,9 +274,6 @@ class GreivanceStudFile : AppCompatActivity()
                                                 U_ID,
                                                 ASSING_TO_ID,
                                                 REMINDER,
-                                                Principal_Status,
-                                                Dean_Status,
-                                                Conveyour_Status,
                                                 G_SUBJECT,
                                                 G_CATEGORY,
                                                 G_AGAINST,
@@ -336,10 +328,6 @@ class GreivanceStudFile : AppCompatActivity()
                                     course_id,
                                     roll_no,
                                     str_NameGriev,
-                                    str_SubOfComplaintGriev,
-                                    str_CategoryGriev,
-                                    str_ComplaintAgainstDetailGriev,
-                                    str_DetailDescriGriev,
                                     str_CollegeNameGrievGriev,
                                     str_ComplaintToGriev,
                                     current_date,
@@ -350,9 +338,6 @@ class GreivanceStudFile : AppCompatActivity()
                                     U_ID,
                                     ASSING_TO_ID,
                                     REMINDER,
-                                    Principal_Status,
-                                    Dean_Status,
-                                    Conveyour_Status,
                                     G_SUBJECT,
                                     G_CATEGORY,
                                     G_AGAINST,
@@ -440,38 +425,49 @@ class GreivanceStudFile : AppCompatActivity()
 
     private fun getGrievanceData()
     {
-        var roll=spinner_ComplaintToGriev.selectedItem.toString()
-if (roll.equals("--Select Complaint To--"))
+        str_ComplaintToGriev=spinner_ComplaintToGriev.selectedItem.toString()
+
+if (str_ComplaintToGriev.equals("--Select Complaint To--"))
 {
 
 }else
 {
-    println("instituteName  j "+instituteName)
+    if(str_ComplaintToGriev.equals("Principal/Dean"))
+    {
+        if(instituteName == "SRMMCON" || instituteName == "RNPC"  )
+        {
+            str_ComplaintToGriev = "Principal"
+        }
+        else
+        {
+            str_ComplaintToGriev = "Dean"
+        }
 
+    }
 
-    println("roll "+roll)
-
-    mServices.GetGreivanceData(instituteName,roll)
+    mServices.GetGreivanceData(instituteName,str_ComplaintToGriev)
         .enqueue(object :Callback<APIResponse>{
             override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-
+            GenericUserFunction.showNegativePopUp(this@GreivanceStudFile,"Please wait sever is busy")
             }
 
             override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
                 val result: APIResponse? = response.body()
+                listsinstz = result?.Data18!!.size
+                if(str_ComplaintToGriev.equals("HOD")) {
+                for (i in 0..listsinstz - 1) {
+                    if (result.Data18!![i].MNAME.isEmpty() && result.Data18!![i].LNAME.isEmpty()) {
+                        hodName!!.add(result.Data18!![i].FNAME)
+                        deptName!!.add(result.Data18!![i].DEPNAM01)
+                        instituteName1.add(result.Data18!![i].FNAME + "(" + result.Data18!![i].DEPNAM01 + ")")
+                    } else {
+                        hodName!!.add(result.Data18!![i].FNAME + result.Data18!![i].MNAME + result.Data18!![i].LNAME)
+                        deptName!!.add(result.Data18!![i].DEPNAM01)
+                        instituteName1.add(result.Data18!![i].FNAME + result.Data18!![i].MNAME + result.Data18!![i].LNAME + "(" + result.Data18!![i].DEPNAM01 + ")")
+                }
 
-
-
-                if (result?.Status.equals("No Data Found"))
-                {
-                    println("No Data found")
-                }else
-                {
-                    listsinstz= result?.Data18!!.size
-                    println("list intSIze "+listsinstz)
-                    for (i in 0..listsinstz - 1) {
-                        instituteName1.add(result.Data18!![i].FNAME+"("+result.Data18!![i].DEPNAM01+")")
-                    }
+                }
+                }
                     println("result  "+ result?.Data18!![0].FNAME+result?.Data18!![0].MNAME+result?.Data18!![0].LNAME)
                     var DepartmentAdap: ArrayAdapter<String> = ArrayAdapter<String>(
                         this@GreivanceStudFile,
@@ -486,7 +482,6 @@ if (roll.equals("--Select Complaint To--"))
                     spinner_Name!!.adapter = DepartmentAdap
 
                     println(" Data found")
-                }
 
 
             }
@@ -665,10 +660,6 @@ if (roll.equals("--Select Complaint To--"))
                                     course_id,
                                     roll_no,
                                     str_NameGriev,
-                                    str_SubOfComplaintGriev,
-                                    str_CategoryGriev,
-                                    str_ComplaintAgainstDetailGriev,
-                                    str_DetailDescriGriev,
                                     str_CollegeNameGrievGriev,
                                     str_ComplaintToGriev,
                                     current_date,
@@ -679,9 +670,6 @@ if (roll.equals("--Select Complaint To--"))
                                     U_ID,
                                     ASSING_TO_ID,
                                     REMINDER,
-                                    Principal_Status,
-                                    Dean_Status,
-                                    Conveyour_Status,
                                     G_SUBJECT,
                                     G_CATEGORY,
                                     G_AGAINST,
@@ -737,10 +725,6 @@ if (roll.equals("--Select Complaint To--"))
                         course_id,
                         roll_no,
                         str_NameGriev,
-                        str_SubOfComplaintGriev,
-                        str_CategoryGriev,
-                        str_ComplaintAgainstDetailGriev,
-                        str_DetailDescriGriev,
                         str_CollegeNameGrievGriev,
                         str_ComplaintToGriev,
                         current_date,
@@ -751,9 +735,6 @@ if (roll.equals("--Select Complaint To--"))
                         U_ID,
                         ASSING_TO_ID,
                         REMINDER,
-                        Principal_Status,
-                        Dean_Status,
-                        Conveyour_Status,
                         G_SUBJECT,
                         G_CATEGORY,
                         G_AGAINST,

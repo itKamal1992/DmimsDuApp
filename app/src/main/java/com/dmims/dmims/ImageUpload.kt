@@ -43,7 +43,6 @@ class ImageUpload : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.content_image_upload)
         img = findViewById<ImageView>(R.id.imageView)
-        btn_choose = findViewById<Button>(R.id.btn_chooseimg)
         btn_upload = findViewById<Button>(R.id.btn_uploadimg)
         img_title = findViewById<TextView>(R.id.img_tilte)
         val myFormat = "dd-MM-yyyy" // mention the format you need

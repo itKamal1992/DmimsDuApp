@@ -207,7 +207,7 @@
 
     <string-array name="arr_complaintTo">
         <item>--Select Complaint To--</item>
-        <item>Principal</item>
+        <item>Principal/Dean</item>
         <item>HOD</item>
         <item>Conveor</item>
     </string-array>

@@ -127,10 +127,6 @@ interface IMyAPI {
                                 @Field("course_id")course_id: String,
                                 @Field("roll_no")roll_no: String,
                                @Field("Grev_name")str_NameGriev:String,
-                                @Field("Sub_Grev")str_SubOfComplaintGriev:String,
-                               @Field("Grev_Cat")str_CategoryGriev:String,
-                                @Field("Comp_agst")str_ComplaintAgainstDetailGriev:String,
-                               @Field("Grev_Desc")str_DetailDescriGriev:String,
                                 @Field("Inst_Name")str_CollegeNameGrievGriev:String,
                                @Field("Comp_To")str_ComplaintToGriev:String,
                                 @Field("G_DATE")curren_date:String
@@ -141,9 +137,6 @@ interface IMyAPI {
                                 @Field("U_ID")U_ID:String,
                                 @Field("ASSING_TO_ID")ASSING_TO_ID:String,
                                 @Field("REMINDER")REMINDER:String,
-                                @Field("Principal_Status")Principal_Status:String
-                                ,@Field("Dean_Status") Dean_Status: String
-                                ,@Field("Conveyour_Status") Conveyour_Status: String,
                                 @Field("G_SUBJECT")G_SUBJECT: String,
                                 @Field("G_CATEGORY")G_CATEGORY: String,
                                 @Field("G_AGAINST")G_AGAINST:String,
