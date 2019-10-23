@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.*
 import com.dmims.dmims.Generic.GenericPublicVariable.Companion.mServices
 import com.dmims.dmims.Generic.GenericUserFunction
+import com.dmims.dmims.Generic.showToast
 import com.dmims.dmims.R
 import com.dmims.dmims.dataclass.FeedBackDataC
 import com.dmims.dmims.model.APIResponse
@@ -124,10 +125,7 @@ class NewUnaRegistration : AppCompatActivity() {
                         ) {
                             val result: APIResponse? = response.body()
                             if (result!!.Responsecode == 204) {
-                                GenericUserFunction.DisplayToast(
-                                    this@NewUnaRegistration,
-                                    result.Status
-                                )
+                                showToast(result.Status)
                             } else {
                                 val listsinstz: Int = result.Data6!!.size
                                 for (i in 0..listsinstz - 1) {

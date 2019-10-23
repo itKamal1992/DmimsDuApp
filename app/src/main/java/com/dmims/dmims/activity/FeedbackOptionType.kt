@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.Spinner
 import com.dmims.dmims.Generic.GenericUserFunction
+import com.dmims.dmims.Generic.showToast
 import com.dmims.dmims.R
 import kotlinx.android.synthetic.main.activity_feedback_optiontype.*
 class FeedbackOptionType : AppCompatActivity() {
@@ -49,7 +50,7 @@ class FeedbackOptionType : AppCompatActivity() {
                 else
                     if(selected_Af_SS_Q1_Answer.equals("Select Your Choice",ignoreCase = true))
                     {
-                        GenericUserFunction.DisplayToast(this@FeedbackOptionType,"Please select available feedback name to proceed further.")
+                        showToast("Please select available feedback name to proceed further.")
                     }
         }
 
