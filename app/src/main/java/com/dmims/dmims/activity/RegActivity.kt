@@ -106,7 +106,6 @@ class RegActivity : AppCompatActivity() {
                                     result3!!.response
                                     if (result3!!.response.equals("1")) {
                                         dialog2.dismiss()
-                                        // GenericUserFunction.DisplayToast(this@RegActivity, result.Status)
                                         val intent = Intent(applicationContext, MainActivity::class.java)
                                         intent.putExtra(
                                             "edit_mobotp",
@@ -114,12 +113,6 @@ class RegActivity : AppCompatActivity() {
                                         )
                                         intent.putExtra("otp_gen_user", "-")
                                         //5
-//                                        intent.putExtra("otp_gen_user", result.Data!!.Otp)
-//                                        intent.putExtra("otp_gen_user", result.Data!!.Otp)
-//                                        intent.putExtra("otp_gen_user", result.Data!!.Otp)
-//                                        intent.putExtra("otp_gen_user", result.Data!!.Otp)
-//                                        intent.putExtra("otp_gen_user", result.Data!!.Otp)
-
                                         startActivity(intent)
                                     }
                                     if (result3!!.response.equals("2")) {
@@ -135,7 +128,6 @@ class RegActivity : AppCompatActivity() {
 
                         } else {
                             dialog2.dismiss()
-                           // GenericUserFunction.DisplayToast(this@RegActivity, result.Status)
                             val intent = Intent(applicationContext, MainActivity::class.java)
                             intent.putExtra("edit_mobotp", GenericPublicVariable.editMobOtp!!.text.toString())
                             intent.putExtra("otp_gen_user", result.Data!!.Otp)

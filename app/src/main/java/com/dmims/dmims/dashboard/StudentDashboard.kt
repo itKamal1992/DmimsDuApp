@@ -22,7 +22,6 @@ import android.widget.TextView
 import android.widget.Toast
 import com.dmims.dmims.R
 import com.dmims.dmims.R.string
-import com.dmims.dmims.R.string.Enrol_No
 import com.dmims.dmims.activity.*
 import com.dmims.dmims.adapter.ViewPagerAdapter
 import com.dmims.dmims.dataclass.FeedBackDataC
@@ -40,129 +39,20 @@ import kotlinx.android.synthetic.main.activity_student_dashboard.*
 
 import java.util.*
 import kotlin.system.exitProcess
-import com.dmims.dmims.dashboard.StudentDashboard
 
 class StudentDashboard : AppCompatActivity(), View.OnClickListener {
 
-
-    //    lateinit var time_table_grid: LinearLayout
-//    lateinit var greviancegrid: LinearLayout
-//    lateinit var attendanceGrid: LinearLayout
-//    lateinit var exam_grid: LinearLayout
-//    lateinit var appraisal_grid: LinearLayout
-//    lateinit var noticeboardgrid: LinearLayout
-//    lateinit var notification: LinearLayout
-//    lateinit var emergencygrid: LinearLayout
-//    lateinit var helpdiloadboad: LinearLayout
-//    lateinit var feedback_grid: LinearLayout
-//    lateinit var academicCalBoard: LinearLayout
-    lateinit var drawerTitle: TextView
-    lateinit var enrollNo: TextView
-
-    lateinit var title_Mobile: TextView
-    lateinit var title_Institute: TextView
-    lateinit var title_Course: TextView
-    lateinit var user_role: TextView
-    lateinit var viewPager: ViewPager
-    lateinit var sliderDotsPanel: LinearLayout
     private var dotsCount: Int = 0
     private var dateOfAdmission: String? = "-"
-    var COURSE_ID: String? = null
+    private var COURSE_ID: String? = null
     private var dots: Array<ImageView?>? = null
     private lateinit var progressDiag: ProgressDialog
-    private var Deptlist: ArrayList<DeptListStudDataRef>? = null
-    override fun onClick(p0: View?) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        when (p0!!.id) {
-            R.id.time_table_grid -> {
-                val intent = Intent(this@StudentDashboard, Activity_time_table_student::class.java)
-                val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
-                var student_id_key = mypref.getString("Stud_id_key", null)
-                intent.putExtra("stud_k", student_id_key?.toString())
-                startActivity(intent)
-            }
-
-            R.id.attendanceGrid -> {
-                val intent = Intent(this@StudentDashboard, Attendance::class.java)
-                val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
-                var student_id_key = mypref.getString("Stud_id_key", null)
-                intent.putExtra("stud_k", student_id_key?.toString())
-                intent.putExtra("date_of_admiss_k", dateOfAdmission.toString())
-                startActivity(intent)
-            }
-            R.id.exam_grid -> {
-                val intent = Intent(this@StudentDashboard, Student_GET_UploadMCQ::class.java)
-                startActivity(intent)
-            }
-            R.id.appraisal_grid -> {
-                this@StudentDashboard.startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse("http://103.68.25.22:81/aap")
-                    )
-                )
-            }
-            R.id.greviancegrid -> {
-                val intent = Intent(this@StudentDashboard, GreivanceStudFile::class.java)
-                val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
-                var student_id_key = mypref.getString("Stud_id_key", null)
-                intent.putExtra("stud_k", student_id_key?.toString())
-                startActivity(intent)
-            }
-            R.id.noticeboardgrid -> {
-                val intent = Intent(this@StudentDashboard, Activity_student_notice::class.java)
-                val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
-                var student_id_key = mypref.getString("Stud_id_key", null)
-                intent.putExtra("stud_k", student_id_key?.toString())
-                intent.putExtra("date_of_admiss_k", dateOfAdmission.toString())
-                startActivity(intent)
-            }
-            R.id.notification -> {
-                val intent = Intent(this@StudentDashboard, Activity_Notification_Student::class.java)
-                intent.putExtra("info", "Notice Board Activity")
-                val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
-                var student_id_key = mypref.getString("Stud_id_key", null)
-                intent.putExtra("stud_k", student_id_key?.toString())
-                intent.putExtra("date_of_admiss_k", dateOfAdmission.toString())
-                startActivity(intent)
-            }
-            R.id.emergencygrid -> {
-                val intent = Intent(this@StudentDashboard, EmergencyContact::class.java)
-                intent.putExtra("info", "Notice Board Activity")
-                startActivity(intent)
-            }
-            R.id.helpdiloadboad -> {
-                displayHelpAlert()
-            }
-            R.id.feedback_grid -> {
-                val intent = Intent(this@StudentDashboard, FeedbackOptionActivity::class.java)
-                val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
-                var student_id_key = mypref.getString("Stud_id_key", null)
-                intent.putExtra("stud_k", student_id_key?.toString())
-                startActivity(intent)
-            }
-            R.id.academic_cal_board -> {
-                val intent = Intent(this@StudentDashboard, AcademicCalender::class.java)
-                intent.putExtra("info", "Notice board")
-                startActivity(intent)
-
-            }
-
-
-        }
-
-    }
+    private var DeptList: ArrayList<DeptListStudDataRef>? = null
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_dashboard)
-        drawerTitle = findViewById<TextView>(R.id.drawer_title) as TextView
-        enrollNo = findViewById<TextView>(R.id.enroll_no) as TextView
-        title_Mobile = findViewById<TextView>(R.id.txt_Mobile) as TextView
-        title_Institute = findViewById<TextView>(R.id.txt_Institute) as TextView
-        title_Course = findViewById<TextView>(R.id.txt_Course) as TextView
-        user_role = findViewById(R.id.user_role)
 
         time_table_grid.setOnClickListener(this)
         attendanceGrid.setOnClickListener(this)
@@ -186,10 +76,10 @@ class StudentDashboard : AppCompatActivity(), View.OnClickListener {
             enrollNor = mypref.getString("key_enroll_no", null)
             dateOfAdmission = mypref.getString("key_doa", null)
         }
-        drawerTitle.text = drawerTitler
+        drawer_title.text = drawerTitler
         user_role.text = "User : " + mypref.getString("key_userrole", null)
-        enrollNo.text = "Enrol_No : " + enrollNor
-        title_Mobile.text = "MB No : " + mypref.getString("key_editmob", null)
+        enroll_no.text = "Enrol_No : " + enrollNor
+        txt_Mobile.text = "MB No : " + mypref.getString("key_editmob", null)
 
         // Configure action bar
         setSupportActionBar(toolbar)
@@ -244,7 +134,6 @@ class StudentDashboard : AppCompatActivity(), View.OnClickListener {
                 }
                 R.id.action_calender -> {
                     val intent = Intent(this@StudentDashboard, AcademicCalender::class.java)
-                    intent.putExtra("info", "Notice board")
                     startActivity(intent)
                 }
                 R.id.action_notification -> {
@@ -314,8 +203,6 @@ class StudentDashboard : AppCompatActivity(), View.OnClickListener {
 
 
         //ViewPager
-        viewPager = findViewById<ViewPager>(R.id.viewPager) as ViewPager
-        sliderDotsPanel = findViewById<LinearLayout>(R.id.SliderDots) as LinearLayout
         val viewPagerAdapter = ViewPagerAdapter(this)
         viewPager.adapter = viewPagerAdapter
         dotsCount = viewPagerAdapter.count
@@ -334,7 +221,7 @@ class StudentDashboard : AppCompatActivity(), View.OnClickListener {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
             params.setMargins(8, 0, 8, 0)
-            sliderDotsPanel.addView(dots!![i], params)
+            SliderDots.addView(dots!![i], params)
             dots!![i]?.setOnClickListener { viewPager.currentItem = i }
 
         }
@@ -410,15 +297,15 @@ class StudentDashboard : AppCompatActivity(), View.OnClickListener {
 
                 if (response.isSuccessful) {
                     users.clear()
-                    Deptlist = response.body()!!.Data
-                    if (Deptlist!!.size > 0)
-                        txt_Institute.text = "Ins Name : " + Deptlist!![0].COURSE_INSTITUTE
-                    txt_Course.text = "Course Name : " + Deptlist!![0].COURSE_NAME
+                    DeptList = response.body()!!.Data
+                    if (DeptList!!.size > 0)
+                        txt_Institute.text = "Ins Name : " + DeptList!![0].COURSE_INSTITUTE
+                    txt_Course.text = "Course Name : " + DeptList!![0].COURSE_NAME
 
                     val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
                     val editor = mypref.edit()
-                    editor.putString("key_institute_stud", Deptlist!![0].COURSE_INSTITUTE)
-                    editor.putString("key_stud_course", Deptlist!![0].COURSE_INSTITUTE)
+                    editor.putString("key_institute_stud", DeptList!![0].COURSE_INSTITUTE)
+                    editor.putString("key_stud_course", DeptList!![0].COURSE_INSTITUTE)
                     editor.apply()
 
                 }
@@ -519,5 +406,87 @@ class StudentDashboard : AppCompatActivity(), View.OnClickListener {
         }
         builder.setCancelable(false)
         builder.show()
+    }
+
+    override fun onClick(p0: View?) {
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        when (p0!!.id) {
+            R.id.time_table_grid -> {
+                val intent = Intent(this@StudentDashboard, Activity_time_table_student::class.java)
+                val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
+                var student_id_key = mypref.getString("Stud_id_key", null)
+                intent.putExtra("stud_k", student_id_key?.toString())
+                startActivity(intent)
+            }
+
+            R.id.attendanceGrid -> {
+                val intent = Intent(this@StudentDashboard, Attendance::class.java)
+                val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
+                var student_id_key = mypref.getString("Stud_id_key", null)
+                intent.putExtra("stud_k", student_id_key?.toString())
+                intent.putExtra("date_of_admiss_k", dateOfAdmission.toString())
+                startActivity(intent)
+            }
+            R.id.exam_grid -> {
+                val intent = Intent(this@StudentDashboard, Student_GET_UploadMCQ::class.java)
+                startActivity(intent)
+            }
+            R.id.appraisal_grid -> {
+                this@StudentDashboard.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("http://103.68.25.22:81/aap")
+                    )
+                )
+            }
+            R.id.greviancegrid -> {
+                val intent = Intent(this@StudentDashboard, GreivanceStudFile::class.java)
+                val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
+                var student_id_key = mypref.getString("Stud_id_key", null)
+                intent.putExtra("stud_k", student_id_key?.toString())
+                startActivity(intent)
+            }
+            R.id.noticeboardgrid -> {
+                val intent = Intent(this@StudentDashboard, Activity_student_notice::class.java)
+                val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
+                var student_id_key = mypref.getString("Stud_id_key", null)
+                intent.putExtra("stud_k", student_id_key?.toString())
+                intent.putExtra("date_of_admiss_k", dateOfAdmission.toString())
+                startActivity(intent)
+            }
+            R.id.notification -> {
+                val intent = Intent(this@StudentDashboard, Activity_Notification_Student::class.java)
+                intent.putExtra("info", "Notice Board Activity")
+                val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
+                var student_id_key = mypref.getString("Stud_id_key", null)
+                intent.putExtra("stud_k", student_id_key?.toString())
+                intent.putExtra("date_of_admiss_k", dateOfAdmission.toString())
+                startActivity(intent)
+            }
+            R.id.emergencygrid -> {
+                val intent = Intent(this@StudentDashboard, EmergencyContact::class.java)
+                intent.putExtra("info", "Notice Board Activity")
+                startActivity(intent)
+            }
+            R.id.helpdiloadboad -> {
+                displayHelpAlert()
+            }
+            R.id.feedback_grid -> {
+                val intent = Intent(this@StudentDashboard, FeedbackOptionActivity::class.java)
+                val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
+                var student_id_key = mypref.getString("Stud_id_key", null)
+                intent.putExtra("stud_k", student_id_key?.toString())
+                startActivity(intent)
+            }
+            R.id.academic_cal_board -> {
+                val intent = Intent(this@StudentDashboard, AcademicCalender::class.java)
+                intent.putExtra("info", "Notice board")
+                startActivity(intent)
+
+            }
+
+
+        }
+
     }
 }

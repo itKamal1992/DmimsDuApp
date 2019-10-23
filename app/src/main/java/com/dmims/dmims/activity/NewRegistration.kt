@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.*
 import com.dmims.dmims.Generic.GenericPublicVariable.Companion.mServices
 import com.dmims.dmims.Generic.GenericUserFunction
+import com.dmims.dmims.Generic.showToast
 import com.dmims.dmims.R
 import com.dmims.dmims.dataclass.FeedBackDataC
 import com.dmims.dmims.model.APIResponse
@@ -89,13 +90,13 @@ class NewRegistration : AppCompatActivity() {
             mServices.GetInstituteData()
                 .enqueue(object : Callback<APIResponse> {
                     override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                        GenericUserFunction.DisplayToast(this@NewRegistration, t.message!!)
+                        showToast(t.message!!)
                     }
 
                     override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
                         val result: APIResponse? = response.body()
                         if (result!!.Responsecode == 204) {
-                            GenericUserFunction.DisplayToast(this@NewRegistration, result.Status)
+                            showToast(result.Status)
                         } else {
                             listsinstz = result.Data6!!.size
                             for (i in 0..listsinstz - 1) {
@@ -127,7 +128,7 @@ class NewRegistration : AppCompatActivity() {
                     mServices.GetInstituteData()
                         .enqueue(object : Callback<APIResponse> {
                             override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                                GenericUserFunction.DisplayToast(this@NewRegistration, t.message!!)
+                                showToast(t.message!!)
                             }
 
                             override fun onResponse(
@@ -136,10 +137,7 @@ class NewRegistration : AppCompatActivity() {
                             ) {
                                 val result: APIResponse? = response.body()
                                 if (result!!.Responsecode == 204) {
-                                    GenericUserFunction.DisplayToast(
-                                        this@NewRegistration,
-                                        result.Status
-                                    )
+                                    showToast(result.Status)
                                 } else {
                                     val listsinstz: Int = result.Data6!!.size
                                     for (i in 0..listsinstz - 1) {
@@ -258,51 +256,37 @@ class NewRegistration : AppCompatActivity() {
         btn_Update.setOnClickListener {
 
             if (edit_Name.text.trim().isEmpty()) {
-                GenericUserFunction.DisplayToast(this, "Please give your Name")
+              showToast("Please give your Name")
                 return@setOnClickListener
             } else
                 if (edit_Email.text.trim().isEmpty()) {
-                    GenericUserFunction.DisplayToast(this, "Please give your E-mail")
+                    showToast("Please give your E-mail")
                     return@setOnClickListener
                 } else
 
-//                if(isEmailValid(edit_Name.text.toString().trim()))
-//                {
-//                    GenericUserFunction.DisplayToast(this,"Please give your valid E-mail Address")
-//                    return@setOnClickListener
-//
-//                }else
-
                     if (edit_Mob.text.trim().isEmpty()) {
-                        GenericUserFunction.DisplayToast(this, "Please give your Mobile No")
+                       showToast("Please give your Mobile No")
                         return@setOnClickListener
                     } else if (edit_Pass.text.trim().isEmpty()) {
-                        GenericUserFunction.DisplayToast(this, "Please give your your Password")
+                        showToast("Please give your your Password")
                         return@setOnClickListener
                     } else
                         if (edit_RollNo.text.trim().isEmpty()) {
-                            GenericUserFunction.DisplayToast(this, "Please give your Roll No")
+                            showToast( "Please give your Roll No")
                             return@setOnClickListener
                         } else
                             if (selectedInstituteName.equals("Select Institute")) {
-                                GenericUserFunction.DisplayToast(
-                                    this,
+                                showToast(
                                     "Please select your Institute "
                                 )
                                 return@setOnClickListener
                             } else
                                 if (selectedcourselist.equals("Select Course")) {
-                                    GenericUserFunction.DisplayToast(
-                                        this,
-                                        "Please select your Course "
-                                    )
+                                    showToast("Please select your Course")
                                     return@setOnClickListener
                                 } else
                                     if (selectedsem.equals("Select Semester")) {
-                                        GenericUserFunction.DisplayToast(
-                                            this,
-                                            "Please select your Semester "
-                                        )
+                                        showToast("Please select your Semester")
                                         return@setOnClickListener
                                     } else {
                                         try {

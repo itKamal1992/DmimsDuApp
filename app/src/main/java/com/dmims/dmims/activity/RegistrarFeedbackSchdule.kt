@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.*
 import com.dmims.dmims.Generic.GenericPublicVariable.Companion.mServices
 import com.dmims.dmims.Generic.GenericUserFunction
+import com.dmims.dmims.Generic.showToast
 import com.dmims.dmims.R
 import com.dmims.dmims.common.Common
 import com.dmims.dmims.dataclass.TimeTableDataC
@@ -384,7 +385,7 @@ class RegistrarFeedbackSchdule : AppCompatActivity() {
 
         btn_ScheduleFeedback.setOnClickListener {
             if (selectedFeedbackName.equals("Select Feedback Type")) {
-                GenericUserFunction.DisplayToast(this@RegistrarFeedbackSchdule,"Please select type of Feedback")
+                showToast("Please select type of Feedback")
                 return@setOnClickListener
             }
             if (select_date!!.text.isEmpty()) {
@@ -403,12 +404,12 @@ class RegistrarFeedbackSchdule : AppCompatActivity() {
             }
 
             if (selectedInstituteName.equals("Select institute")) {
-                GenericUserFunction.DisplayToast(this@RegistrarFeedbackSchdule,"Please select Institute")
+                showToast("Please select Institute")
                 return@setOnClickListener
             }
 
             if (spinner_YearDept.selectedItem.toString().equals("Select Year")) {
-                GenericUserFunction.DisplayToast(this@RegistrarFeedbackSchdule,"Please select Year")
+                showToast("Please select Year")
                 return@setOnClickListener
             }
             try{
