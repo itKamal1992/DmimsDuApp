@@ -123,24 +123,24 @@ interface IMyAPI {
 
     @FormUrlEncoded
     @POST("feedback/OnlineGrievanceReport")
-    fun InsertStudentGrievance( @Field("STUD_ID")STUDENTID: String,
+    fun InsertStudentGrievance( @Field("G_SUBJECT")G_SUBJECT: String,
+                                @Field("G_CATEGORY")G_CATEGORY: String,
+                                @Field("G_AGAINST")G_AGAINST: String,
+                                @Field("G_DISCRIPTION")G_DISCRIPTION: String,
+                                @Field("G_DATE")G_DATE: String,
+                                @Field("G_ATTACHMENT")G_ATTACHMENT: String,
+                                @Field("G_STATUS")G_STATUS: String,
+                                @Field("ASSING_TO_ID")ASSING_TO_ID: String,
+                                @Field("REMINDER")REMINDER: String,
+                                @Field("STUD_ID")STUD_ID: String,
                                 @Field("course_id")course_id: String,
                                 @Field("roll_no")roll_no: String,
-                               @Field("Grev_name")str_NameGriev:String,
-                                @Field("Inst_Name")str_CollegeNameGrievGriev:String,
-                               @Field("Comp_To")str_ComplaintToGriev:String,
-                                @Field("G_DATE")curren_date:String
-                               ,@Field("Grev_Filename") filename: String,
-                                @Field("G_TICKETNO")G_TICKETNO:String,
-                                @Field("G_ATTACHMENT")G_ATTACHMENT:String,
-                                @Field("G_STATUS")G_STATUS:String,
-                                @Field("U_ID")U_ID:String,
-                                @Field("ASSING_TO_ID")ASSING_TO_ID:String,
-                                @Field("REMINDER")REMINDER:String,
-                                @Field("G_SUBJECT")G_SUBJECT: String,
-                                @Field("G_CATEGORY")G_CATEGORY: String,
-                                @Field("G_AGAINST")G_AGAINST:String,
-                                @Field("G_DISCRIPTION")G_DISCRIPTION:String
+                                @Field("Grev_name")Grev_name: String,
+                                @Field("Inst_Name")Inst_Name: String,
+                                @Field("Comp_To")Comp_To: String,
+                                @Field("Grev_Filename")Grev_Filename: String,
+                                @Field("DEPARTMENT")DEPARTMENT: String,
+                                @Field("ATTACHMENT_URL")ATTACHMENT_URL: String
 
                                 ):Call<APIResponse>
 

@@ -89,15 +89,15 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    lateinit var str_NameGriev: String
-    lateinit var str_SubOfComplaintGriev: String
-    lateinit var str_CategoryGriev: String
-    lateinit var str_ComplaintAgainstDetailGriev: String
-    lateinit var str_DetailDescriGriev: String
-    lateinit var str_CollegeNameGrievGriev: String
-    lateinit var str_ComplaintToGriev: String
-    lateinit var str_Department: String
-    lateinit var str_DateGriev: String
+    var str_NameGriev: String = ""
+    var str_SubOfComplaintGriev: String = ""
+    var str_CategoryGriev: String = ""
+    var str_ComplaintAgainstDetailGriev: String = ""
+    var str_DetailDescriGriev: String = ""
+    var str_CollegeNameGrievGriev: String = ""
+    var str_ComplaintToGriev: String = ""
+    var str_Department: String = ""
+    var str_DateGriev: String = ""
 
 
     lateinit var et_NameGriev: EditText
@@ -144,6 +144,7 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
     var G_CATEGORY: String = ""
     var G_AGAINST: String = ""
     var G_DISCRIPTION: String = ""
+    var selected_Department: String = ""
 
 
     lateinit var btnViewGriev: Button
@@ -261,7 +262,7 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
         var STUD_ID = mypref.getString("Stud_id_key", null)
         var course_id = mypref.getString("course_id", null)
         var roll_no = mypref.getString("roll_no", null)
-        instituteName = mypref.getString("key_stud_course", null)
+        instituteName = mypref.getString("key_institute_stud", null)
 
 
         btn_submit_grievance.setOnClickListener {
@@ -285,6 +286,34 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
                 Toast.makeText(this, "Select", Toast.LENGTH_LONG).show()
             } else {
 
+
+                println(
+                    "G_SUBJECT >> " + et_SubOfComplaintGriev.text.toString()
+                            + "\n" + "G_CATEGORY >> " + spinner_CategoryGriev.selectedItem.toString()
+                            + "\n" + "G_AGAINST >> " + et_ComplaintAgainstDetailGriev.text.toString()
+                            + "\n" + "G_DISCRIPTION >> " + et_DetailDescriGriev.text.toString()
+                            + "\n" + "G_DATE >> " + current_date
+                            + "\n" + "G_ATTACHMENT " + confirmStatus
+                            + "\n" + "G_STATUS >> Open"
+                            + "\n" + "ASSING_TO_ID >> " + ASSING_TO_ID
+                            + "\n" + "REMINDER >> REMINDER not in use"
+
+                            + "\n" + "STUD_ID >> " + STUD_ID
+                            + "\n" + "course_id >> " + course_id
+                            + "\n" + "roll_no >> " + roll_no
+                            + "\n" + "Grev_name >> " + et_NameGriev.text.toString()
+                            + "\n" + "Inst_Name >> " + instituteName
+                            + "\n" + "Comp_To >> " + str_ComplaintToGriev
+
+                            + "\n" + "Grev_Filename >> " + filename
+                            + "\n" + "str_Department >> " + selected_Department
+                            + "\n" + "ATTACHMENT_url >> Get from Multipart"
+
+
+                )
+
+
+// call start
                 if (confirmStatus == "T" && type == "image") {
                     try {
                         //Dialog Start
@@ -299,10 +328,7 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
                         var fileUri = selectedImage!!
                         val file = File(getRealPathFromURI(fileUri))
                         //creating request body for file
-                        val requestFile = RequestBody.create(
-                            MediaType.parse(getContentResolver().getType(fileUri)),
-                            file
-                        );
+                        val requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file)
                         val descBody = RequestBody.create(MediaType.parse("text/plain"), "Notice")
                         //The gson builder
                         val gson = GsonBuilder()
@@ -316,11 +342,10 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
                         //creating our api
                         val api = retrofit.create(Api::class.java)
                         //creating a call and calling the upload image method
-                        val call = api.uploadImage2(requestFile, descBody)
-                        //finally performing the call
+                        val call = api.uploadImage21(requestFile, descBody)
                         call.enqueue(object : Callback<MyResponse> {
                             override fun onFailure(call: Call<MyResponse>, t: Throwable) {
-                                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                                Toast.makeText(this@GreivanceStudFile,t.message, Toast.LENGTH_SHORT).show()
                             }
 
                             override fun onResponse(
@@ -330,83 +355,83 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
                                 if (!response.body()!!.error) {
                                     filename = response.body()!!.message.toString()
 
-                                    try {
-                                        mServices.InsertStudentGrievance(
+//                                    try {
+//                                        mServices.InsertStudentGrievance(
+////                                            STUD_ID,
+////                                            course_id,
+////                                            roll_no,
+////                                            str_NameGriev,
+////                                            str_CollegeNameGrievGriev,
+////                                            str_ComplaintToGriev,
+////                                            current_date,
+////                                            filename,
+////                                            G_TICKETNO,
+////                                            G_ATTACHMENT,
+////                                            G_STATUS,
+////                                            U_ID,
+////                                            ASSING_TO_ID,
+////                                            REMINDER,
+////                                            G_SUBJECT,
+////                                            G_CATEGORY,
+////                                            G_AGAINST,
+////                                            G_DISCRIPTION
+//
+//
+//                                            G_SUBJECT,
+//                                            str_CategoryGriev,
+//                                            G_AGAINST,
+//                                            G_DISCRIPTION,
+//                                            current_date,
+//                                            G_ATTACHMENT,
+//                                            G_STATUS,
+//                                            ASSING_TO_ID,
+//                                            REMINDER,
 //                                            STUD_ID,
 //                                            course_id,
 //                                            roll_no,
 //                                            str_NameGriev,
 //                                            str_CollegeNameGrievGriev,
 //                                            str_ComplaintToGriev,
-//                                            current_date,
-//                                            filename,
-//                                            G_TICKETNO,
-//                                            G_ATTACHMENT,
-//                                            G_STATUS,
-//                                            U_ID,
-//                                            ASSING_TO_ID,
-//                                            REMINDER,
-//                                            G_SUBJECT,
-//                                            G_CATEGORY,
-//                                            G_AGAINST,
-//                                            G_DISCRIPTION
-
-
-                                            G_SUBJECT,
-                                            str_CategoryGriev,
-                                            G_AGAINST,
-                                            G_DISCRIPTION,
-                                            current_date,
-                                            G_ATTACHMENT,
-                                            G_STATUS,
-                                            ASSING_TO_ID,
-                                            REMINDER,
-                                            STUD_ID,
-                                            course_id,
-                                            roll_no,
-                                            str_NameGriev,
-                                            str_CollegeNameGrievGriev,
-                                            str_ComplaintToGriev,
-                                            Grev_Filename,
-                                            str_Department,
-                                            fileUrl
-
-                                        ).enqueue(object : Callback<APIResponse> {
-                                            override fun onFailure(
-                                                call: Call<APIResponse>,
-                                                t: Throwable
-                                            ) {
-                                                Toast.makeText(
-                                                    this@GreivanceStudFile,
-                                                    t.message,
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-
-                                            override fun onResponse(
-                                                call: Call<APIResponse>,
-                                                response: Response<APIResponse>
-                                            ) {
-                                                dialog.dismiss()
-                                                val result: APIResponse? = response.body()
-//                                        Toast.makeText(this@AdminNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
-//                                            .show()
-                                                GenericUserFunction.showPositivePopUp(
-                                                    this@GreivanceStudFile,
-                                                    "Notice Send Successfully"
-                                                )
-
-                                            }
-                                        })
-                                    } catch (ex: Exception) {
-                                        dialog.dismiss()
-
-                                        ex.printStackTrace()
-                                        GenericUserFunction.showApiError(
-                                            applicationContext,
-                                            "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
-                                        )
-                                    }
+//                                            Grev_Filename,
+//                                            str_Department,
+//                                            fileUrl
+//
+//                                        ).enqueue(object : Callback<APIResponse> {
+//                                            override fun onFailure(
+//                                                call: Call<APIResponse>,
+//                                                t: Throwable
+//                                            ) {
+//                                                Toast.makeText(
+//                                                    this@GreivanceStudFile,
+//                                                    t.message,
+//                                                    Toast.LENGTH_SHORT
+//                                                ).show()
+//                                            }
+//
+//                                            override fun onResponse(
+//                                                call: Call<APIResponse>,
+//                                                response: Response<APIResponse>
+//                                            ) {
+//                                                dialog.dismiss()
+//                                                val result: APIResponse? = response.body()
+////                                        Toast.makeText(this@AdminNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
+////                                            .show()
+//                                                GenericUserFunction.showPositivePopUp(
+//                                                    this@GreivanceStudFile,
+//                                                    "Notice Send Successfully"
+//                                                )
+//
+//                                            }
+//                                        })
+//                                    } catch (ex: Exception) {
+//                                        dialog.dismiss()
+//
+//                                        ex.printStackTrace()
+//                                        GenericUserFunction.showApiError(
+//                                            applicationContext,
+//                                            "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
+//                                        )
+//                                    }
 
                                 }
 
@@ -425,38 +450,31 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
                         )
                     }
                 }
+//call end
 
 
-
-
-
-
-
-
-
-
-                STUD_ID
-                course_id
-                roll_no
-                /*G_SUBJECT*/ str_SubOfComplaintGriev = et_SubOfComplaintGriev.text.toString()
-                /*G_CATEGORY*/str_CategoryGriev = spinner_CategoryGriev.selectedItem.toString()
-                /*G_AGAINST*/str_ComplaintAgainstDetailGriev =
-                    et_ComplaintAgainstDetailGriev.text.toString()
-                /*G_DISCRIPTION*/str_DetailDescriGriev = et_DetailDescriGriev.text.toString()
-                /*G_DATE*/str_DateGriev = et_DateGriev.text.toString()
-                //  "G_ATTACHMENT"
-                /*G_STATUS*/ Status = "Open"
-                //  "ASSING_TO_ID"
-                //  "REMINDER"
-                //  "STUD_ID"
-                //  "course_id"
-                //  "roll_no"
-                /*Grev_name*/ str_NameGriev = et_NameGriev.text.toString()
-                /*Inst_Name*/ str_CollegeNameGrievGriev = spinner_Name.selectedItem.toString()
-                /*Comp_To*/
-                /*Grev_Filename*/ str_ComplaintToGriev =
-                    spinner_ComplaintToGriev.selectedItem.toString()
-                /*Department*/ str_Department = spinner_Name.selectedItem.toString()
+//                STUD_ID
+//                course_id
+//                roll_no
+//                /*G_SUBJECT*/ str_SubOfComplaintGriev = et_SubOfComplaintGriev.text.toString()
+//                /*G_CATEGORY*/str_CategoryGriev = spinner_CategoryGriev.selectedItem.toString()
+//                /*G_AGAINST*/str_ComplaintAgainstDetailGriev =
+//                    et_ComplaintAgainstDetailGriev.text.toString()
+//                /*G_DISCRIPTION*/str_DetailDescriGriev = et_DetailDescriGriev.text.toString()
+//                /*G_DATE*/str_DateGriev = et_DateGriev.text.toString()
+//                //  "G_ATTACHMENT"
+//                /*G_STATUS*/ Status = "Open"
+//                //  "ASSING_TO_ID"
+//                //  "REMINDER"
+//                //  "STUD_ID"
+//                //  "course_id"
+//                //  "roll_no"
+//                /*Grev_name*/ str_NameGriev = et_NameGriev.text.toString()
+//                /*Inst_Name*/ str_CollegeNameGrievGriev = spinner_Name.selectedItem.toString()
+//                /*Comp_To*/
+//                /*Grev_Filename*/ str_ComplaintToGriev =
+//                    spinner_ComplaintToGriev.selectedItem.toString()
+//                /*Department*/ str_Department = spinner_Name.selectedItem.toString()
 /*ATTACHMENT_url*/
 
 
@@ -689,23 +707,6 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
 }*/
 
 
-                println(
-
-                    "STUD_ID >> " + STUD_ID
-                            + "\n" + "course_id >> " + course_id
-                            + "\n" + "roll_no >> " + roll_no
-                            + "\n" + "Grev_name >> " + str_NameGriev
-                            + "\n" + "Sub_Grev >> " + str_SubOfComplaintGriev
-                            + "\n" + "Grev_Cat >> " + str_CategoryGriev
-                            + "\n" + "Comp_agst >> " + str_ComplaintAgainstDetailGriev
-                            + "\n" + "Grev_Desc >> " + str_DetailDescriGriev
-                            + "\n" + "Comp_To >> " + str_ComplaintToGriev
-                            + "\n" + "str_Department >> " + str_Department
-                            + "\n" + "Inst_Name >> " + str_CollegeNameGrievGriev
-                            + "\n" + "Grev_Date >> " + current_date
-                            + "\n" + "Grev_Filename >> " + filename
-                            + "\n" + "ASSING_TO_ID >> " + ASSING_TO_ID
-                )
             }
 
 
@@ -1028,6 +1029,7 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
 
                                     println("position code " + ASSING_ID[position])
                                     ASSING_TO_ID = ASSING_ID[position]
+                                    selected_Department = deptName[position - 1]
                                 }
 
 

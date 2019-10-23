@@ -25,4 +25,10 @@ public interface Api {
     @POST("Api.php?apicall=upload")
     Call<MyResponse> uploadImage2(@Part("image\"; filename=\"myfile.jpg\" ") RequestBody file, @Part("desc") RequestBody desc);
 
+    @Multipart
+    @POST("Api.php?apicall=upload2")
+    Call<MyResponse> uploadImage21(@Part("image\"; filename=\"myfile.jpg\" ") RequestBody file, @Part("desc") RequestBody desc);
+
+
+
 }
