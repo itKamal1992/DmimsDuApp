@@ -39,10 +39,12 @@ class GreivanceCellDashboard : AppCompatActivity() {
     private lateinit var roleadmin: String
 
 
+
     lateinit var time_table_grid: LinearLayout
     lateinit var noticeboardgrid: LinearLayout
     lateinit var notification: LinearLayout
     lateinit var emergencygrid: LinearLayout
+
 
 
     lateinit var title_Mobile: TextView
@@ -270,7 +272,8 @@ class GreivanceCellDashboard : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
+    override fun onBackPressed()
+    {
         exitDialog()
     }
 
@@ -298,7 +301,6 @@ class GreivanceCellDashboard : AppCompatActivity() {
         // create dialog box
         val alert = dialogBuilder.create()
         // set title for alert dialog box
-
         // show alert dialog
         alert.show()
     }

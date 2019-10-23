@@ -209,7 +209,7 @@
         <item>--Select Complaint To--</item>
         <item>Principal/Dean</item>
         <item>HOD</item>
-        <item>Conveor</item>
+        <item>Convener</item>
     </string-array>
 
     <string-array name="arr_session">
