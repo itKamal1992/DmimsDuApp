@@ -3,6 +3,7 @@ package com.dmims.dmims.activity
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -15,40 +16,30 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.annotation.RequiresApi
 import android.support.v4.content.CursorLoader
+import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.*
 import com.dmims.dmims.Generic.GenericUserFunction
+import com.dmims.dmims.Generic.InternetConnection
 import com.dmims.dmims.R
-import com.dmims.dmims.adapter.ScheduledFeedbackAdapter
 import com.dmims.dmims.common.Common
-import com.dmims.dmims.dataclass.ListScheduledFeedback
 import com.dmims.dmims.model.*
-import com.dmims.dmims.remote.Api
-import com.dmims.dmims.remote.ApiClientPhp
 import com.dmims.dmims.remote.IMyAPI
-import com.dmims.dmims.remote.PhpApiInterface
-import com.google.gson.GsonBuilder
 import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.activity_greivance_stud_file.*
-import kotlinx.android.synthetic.main.activity_grievance_cell.*
-import kotlinx.android.synthetic.main.activity_mcq__examcell.*
 import net.gotev.uploadservice.MultipartUploadRequest
 import net.gotev.uploadservice.UploadNotificationConfig
-import okhttp3.MediaType
-import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
 class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Delegate {
+    private var drawerTitler: String=""
     lateinit var fileUrl: String
     var dialogCommon: android.app.AlertDialog? = null
     val uploadReceiver: SingleUploadBroadcastReceiver = SingleUploadBroadcastReceiver()
@@ -76,12 +67,72 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
     }
 
     override fun onCompleted(serverResponseCode: Int, serverResponseBody: ByteArray?) {
+        dialogCommon!!.dismiss()
         println("onCompleted >>> serverResponseCode >>> $serverResponseCode serverResponseBody >>> $serverResponseBody")
 
         val charset = Charsets.UTF_8
         println("onCompleted 1 >>> " + serverResponseBody!!.contentToString()) // [72, 101, 108, 108, 111]
         println("onCompleted 2 >>> " + serverResponseBody!!.toString(charset))
         fileUrl = serverResponseBody!!.toString(charset)
+
+        try {
+            if (InternetConnection.checkConnection(this)) {
+
+
+                mServices.InsertStudentGrievance(
+                    et_SubOfComplaintGriev.text.toString(),
+                    spinner_CategoryGriev.selectedItem.toString(),
+                    et_ComplaintAgainstDetailGriev.text.toString(),
+                    et_DetailDescriGriev.text.toString(),
+                    current_date,
+                    confirmStatus,
+                    "Open",
+                    ASSING_TO_ID,
+                    "-",
+                    STUD_ID,
+                    course_id,
+                    roll_no,
+                    et_NameGriev.text.toString(),
+                    instituteName,
+                    str_ComplaintToGriev,
+                    filename,
+                    selected_Department,
+                    fileUrl
+                ).enqueue(object : Callback<APIResponse> {
+                    override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                        dialogCommon!!.dismiss()
+                        Toast.makeText(this@GreivanceStudFile, t.message, Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onResponse(
+                        call: Call<APIResponse>,
+                        response: Response<APIResponse>
+                    ) {
+                        val result: APIResponse? = response.body()
+                        dialogCommon!!.dismiss()
+                        Toast.makeText(this@GreivanceStudFile, result!!.Status, Toast.LENGTH_SHORT)
+                            .show()
+                        GenericUserFunction.showPositivePopUp(
+                            this@GreivanceStudFile,
+                            "Notice Send Successfully"
+                        )
+                    }
+                })
+            }else
+            {
+                GenericUserFunction.showInternetNegativePopUp(
+                    this,
+                    getString(R.string.failureNoInternetErr)
+                )
+            }
+        }
+        catch (ex:java.lang.Exception){
+            dialogCommon!!.dismiss()
+            GenericUserFunction.showApiError(
+                this,
+                "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
+            )
+        }
 
     }
 
@@ -165,6 +216,7 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
     private var random: Int? = null
 
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_greivance_stud_file)
@@ -214,7 +266,13 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
             }
             btnGallary.setOnClickListener {
                 CustDialog.dismiss()
-                pickImage()
+//                pickImage()
+
+                REQUEST_CODE = 200
+                CustDialog.dismiss()
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                intent.setType("*/*")
+                startActivityForResult(intent, 200)
 
             }
             btnpdf.setOnClickListener {
@@ -259,17 +317,18 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
         val mypref = getSharedPreferences("mypref", Context.MODE_PRIVATE)
 
 
-        var STUD_ID = mypref.getString("Stud_id_key", null)
-        var course_id = mypref.getString("course_id", null)
-        var roll_no = mypref.getString("roll_no", null)
+        STUD_ID = mypref.getString("Stud_id_key", null)
+        course_id = mypref.getString("course_id", null)
+        roll_no = mypref.getString("roll_no", null)
+        drawerTitler = mypref.getString("key_drawer_title", null)
         instituteName = mypref.getString("key_institute_stud", null)
 
 
         btn_submit_grievance.setOnClickListener {
             if (et_NameGriev.text.toString().equals("")) {
-                et_NameGriev.setError("Plese fill information")
+                et_NameGriev.setError("Please insert your name")
             } else if (et_SubOfComplaintGriev.text.toString().equals("")) {
-                et_SubOfComplaintGriev.setError("Plese fill information")
+                et_SubOfComplaintGriev.setError("Please insert your concern subject")
             } else if (spinner_CategoryGriev.selectedItem.toString().equals("--Select Grievance Category--")) {
                 Toast.makeText(this, "Select Grievance Category", Toast.LENGTH_LONG).show()
 
@@ -278,13 +337,38 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
                 et_ComplaintAgainstDetailGriev?.isFocusable = true
             } else if (et_DetailDescriGriev.text.toString().equals("")) {
                 et_DetailDescriGriev.setError("Plese fill information")
-            } else if (spinner_Name.selectedItem.equals("--Select College--")) {
-                Toast.makeText(this, "Select College", Toast.LENGTH_LONG).show()
-            } else if (spinner_ComplaintToGriev.selectedItem.toString().equals("--Select Complaint To--")) {
+            }  else if (spinner_ComplaintToGriev.selectedItem.toString().equals("--Select Complaint To--")) {
                 Toast.makeText(this, "Select Complaint To", Toast.LENGTH_LONG).show()
-            } else if (spinner_Name.selectedItem.toString().equals("Select")) {
+            } else if ((spinner_Name.selectedItem.toString().equals("Select"))||(spinner_Name.selectedItem==null) ) {
                 Toast.makeText(this, "Select", Toast.LENGTH_LONG).show()
             } else {
+
+                var CustDialog = Dialog(this)
+                CustDialog.setContentView(R.layout.dialog_question_yes_no_custom_popup)
+                var ivNegClose1: ImageView = CustDialog.findViewById(R.id.ivCustomDialogNegClose) as ImageView
+                var btnOk: Button = CustDialog.findViewById(R.id.btnCustomDialogAccept) as Button
+                var btnCustomDialogCancel: Button = CustDialog.findViewById(R.id.btnCustomDialogCancel) as Button
+                var tvMsg: TextView = CustDialog.findViewById(R.id.tvMsgCustomDialog) as TextView
+
+
+                tvMsg.text = "Are you sure, You want to register this grievance?"
+                btnOk.setOnClickListener {
+                    CustDialog.dismiss()
+                    uploadFunction()
+//                    checkDate = 1
+
+                }
+                btnCustomDialogCancel.setOnClickListener {
+                    CustDialog.dismiss()
+//                    checkDate = 0
+                }
+                ivNegClose1.setOnClickListener {
+                    CustDialog.dismiss()
+//                    checkDate = 0
+
+                }
+                CustDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                CustDialog.show()
 
 
                 println(
@@ -297,7 +381,6 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
                             + "\n" + "G_STATUS >> Open"
                             + "\n" + "ASSING_TO_ID >> " + ASSING_TO_ID
                             + "\n" + "REMINDER >> REMINDER not in use"
-
                             + "\n" + "STUD_ID >> " + STUD_ID
                             + "\n" + "course_id >> " + course_id
                             + "\n" + "roll_no >> " + roll_no
@@ -312,404 +395,7 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
 
                 )
 
-
-// call start
-                if (confirmStatus == "T" && type == "image") {
-                    try {
-                        //Dialog Start
-                        val dialog: android.app.AlertDialog =
-                            SpotsDialog.Builder().setContext(this).build()
-                        dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
-                        dialog.setCancelable(false)
-                        dialog.show()
-                        //Dialog End
-
-                        //   uploadFile(selectedImage!!,"Notice")
-                        var fileUri = selectedImage!!
-                        val file = File(getRealPathFromURI(fileUri))
-                        //creating request body for file
-                        val requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), file)
-                        val descBody = RequestBody.create(MediaType.parse("text/plain"), "Notice")
-                        //The gson builder
-                        val gson = GsonBuilder()
-                            .setLenient()
-                            .create()
-                        //creating retrofit object
-                        val retrofit = Retrofit.Builder()
-                            .baseUrl(Api.BASE_URL)
-                            .addConverterFactory(GsonConverterFactory.create(gson))
-                            .build()
-                        //creating our api
-                        val api = retrofit.create(Api::class.java)
-                        //creating a call and calling the upload image method
-                        val call = api.uploadImage21(requestFile, descBody)
-                        call.enqueue(object : Callback<MyResponse> {
-                            override fun onFailure(call: Call<MyResponse>, t: Throwable) {
-                                Toast.makeText(this@GreivanceStudFile,t.message, Toast.LENGTH_SHORT).show()
-                            }
-
-                            override fun onResponse(
-                                call: Call<MyResponse>,
-                                response: Response<MyResponse>
-                            ) {
-                                if (!response.body()!!.error) {
-                                    filename = response.body()!!.message.toString()
-
-//                                    try {
-//                                        mServices.InsertStudentGrievance(
-////                                            STUD_ID,
-////                                            course_id,
-////                                            roll_no,
-////                                            str_NameGriev,
-////                                            str_CollegeNameGrievGriev,
-////                                            str_ComplaintToGriev,
-////                                            current_date,
-////                                            filename,
-////                                            G_TICKETNO,
-////                                            G_ATTACHMENT,
-////                                            G_STATUS,
-////                                            U_ID,
-////                                            ASSING_TO_ID,
-////                                            REMINDER,
-////                                            G_SUBJECT,
-////                                            G_CATEGORY,
-////                                            G_AGAINST,
-////                                            G_DISCRIPTION
-//
-//
-//                                            G_SUBJECT,
-//                                            str_CategoryGriev,
-//                                            G_AGAINST,
-//                                            G_DISCRIPTION,
-//                                            current_date,
-//                                            G_ATTACHMENT,
-//                                            G_STATUS,
-//                                            ASSING_TO_ID,
-//                                            REMINDER,
-//                                            STUD_ID,
-//                                            course_id,
-//                                            roll_no,
-//                                            str_NameGriev,
-//                                            str_CollegeNameGrievGriev,
-//                                            str_ComplaintToGriev,
-//                                            Grev_Filename,
-//                                            str_Department,
-//                                            fileUrl
-//
-//                                        ).enqueue(object : Callback<APIResponse> {
-//                                            override fun onFailure(
-//                                                call: Call<APIResponse>,
-//                                                t: Throwable
-//                                            ) {
-//                                                Toast.makeText(
-//                                                    this@GreivanceStudFile,
-//                                                    t.message,
-//                                                    Toast.LENGTH_SHORT
-//                                                ).show()
-//                                            }
-//
-//                                            override fun onResponse(
-//                                                call: Call<APIResponse>,
-//                                                response: Response<APIResponse>
-//                                            ) {
-//                                                dialog.dismiss()
-//                                                val result: APIResponse? = response.body()
-////                                        Toast.makeText(this@AdminNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
-////                                            .show()
-//                                                GenericUserFunction.showPositivePopUp(
-//                                                    this@GreivanceStudFile,
-//                                                    "Notice Send Successfully"
-//                                                )
-//
-//                                            }
-//                                        })
-//                                    } catch (ex: Exception) {
-//                                        dialog.dismiss()
-//
-//                                        ex.printStackTrace()
-//                                        GenericUserFunction.showApiError(
-//                                            applicationContext,
-//                                            "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
-//                                        )
-//                                    }
-
-                                }
-
-
-                            }
-
-
-                        })
-//
-                    } catch (ex: Exception) {
-
-                        ex.printStackTrace()
-                        GenericUserFunction.showApiError(
-                            this,
-                            "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
-                        )
-                    }
-                }
-//call end
-
-
-//                STUD_ID
-//                course_id
-//                roll_no
-//                /*G_SUBJECT*/ str_SubOfComplaintGriev = et_SubOfComplaintGriev.text.toString()
-//                /*G_CATEGORY*/str_CategoryGriev = spinner_CategoryGriev.selectedItem.toString()
-//                /*G_AGAINST*/str_ComplaintAgainstDetailGriev =
-//                    et_ComplaintAgainstDetailGriev.text.toString()
-//                /*G_DISCRIPTION*/str_DetailDescriGriev = et_DetailDescriGriev.text.toString()
-//                /*G_DATE*/str_DateGriev = et_DateGriev.text.toString()
-//                //  "G_ATTACHMENT"
-//                /*G_STATUS*/ Status = "Open"
-//                //  "ASSING_TO_ID"
-//                //  "REMINDER"
-//                //  "STUD_ID"
-//                //  "course_id"
-//                //  "roll_no"
-//                /*Grev_name*/ str_NameGriev = et_NameGriev.text.toString()
-//                /*Inst_Name*/ str_CollegeNameGrievGriev = spinner_Name.selectedItem.toString()
-//                /*Comp_To*/
-//                /*Grev_Filename*/ str_ComplaintToGriev =
-//                    spinner_ComplaintToGriev.selectedItem.toString()
-//                /*Department*/ str_Department = spinner_Name.selectedItem.toString()
-/*ATTACHMENT_url*/
-
-
-//                G_SUBJECT
-//                G_CATEGORY
-//                G_AGAINST
-//                G_DISCRIPTION
-//                G_DATE
-//                G_ATTACHMEN
-//                G_STATUS
-//                ASSING_TO_ID
-//                REMINDER
-//                STUD_ID
-//                course_id
-//                roll_no
-//                Grev_name
-//                Inst_Name
-//                Comp_To
-//                Grev_Filename
-//                Department
-//                ATTACHMENT_url
-
-
-//                editor.putString("Stud_id_key", STUD_ID)
-//                editor.putString("key_userrole", USER_ROLE)
-//                editor.putString("key_doa", DOA)
-//                editor.putString("course_id", courseid_1)
-//                editor.putString("roll_no", roll_no)
-
-
-//                println(" Grievience submitted  "+str_NameGriev+str_SubOfComplaintGriev+str_CategoryGriev+str_ComplaintAgainstDetailGriev+str_DetailDescriGriev+
-//                        str_CollegeNameGrievGriev+str_ComplaintToGriev+str_DateGriev)
-
-/*      try {
-
-          println("confirmStatus " + confirmStatus)
-          // if (RESOU_FLAG == "T") {
-      *//*    if (confirmStatus == "T") {
-        try {
-            //Dialog Start
-            val dialog: android.app.AlertDialog =
-                SpotsDialog.Builder().setContext(this).build()
-            dialog.setMessage("Please Wait!!! \nwhile we are sending your grievance")
-            dialog.setCancelable(false)
-            dialog.show()
-            //Dialog End
-
-            //   uploadFile(selectedImage!!,"Notice")
-            var fileUri = selectedImage!!
-            val file = File(getRealPathFromURI(fileUri))
-            //creating request body for file
-            val requestFile = RequestBody.create(
-                MediaType.parse(
-                    getContentResolver().getType(fileUri)
-                ), file
-            );
-            val descBody =
-                RequestBody.create(MediaType.parse("text/plain"), "Notice")
-            //The gson builder
-            val gson = GsonBuilder()
-                .setLenient()
-                .create()
-            //creating retrofit object
-            val retrofit = Retrofit.Builder()
-                .baseUrl(Api.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build()
-            //creating our api
-            val api = retrofit.create(Api::class.java)
-            //creating a call and calling the upload image method
-            val call = api.uploadImage2(requestFile, descBody)
-            //finally performing the call
-            call.enqueue(object : Callback<MyResponse> {
-                override fun onFailure(call: Call<MyResponse>, t: Throwable) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
-
-                override fun onResponse(
-                    call: Call<MyResponse>,
-                    response: Response<MyResponse>
-                ) {
-                    if (!response.body()!!.error) {
-                        filename = response.body()!!.message.toString()
-                        println("file name is " + filename)
-
-                        try {
-                            mServices.InsertStudentGrievance(
-                                STUD_ID,
-                                course_id,
-                                roll_no,
-                                str_NameGriev,
-                                str_CollegeNameGrievGriev,
-                                str_ComplaintToGriev,
-                                current_date,
-                                filename,
-                                G_TICKETNO,
-                                G_ATTACHMENT,
-                                G_STATUS,
-                                U_ID,
-                                ASSING_TO_ID,
-                                REMINDER,
-                                G_SUBJECT,
-
-                                G_CATEGORY,
-                                G_AGAINST,
-                                G_DISCRIPTION
-                            ).enqueue(object : Callback<APIResponse> {
-                                override fun onFailure(
-                                    call: Call<APIResponse>,
-                                    t: Throwable
-                                ) {
-                                    Toast.makeText(
-                                        this@GreivanceStudFile,
-                                        t.message,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-
-                                override fun onResponse(
-                                    call: Call<APIResponse>,
-                                    response: Response<APIResponse>
-                                ) {
-                                    dialog.dismiss()
-                                    val result: APIResponse? = response.body()
-//                                        Toast.makeText(this@InstituteNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
-//                                            .show()
-                                    GenericUserFunction.showPositivePopUp(
-                                        this@GreivanceStudFile,
-                                        "Grievance Send Successfully"
-                                    )
-                                }
-                            })
-                        } catch (ex: Exception) {
-                            dialog.dismiss()
-
-                            ex.printStackTrace()
-                            GenericUserFunction.showApiError(
-                                applicationContext,
-                                "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
-                            )
-                        }
-                    }
-                }
-            })
-
-        } catch (ex: Exception) {
-
-            ex.printStackTrace()
-            GenericUserFunction.showApiError(
-                this,
-                "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
-            )
-        }
-    }*//*
-    if (confirmStatus == "F") {
-        try {
-            //Dialog Start
-            val dialog: android.app.AlertDialog =
-                SpotsDialog.Builder().setContext(this).build()
-            dialog.setMessage("Please Wait!!! \nwhile we are updating your Notice")
-            dialog.setCancelable(false)
-            dialog.show()
-            //Dialog End
-            filename = "-"
-            try {
-                mServices.InsertStudentGrievance(
-                    STUD_ID,
-                    course_id,
-                    roll_no,
-                    str_NameGriev,
-                    str_CollegeNameGrievGriev,
-                    str_ComplaintToGriev,
-                    current_date,
-                    filename,
-                    G_TICKETNO,
-                    G_ATTACHMENT,
-                    G_STATUS,
-                    U_ID,
-                    ASSING_TO_ID,
-                    REMINDER,
-                    G_SUBJECT,
-                    G_CATEGORY,
-                    G_AGAINST,
-                    G_DISCRIPTION
-
-                ).enqueue(object : Callback<APIResponse> {
-                    override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                        Toast.makeText(
-                            this@GreivanceStudFile,
-                            t.message,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                    override fun onResponse(
-                        call: Call<APIResponse>,
-                        response: Response<APIResponse>
-                    ) {
-                        dialog.dismiss()
-                        val result: APIResponse? = response.body()
-                        GenericUserFunction.showPositivePopUp(
-                            this@GreivanceStudFile,
-                            "Notice Send Successfully"
-                        )
-//                            Toast.makeText(this@InstituteNoticeBoard, result!!.Status, Toast.LENGTH_SHORT)
-//                                .show()
-                    }
-                })
-            } catch (ex: Exception) {
-                dialog.dismiss()
-
-                ex.printStackTrace()
-                GenericUserFunction.showApiError(
-                    applicationContext,
-                    "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
-                )
             }
-
-        } catch (ex: Exception) {
-
-            ex.printStackTrace()
-            GenericUserFunction.showApiError(
-                this,
-                "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
-            )
-        }
-    }
-} catch (ex: Exception) {
-    ex.printStackTrace()
-}*/
-
-
-            }
-
-
         }
 
         spinner_ComplaintToGriev.onItemSelectedListener =
@@ -740,6 +426,7 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
         startActivityForResult(i, 101)
     }
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 //        if (requestCode == 1) {
@@ -822,6 +509,7 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
                 //    GenericPublicVariable.CustDialog.setCancelable(false)
                 btnOk.setOnClickListener {
                     CustDialog.dismiss()
+                    uri=tempUri
                     confirmStatus = "T"
 //                    finish()
                 }
@@ -853,59 +541,155 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun PdfUploadFunction() {
+    private fun uploadFunction() {
 
-        // PdfNameHolder = txt_fileStart.text.toString() + "_" + edit_upload_fname!!.text.toString().trim()
+        if(confirmStatus=="T") {
+            // PdfNameHolder = txt_fileStart.text.toString() + "_" + edit_upload_fname!!.text.toString().trim()
+            dialogCommon!!.setMessage("Please Wait!!! \nwhile we are sending your notice")
+            dialogCommon!!.setCancelable(false)
+            dialogCommon!!.show()
+
+            PdfPathHolder = FilePath.getPath(this, uri)
+
+            if (PdfPathHolder == null) {
+                dialogCommon!!.dismiss()
+
+                Toast.makeText(
+                    this,
+                    "Please move your PDF file to internal storage & try again.",
+                    Toast.LENGTH_LONG
+                ).show()
+
+            } else {
+                //Dialog Start
+//            val dialog: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
+                try {
+
+
+                    PdfID = UUID.randomUUID().toString()
+                    random = Random().nextInt(61) + 20
+                    uploadReceiver.setDelegate(this)
+                    uploadReceiver.setUploadID(PdfID!!)
+                    MultipartUploadRequest(this, PdfID, PDF_UPLOAD_HTTP_URL)
+                        .addFileToUpload(PdfPathHolder, "pdf")
+                        .addParameter("name", STUD_ID.trim())//PdfID + random.toString())
+                        .setNotificationConfig(UploadNotificationConfig())
+                        .setMaxRetries(5)
+                        .startUpload()
+//                dialog.dismiss()
+
+                } catch (exception: Exception) {
+                    dialogCommon!!.dismiss()
+
+                    Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
+                }
+
+            }
+        }else
+        {
+            var CustDialog = Dialog(this)
+            CustDialog.setContentView(R.layout.dialog_question_yes_no_custom_popup)
+            var ivNegClose1: ImageView = CustDialog.findViewById(R.id.ivCustomDialogNegClose) as ImageView
+            var btnOk: Button = CustDialog.findViewById(R.id.btnCustomDialogAccept) as Button
+            var btnCustomDialogCancel: Button = CustDialog.findViewById(R.id.btnCustomDialogCancel) as Button
+            var tvMsg: TextView = CustDialog.findViewById(R.id.tvMsgCustomDialog) as TextView
+
+
+            tvMsg.text = "Are you sure, You want to submit this grievance without Attachment?"
+//    GenericPublicVariable.CustDialog.setCancelable(false)
+            btnOk.setOnClickListener {
+                CustDialog.dismiss()
+                noAttachGrievanceFunction()
+//                checkDate = 1
+
+            }
+            btnCustomDialogCancel.setOnClickListener {
+                CustDialog.dismiss()
+//                checkDate = 0
+            }
+            ivNegClose1.setOnClickListener {
+                CustDialog.dismiss()
+//                checkDate = 0
+
+            }
+            CustDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            CustDialog.show()
+        }
+    }
+
+    private fun noAttachGrievanceFunction() {
         dialogCommon!!.setMessage("Please Wait!!! \nwhile we are sending your notice")
         dialogCommon!!.setCancelable(false)
         dialogCommon!!.show()
-
-        PdfPathHolder = FilePath.getPath(this, uri)
-
-        if (PdfPathHolder == null) {
-            dialogCommon!!.dismiss()
-
-            Toast.makeText(
-                this,
-                "Please move your PDF file to internal storage & try again.",
-                Toast.LENGTH_LONG
-            ).show()
-
-        } else {
-            //Dialog Start
-//            val dialog: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
-            try {
+        try {
+            if (InternetConnection.checkConnection(this)) {
 
 
-                PdfID = UUID.randomUUID().toString()
-                random = Random().nextInt(61) + 20
-                uploadReceiver.setDelegate(this)
-                uploadReceiver.setUploadID(PdfID!!)
-                MultipartUploadRequest(this, PdfID, PDF_UPLOAD_HTTP_URL)
-                    .addFileToUpload(PdfPathHolder, "pdf")
-                    .addParameter("name", PdfID + random.toString())
-                    .setNotificationConfig(UploadNotificationConfig())
-                    .setMaxRetries(5)
-                    .startUpload()
-//                dialog.dismiss()
+                mServices.InsertStudentGrievance(
+                    et_SubOfComplaintGriev.text.toString(),
+                    spinner_CategoryGriev.selectedItem.toString(),
+                    et_ComplaintAgainstDetailGriev.text.toString(),
+                    et_DetailDescriGriev.text.toString(),
+                    current_date,
+                    "F",
+                    "Open",
+                    ASSING_TO_ID,
+                    "-",
+                    STUD_ID,
+                    course_id,
+                    roll_no,
+                    et_NameGriev.text.toString(),
+                    instituteName,
+                    str_ComplaintToGriev,
+                    "-",
+                    selected_Department,
+                    "-"
+                ).enqueue(object : Callback<APIResponse> {
+                    override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                        dialogCommon!!.dismiss()
+                        Toast.makeText(this@GreivanceStudFile, t.message, Toast.LENGTH_SHORT).show()
+                    }
 
-            } catch (exception: Exception) {
-                dialogCommon!!.dismiss()
-
-                Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
+                    override fun onResponse(
+                        call: Call<APIResponse>,
+                        response: Response<APIResponse>
+                    ) {
+                        val result: APIResponse? = response.body()
+                        dialogCommon!!.dismiss()
+                        Toast.makeText(this@GreivanceStudFile, result!!.Status, Toast.LENGTH_SHORT)
+                            .show()
+                        GenericUserFunction.showPositivePopUp(
+                            this@GreivanceStudFile,
+                            "Notice Send Successfully"
+                        )
+                    }
+                })
+            }else
+            {
+                GenericUserFunction.showInternetNegativePopUp(
+                    this,
+                    getString(R.string.failureNoInternetErr)
+                )
             }
-
+        }
+        catch (ex:java.lang.Exception){
+            dialogCommon!!.dismiss()
+            GenericUserFunction.showApiError(
+                this,
+                "Sorry for inconvinience\nServer seems to be busy,\nPlease try after some time."
+            )
         }
     }
 
     companion object {
         //val PDF_UPLOAD_HTTP_URL = "http://avbrh.gearhostpreview.com/pdfupload/upload.php"
-        val PDF_UPLOAD_HTTP_URL = "http://dmimsdu.in/web/pdfupload/pdfnoticeupload.php"
+//        val PDF_UPLOAD_HTTP_URL = "http://dmimsdu.in/web/pdfupload/pdfnoticeupload.php"
+        val PDF_UPLOAD_HTTP_URL = "http://dmimsdu.in/web/imageupload/grieupload.php"
     }
 
-    fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
+    private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
         var byte: ByteArrayOutputStream = ByteArrayOutputStream(100000)
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, byte)
+        inImage.compress(Bitmap.CompressFormat.PNG, 100, byte)
         var path: String =
             MediaStore.Images.Media.insertImage(inContext!!.contentResolver, inImage, "Title", null)
         return Uri.parse(path)
@@ -1049,6 +833,26 @@ class GreivanceStudFile : AppCompatActivity(), SingleUploadBroadcastReceiver.Del
 //spinner_Name!!.adapter = DepartmentAdap2
 
 
+    }
+    private fun DialogWithoutFile() {
+        val dialog = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.custom_dialog_withoutfilenotice, null)
+        // val txtviewlbl = dialogView.findViewById<TextView>(R.id.txt_labl2)
+        dialog.setView(dialogView)
+        dialog.setCancelable(false)
+        dialog.setPositiveButton("Yes") { dialog: DialogInterface, i: Int ->
+            println(dialog)
+            println(i)
+          //  sendNotice()
+        }
+
+        dialog.setNegativeButton("No") { dialog, id ->
+            println(dialog)
+            println(id)
+            dialog.cancel()
+
+        }
+        dialog.show()
     }
 
 
